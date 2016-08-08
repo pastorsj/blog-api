@@ -22,7 +22,7 @@ router.use(methodOverride(function(req, res) {
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserHandler.get.bind(UserHandler))
-    .put(UserHandler.put.bind(UserHandler));
-    // .delete(UserHandler.delete.bind(UserHandler));
+    .put(UserHandler.put.bind(UserHandler))
+    .delete(UserHandler.delete.bind(UserHandler));
 
 module.exports = router;
