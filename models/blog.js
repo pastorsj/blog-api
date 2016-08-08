@@ -1,5 +1,7 @@
-var mongoose = require('mongoose');
-var blogPostScheme = new mongoose.Schema({
+'use strict';
+
+const mongoose = require('mongoose');
+const blogPostScheme = new mongoose.Schema({
   datePosted: {
     type: Date,
     required: true,

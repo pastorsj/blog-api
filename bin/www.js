@@ -51,16 +51,15 @@ function normalizePort(val) {
 
 /**
  * Event listener for HTTP server "error" event.
+ * @param {Object} error - The object containing the error
+ * @return {Error} Will throw a correct error
  */
-
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -79,12 +78,11 @@ function onError(error) {
 
 /**
  * Event listener for HTTP server "listening" event.
+ * @return {NoneType} - required for jsdoc
  */
-
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  console.log('Listening on ' + bind);
   debug('Listening on ' + bind);
 }

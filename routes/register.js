@@ -1,11 +1,11 @@
-'use strict'
+'use strict';
 
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
-const RegisterHandler = require('../handlers/register_handler')
+const RegisterHandler = require('../handlers/register_handler');
 
 router.use(bodyParser.urlencoded({
   extended: true
@@ -22,6 +22,6 @@ router.use(methodOverride(function(req, res) {
 // Availible via the base_url/register route
 router.route('/')
     .get(RegisterHandler.get.bind(RegisterHandler))
-    .post(RegisterHandler.register.bind(RegisterHandler))
+    .post(RegisterHandler.register.bind(RegisterHandler));
 
-modules.exports = router
+module.exports = router;
