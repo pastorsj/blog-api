@@ -1,7 +1,9 @@
 {
   "name": "blog-api",
   "version": "0.0.0",
-  "private": true,
+  "author": "Sam Pastoriza [pastorsj](https://github.com/pastorsj)",
+  "repository": "https://github.com/pastorsj/blog-api",
+  "private": false,
   "scripts": {
     "start": "node ./bin/www",
     "lint": "eslint handlers/*.js models/*.js routes/*.js bin/www *.js"
