@@ -5,7 +5,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
-// const LoginHandler = require('../handlers/login_handler');
+const LoginHandler = require('../handlers/login_handler');
 
 router.use(bodyParser.urlencoded({
   extended: true
@@ -20,7 +20,7 @@ router.use(methodOverride(function(req, res) {
 }));
 
 // Availible via the base_url/login route
-// router.route('/')
-//     .get(LoginHandler.get.bind(LoginHandler));
+router.route('/')
+    .get(LoginHandler.get.bind(LoginHandler));
 
 module.exports = router;
