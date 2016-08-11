@@ -131,6 +131,30 @@ const BlogHandler = {
         });
       }
     });
+  },
+  getByTag: function(req, res) {
+    console.log('req.body:', req.body);
+    mongoose.model('BlogPost').find({
+      tags: {
+        $elemMatch: req.params.tag
+      }
+    }, (err, posts) => {
+      if (err || _.isEmpty(posts)) {
+        res.status(404);
+        res.format({
+          json: () => {
+            res.json({error: err || 'Blog Post Not Found'});
+          }
+        });
+      } else {
+        res.status(200);
+        res.format({
+          json: () => {
+            res.json(posts);
+          }
+        });
+      }
+    });
   }
 };
 

@@ -29,7 +29,7 @@ router.route('/:id')
     .put(BlogHandler.put.bind(BlogHandler))
     .delete(BlogHandler.delete.bind(BlogHandler));
 
-// router.route('/tag/:tag')
-//     .get(BlogHandler.getByTag.bind(BlogHandler));
+router.route('/tag/:tag')
+    .get(BlogHandler.getByTag.bind(BlogHandler));
 
 module.exports = router;
