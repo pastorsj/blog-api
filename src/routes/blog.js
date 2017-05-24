@@ -1,22 +1,23 @@
 'use strict';
 
-const express = require('express');
-const router = express.Router();
-const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
+import express from 'express';
+import bodyParser from 'body-parser';
+import methodOverride from 'method-override';
 
-const BlogHandler = require('../handlers/blog_handler');
+import BlogHandler from '../handlers/blog_handler';
+
+const router = express.Router();
 
 router.use(bodyParser.urlencoded({
-  extended: true
+    extended: true
 }));
 
 router.use(methodOverride(function(req, res) {
-  const method = req.body._method;
-  if (req.body && typeof req.body.toString() === 'object' && '_method' in req.body) {
-    delete req.body._method;
-  }
-  return method;
+    const method = req.body._method;
+    if (req.body && typeof req.body.toString() === 'object' && '_method' in req.body) {
+        delete req.body._method;
+    }
+    return method;
 }));
 
 // Availible via the base_url/blog route
@@ -32,4 +33,5 @@ router.route('/:id')
 router.route('/tag/:tag')
     .get(BlogHandler.getByTag.bind(BlogHandler));
 
-module.exports = router;
+
+export default router;
