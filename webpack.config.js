@@ -6,20 +6,12 @@ const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const path = require('path');
 const env = require('yargs').argv.env; // use --env with webpack 2
 const fs = require('fs');
+const nodeExternals = require('webpack-node-externals');
 
 let libraryName = 'blog';
 
 let plugins = []
 let outputFile;
-
-const nodeModules = {};
-fs.readdirSync('node_modules')
-  .filter(function(x) {
-    return ['.bin'].indexOf(x) === -1;
-  })
-  .forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
-  });
 
 if (env === 'build') {
     plugins.push(new UglifyJsPlugin({ minimize: true }));
@@ -31,6 +23,7 @@ if (env === 'build') {
 const config = {
     entry: path.join(__dirname, 'src', 'server.js'),
     devtool: 'eval-source-map',
+    target: 'node',
     output: {
         path: path.join(__dirname, 'dist'),
         filename: outputFile,
@@ -56,10 +49,14 @@ const config = {
         modules: [
             path.join(__dirname, 'src')
         ],
-        extensions: ['.json', '.js']
+        extensions: [
+            '.js', '.json'
+        ]
     },
     plugins: plugins,
-    externals: nodeModules
+    externals: [
+        nodeExternals()
+    ]
 };
 
 module.exports = config;

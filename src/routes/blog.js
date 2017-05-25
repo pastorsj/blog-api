@@ -16,7 +16,6 @@ const auth = jwt({
     userProperty: 'payload'
 });
 
-
 router.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -41,6 +40,5 @@ router.route('/:id')
 
 router.route('/tag/:tag')
     .get(BlogHandler.getByTag.bind(BlogHandler));
-
 
 export default router;

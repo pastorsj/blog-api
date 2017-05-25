@@ -90,7 +90,7 @@ const BlogHandler = {
                 });
             } else {
                 _.assign(blog, req.body);
-                blog.save((err) => {
+                blog.save(err => {
                     if (err) {
                         res.status(500);
                         res.format({
@@ -126,7 +126,7 @@ const BlogHandler = {
                     }
                 });
             } else {
-                blog.remove((err) => {
+                blog.remove(err => {
                     if (err) {
                         res.status(404);
                         res.format({

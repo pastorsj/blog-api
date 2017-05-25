@@ -71,5 +71,4 @@ userSchema.methods.generateJwt = function() {
     }, config.secret);
 };
 
-
 mongoose.model('User', userSchema);

@@ -49,7 +49,6 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  * @param {Object} error - The object containing the error
- * @return {Error} Will throw a correct error
  */
 function onError(error) {
     if (error.syscall !== 'listen') {
@@ -75,7 +74,6 @@ function onError(error) {
 
 /**
  * Event listener for HTTP server "listening" event.
- * @return {NoneType} - required for jsdoc
  */
 function onListening() {
     var addr = server.address();

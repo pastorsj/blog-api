@@ -54,7 +54,7 @@ export function login(req, res) {
     const usernamePassword = req.headers.authorization.split(':');
     const username = usernamePassword[0];
     const password = usernamePassword[1];
-    
+
     User.findOne({
         username
     }, (err, user) => {

@@ -49,7 +49,6 @@ app.use(passport.session());
 app.use('/register', register);
 app.use('/login', login);
 
-
 app.use('/blog', blogRoute);
 app.use('/user', userRoute);
 

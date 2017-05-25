@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import {config} from '../config';       // get our config file
 
-
 let gracefulShutdown;
 const dbUri = config.database;
 mongoose.connect(dbUri);
