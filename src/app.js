@@ -5,14 +5,15 @@ import path from 'path';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
-import './models/db.js';
-import './models/blog.js';
-import './models/user.js';
+import './models/db';
+import './models/blog';
+import './models/user';
 
 import blogRoute from './routes/blog';
 import userRoute from './routes/user';
-import auth from './routes/auth';
+import {register, login} from './routes/auth';
 
 import passport from 'passport';
 import session from 'express-session';
@@ -21,7 +22,6 @@ const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -32,6 +32,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use(session({
     secret: 'random-secret1025',
@@ -44,6 +45,10 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/register', register);
+app.use('/login', login);
+
 
 app.use('/blog', blogRoute);
 app.use('/user', userRoute);

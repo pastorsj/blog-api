@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import config from '../config';       // get our config file
+import {config} from '../config';       // get our config file
 
 
 let gracefulShutdown;

@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import config from '../config';
+import {config} from '../config';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -15,16 +15,16 @@ const userSchema = new mongoose.Schema({
         required: false
     },
     name: {
-        fname: {
+        firstName: {
             type: String,
             required: true
         },
-        mname: {
+        middleInitial: {
             type: String,
             required: false,
             default: ""
         },
-        lname: {
+        lastName: {
             type: String,
             required: true
         }
@@ -66,7 +66,7 @@ userSchema.methods.generateJwt = function() {
     return jwt.sign({
         _id: this._id,
         username: this.username,
-        first: this.name,
+        name: this.name,
         exp: parseInt(expiry.getTime() / 1000, 10)
     }, config.secret);
 };

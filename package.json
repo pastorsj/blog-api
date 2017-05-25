@@ -5,15 +5,15 @@
   "repository": "https://github.com/pastorsj/blog-api",
   "private": false,
   "scripts": {
-    "build2": "babel-node ./src/server.js",
+    "start": "babel-node ./src/server.js",
     "build": "webpack --env build --display-error-details",
     "dev": "webpack --progress --colors --watch --env dev --display-error-details",
-    "start": "node ./dist/",
     "lint": "eslint src/*.js"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
     "cookie-parser": "~1.3.5",
+    "cors": "^2.8.3",
     "debug": "~2.2.0",
     "express": "~4.13.1",
     "express-jwt": "^5.3.0",
@@ -38,6 +38,6 @@
     "eslint-config-rose": "^1.0.0",
     "eslint-config-xo": "^0.15.3",
     "eslint-loader": "^1.7.1",
-    "webpack": "2.2.1"
+    "webpack": "^2.6.0"
   }
 }

@@ -7,7 +7,7 @@ var sendJSONresponse = (res, status, content) => {
 };
 
 export function register(req, res) {
-    if (!req.body.username || !req.body.name ||
+    if (!req.body.username || !req.body.firstName || !req.body.lastName ||
         !req.body.password) {
         sendJSONresponse(res, 400, {
             message: "All fields required"
@@ -25,8 +25,9 @@ export function register(req, res) {
     var user = new User();
 
     user.username = req.body.username;
-    user.first = req.body.first;
-    user.last = req.body.last;
+    user.name.firstName = req.body.firstName;
+    user.name.lastName = req.body.lastName;
+    user.name.middleInitial = req.body.middleInitial || '';
 
     user.setPassword(req.body.password);
 
@@ -43,8 +44,19 @@ export function register(req, res) {
 }
 
 export function login(req, res) {
+    console.log('Authorization', req.headers.authorization);
+    if (!req.headers.authorization || req.headers.authorization.split(':').length !== 2) {
+        sendJSONresponse(res, 401, {
+            message: 'Authentication failed. Makes sure that you insert your username and password in the Authorization header split by a colon'
+        });
+        return;
+    }
+    const usernamePassword = req.headers.authorization.split(':');
+    const username = usernamePassword[0];
+    const password = usernamePassword[1];
+    
     User.findOne({
-        username: req.body.username
+        username
     }, (err, user) => {
         if (err) {
             sendJSONresponse(res, 404, err);
@@ -56,7 +68,7 @@ export function login(req, res) {
             });
             return;
         }
-        if (!user.validPassword(req.body.password)) {
+        if (!user.validPassword(password)) {
             sendJSONresponse(res, 401, {
                 message: 'Authentication failed. Wrong password.'
             });
