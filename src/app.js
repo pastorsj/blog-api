@@ -64,7 +64,11 @@ app.use((req, res, next) => {
 // will print stacktrace
 if (app.get('env') === 'development') {
     app.use((err, req, res, next) => {
-        res.status(err.status || 500);
+        if (err.name === 'UnauthorizedError') {
+            res.status(401).send({error: err});
+        } else {
+            res.status(err.status || 500);
+        }
         console.error(err);
     });
 }
@@ -72,7 +76,11 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use((err, req, res, next) => {
-    res.status(err.status || 500);
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).send({error: err});
+    } else {
+        res.status(err.status || 500);
+    }
     console.error(err);
 });
 
