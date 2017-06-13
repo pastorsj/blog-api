@@ -15,19 +15,12 @@ const userSchema = new mongoose.Schema({
         required: false
     },
     name: {
-        firstName: {
-            type: String,
-            required: true
-        },
-        middleInitial: {
-            type: String,
-            required: false,
-            default: ""
-        },
-        lastName: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
     },
     joinedDate: {
         type: Date,

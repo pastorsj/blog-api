@@ -7,7 +7,7 @@ var sendJSONresponse = (res, status, content) => {
 };
 
 export function register(req, res) {
-    if (!req.body.username || !req.body.firstName || !req.body.lastName ||
+    if (!req.body.username || !req.body.name || !req.body.email ||
         !req.body.password) {
         sendJSONresponse(res, 400, {
             message: "All fields required"
@@ -25,9 +25,8 @@ export function register(req, res) {
     var user = new User();
 
     user.username = req.body.username;
-    user.name.firstName = req.body.firstName;
-    user.name.lastName = req.body.lastName;
-    user.name.middleInitial = req.body.middleInitial || '';
+    user.name = req.body.name;
+    user.email = req.body.email;
 
     user.setPassword(req.body.password);
 
