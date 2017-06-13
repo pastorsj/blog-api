@@ -44,7 +44,6 @@ export function register(req, res) {
 }
 
 export function login(req, res) {
-    console.log('Authorization', req.headers.authorization);
     if (!req.headers.authorization || req.headers.authorization.split(':').length !== 2) {
         sendJSONresponse(res, 401, {
             message: 'Authentication failed. Makes sure that you insert your username and password in the Authorization header split by a colon'
