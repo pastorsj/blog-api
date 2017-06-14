@@ -9,9 +9,7 @@ const _ = require('lodash');
 
 const BlogHandler = {
     post: (req, res) => {
-        const post = req.body;
-        post.id = req.params.id;
-        mongoose.model('BlogPost').create(post, (err, blog) => {
+        mongoose.model('BlogPost').create(req.body, (err, blog) => {
             if (err) {
                 res.status(500);
                 res.format({

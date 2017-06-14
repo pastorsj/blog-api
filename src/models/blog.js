@@ -1,12 +1,9 @@
 'use strict';
 
 import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
 
-const blogPostScheme = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true
-    },
+const blogPostSchema = new mongoose.Schema({
     datePosted: {
         type: Date,
         required: true,
@@ -30,4 +27,6 @@ const blogPostScheme = new mongoose.Schema({
     }
 });
 
-mongoose.model('BlogPost', blogPostScheme);
+blogPostSchema.plugin(autoIncrement.plugin, 'Blog');
+
+mongoose.model('BlogPost', blogPostSchema);
