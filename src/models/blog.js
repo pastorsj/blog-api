@@ -3,6 +3,10 @@
 import mongoose from 'mongoose';
 
 const blogPostScheme = new mongoose.Schema({
+    id: {
+        type: Number,
+        required: true
+    },
     datePosted: {
         type: Date,
         required: true,

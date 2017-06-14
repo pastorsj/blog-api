@@ -9,7 +9,9 @@ const _ = require('lodash');
 
 const BlogHandler = {
     post: (req, res) => {
-        mongoose.model('BlogPost').create(req.body, (err, blog) => {
+        const post = req.body;
+        post.id = req.params.id;
+        mongoose.model('BlogPost').create(post, (err, blog) => {
             if (err) {
                 res.status(500);
                 res.format({
@@ -54,7 +56,7 @@ const BlogHandler = {
     },
     get: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            _id: req.params.id
+            id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(500);
@@ -77,7 +79,7 @@ const BlogHandler = {
     },
     put: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            _id: req.params.id
+            id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(404);
@@ -114,7 +116,7 @@ const BlogHandler = {
     },
     delete: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            _id: req.params.id
+            id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(404);
