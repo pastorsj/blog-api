@@ -24,6 +24,7 @@ const BlogHandler = {
                 res.format({
                     json: () => {
                         res.json({
+                            data: blog,
                             message: `Blog created by ${blog.author}`
                         });
                     }
@@ -46,7 +47,9 @@ const BlogHandler = {
                 res.status(200);
                 res.format({
                     json: () => {
-                        res.json(posts);
+                        res.json({
+                            data: posts
+                        });
                     }
                 });
             }
@@ -54,7 +57,7 @@ const BlogHandler = {
     },
     get: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            id: req.params.id
+            _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(500);
@@ -69,7 +72,9 @@ const BlogHandler = {
                 res.status(200);
                 res.format({
                     json: () => {
-                        res.json(blog);
+                        res.json({
+                            data: blog
+                        });
                     }
                 });
             }
@@ -77,7 +82,7 @@ const BlogHandler = {
     },
     put: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            id: req.params.id
+            _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(404);
@@ -104,7 +109,9 @@ const BlogHandler = {
                         res.status(200);
                         res.format({
                             json: () => {
-                                res.json(blog);
+                                res.json({
+                                    data: blog
+                                });
                             }
                         });
                     }
