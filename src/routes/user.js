@@ -3,6 +3,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
+import jwt from 'express-jwt';
+import {config} from '../config';
 
 import UserHandler from '../handlers/user_handler';
 
@@ -20,10 +22,16 @@ router.use(methodOverride(function(req, res) {
     return method;
 }));
 
+const auth = jwt({
+    secret: config.secret,
+    /* req.payload contains the payload of the decoded token */
+    userProperty: 'payload'
+});
+
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserHandler.get.bind(UserHandler))
-    .put(UserHandler.put.bind(UserHandler))
-    .delete(UserHandler.delete.bind(UserHandler));
+    .put(auth, UserHandler.put.bind(UserHandler))
+    .delete(auth, UserHandler.delete.bind(UserHandler));
 
 module.exports = router;

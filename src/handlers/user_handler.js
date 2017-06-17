@@ -25,7 +25,9 @@ const UserHandler = {
                 res.status(200);
                 res.format({
                     json: () => {
-                        res.json(user);
+                        res.json({
+                            data: user
+                        });
                     }
                 });
             }
@@ -60,7 +62,9 @@ const UserHandler = {
                         res.status(200);
                         res.format({
                             json: () => {
-                                res.json(user);
+                                res.json({
+                                    data: user
+                                });
                             }
                         });
                     }
@@ -96,7 +100,9 @@ const UserHandler = {
                         res.status(200);
                         res.format({
                             json: () => {
-                                res.json(`The user with the username ${user.username} was removed`);
+                                res.json({
+                                    data: `The user with the username ${user.username} was removed`
+                                });
                             }
                         });
                     }
