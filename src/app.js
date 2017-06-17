@@ -13,6 +13,8 @@ import './models/user';
 
 import blogRoute from './routes/blog';
 import userRoute from './routes/user';
+import articlesRoute from './routes/articles';
+
 import {register, login} from './routes/auth';
 
 import passport from 'passport';
@@ -51,6 +53,7 @@ app.use('/login', login);
 
 app.use('/blog', blogRoute);
 app.use('/user', userRoute);
+app.use('/articles', articlesRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
