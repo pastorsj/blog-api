@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 
 /**
- * ROUTE: blog/:id
+ * ROUTE: articles/:username
  */
 
 const ArticlesHandler = {

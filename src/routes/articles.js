@@ -6,7 +6,7 @@ import methodOverride from 'method-override';
 import jwt from 'express-jwt';
 import {config} from '../config';
 
-import ArticlesHandler from '../handlers/article_handler';
+import ArticlesHandler from '../handlers/articles_handler';
 
 const router = express.Router();
 
