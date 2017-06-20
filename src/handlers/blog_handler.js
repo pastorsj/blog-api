@@ -34,8 +34,8 @@ const BlogHandler = {
     },
     getAll: (req, res) => {
         mongoose.model('BlogPost').find({}, (err, posts) => {
-            if (err || _.isEmpty(posts)) {
-                res.status(500);
+            if (err) {
+                res.status(404);
                 res.format({
                     json: () => {
                         res.json({

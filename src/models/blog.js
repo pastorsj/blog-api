@@ -9,7 +9,11 @@ const blogPostSchema = new mongoose.Schema({
         required: true,
         default: Date.now()
     },
-    name: {
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
         type: String,
         required: true
     },
