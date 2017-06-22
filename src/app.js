@@ -20,12 +20,10 @@ import {register, login} from './routes/auth';
 import passport from 'passport';
 import session from 'express-session';
 
+import helmet from 'helmet';
+
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-
-// uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -35,6 +33,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
+
+app.use(helmet());
 
 app.use(session({
     secret: 'random-secret1025',

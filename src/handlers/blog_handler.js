@@ -121,7 +121,7 @@ const BlogHandler = {
     },
     delete: (req, res) => {
         mongoose.model('BlogPost').findOne({
-            id: req.params.id
+            _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
                 res.status(404);
@@ -147,7 +147,9 @@ const BlogHandler = {
                         res.status(200);
                         res.format({
                             json: () => {
-                                res.json(`The blog with the id ${blog._id} was removed`);
+                                res.json({
+                                    data: `The blog with the id ${blog._id} was removed`
+                                });
                             }
                         });
                     }
