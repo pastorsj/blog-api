@@ -33,4 +33,6 @@ const blogPostSchema = new mongoose.Schema({
 
 blogPostSchema.plugin(autoIncrement.plugin, 'Blog');
 
-mongoose.model('BlogPost', blogPostSchema);
+const BlogPostModel = mongoose.model('BlogPost', blogPostSchema);
+
+export default BlogPostModel;

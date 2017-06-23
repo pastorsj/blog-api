@@ -1,12 +1,12 @@
 'use strict';
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 /**
  * ROUTE: articles/:username
  */
 
-const ArticlesHandler = {
+const ArticlesController = {
     get: (req, res) => {
         const username = req.params.username;
         mongoose.model('BlogPost').find({author: username}, (err, articles) => {
@@ -33,4 +33,4 @@ const ArticlesHandler = {
     }
 };
 
-export default ArticlesHandler;
+export default ArticlesController;

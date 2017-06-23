@@ -6,7 +6,7 @@ import methodOverride from 'method-override';
 import jwt from 'express-jwt';
 import {config} from '../config';
 
-import BlogHandler from '../handlers/blog_handler';
+import BlogController from '../controllers/blog.controller';
 
 const router = express.Router();
 
@@ -30,15 +30,15 @@ router.use(methodOverride(function(req, res) {
 
 // Availible via the base_url/blog route
 router.route('/')
-    .post(auth, BlogHandler.post.bind(BlogHandler))
-    .get(BlogHandler.getAll.bind(BlogHandler));
+    .post(auth, BlogController.post.bind(BlogController))
+    .get(BlogController.getAll.bind(BlogController));
 
 router.route('/:id')
-    .get(BlogHandler.get.bind(BlogHandler))
-    .put(auth, BlogHandler.put.bind(BlogHandler))
-    .delete(auth, BlogHandler.delete.bind(BlogHandler));
+    .get(BlogController.get.bind(BlogController))
+    .put(auth, BlogController.put.bind(BlogController))
+    .delete(auth, BlogController.delete.bind(BlogController));
 
 router.route('/tag/:tag')
-    .get(BlogHandler.getByTag.bind(BlogHandler));
+    .get(BlogController.getByTag.bind(BlogController));
 
 export default router;

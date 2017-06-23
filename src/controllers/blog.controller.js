@@ -1,13 +1,13 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const _ = require('lodash');
+import mongoose from 'mongoose';
+import _ from 'lodash';
 
 /**
  * ROUTE: blog/:id
  */
 
-const BlogHandler = {
+const BlogController = {
     post: (req, res) => {
         mongoose.model('BlogPost').create(req.body, (err, blog) => {
             if (err) {
@@ -184,4 +184,4 @@ const BlogHandler = {
     }
 };
 
-export default BlogHandler;
+export default BlogController;

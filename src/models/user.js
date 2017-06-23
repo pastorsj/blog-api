@@ -64,4 +64,6 @@ userSchema.methods.generateJwt = function() {
     }, config.secret);
 };
 
-mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
+
+export default UserModel;

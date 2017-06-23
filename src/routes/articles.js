@@ -6,7 +6,7 @@ import methodOverride from 'method-override';
 import jwt from 'express-jwt';
 import {config} from '../config';
 
-import ArticlesHandler from '../handlers/articles_handler';
+import ArticlesController from '../controllers/articles.controller';
 
 const router = express.Router();
 
@@ -30,6 +30,6 @@ router.use(methodOverride(function(req, res) {
 
 // Availible via the base_url/article route
 router.route('/:username')
-    .get(auth, ArticlesHandler.get.bind(ArticlesHandler));
+    .get(auth, ArticlesController.get.bind(ArticlesController));
 
 export default router;

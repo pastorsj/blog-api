@@ -6,7 +6,7 @@ import methodOverride from 'method-override';
 import jwt from 'express-jwt';
 import {config} from '../config';
 
-import UserHandler from '../handlers/user_handler';
+import UserController from '../controllers/user.controller';
 
 const router = express.Router();
 
@@ -30,8 +30,8 @@ const auth = jwt({
 
 // Availible via the base_url/user route
 router.route('/:username')
-    .get(UserHandler.get.bind(UserHandler))
-    .put(auth, UserHandler.put.bind(UserHandler))
-    .delete(auth, UserHandler.delete.bind(UserHandler));
+    .get(UserController.get.bind(UserController))
+    .put(auth, UserController.put.bind(UserController))
+    .delete(auth, UserController.delete.bind(UserController));
 
 module.exports = router;

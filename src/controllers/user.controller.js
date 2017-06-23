@@ -1,13 +1,13 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const _ = require('lodash');
+import mongoose from 'mongoose';
+import _ from 'lodash';
 
 /**
  * ROUTE: user/:username
  */
 
-const UserHandler = {
+const UserController = {
     get: (req, res) => {
         mongoose.model('User').findOne({
             username: req.params.username
@@ -112,4 +112,4 @@ const UserHandler = {
     }
 };
 
-export default UserHandler;
+export default UserController;

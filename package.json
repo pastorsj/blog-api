@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "body-parser": "~1.13.2",
+    "chai": "^4.0.2",
     "cookie-parser": "~1.3.5",
     "cors": "^2.8.3",
     "debug": "~2.2.0",
@@ -22,6 +23,7 @@
     "jsonwebtoken": "^7.4.1",
     "lodash": "^4.14.1",
     "method-override": "^2.3.6",
+    "mocha": "^3.4.2",
     "mongo": "^0.1.0",
     "mongoose": "^4.5.8",
     "mongoose-auto-increment": "^5.0.1",
@@ -29,7 +31,9 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "readline": "^1.3.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "sinon": "^2.3.5",
+    "sinon-mongoose": "^2.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
