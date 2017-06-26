@@ -176,7 +176,9 @@ const BlogController = {
                 res.status(200);
                 res.format({
                     json: () => {
-                        res.json(posts);
+                        res.json({
+                            data: posts
+                        });
                     }
                 });
             }
