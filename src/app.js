@@ -31,9 +31,7 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-
 app.use(helmet());
 
 app.use(session({
@@ -45,15 +43,17 @@ app.use(session({
     }
 }));
 
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/register', register);
-app.use('/login', login);
+app.use('/api/register', register);
+app.use('/api/login', login);
 
-app.use('/blog', blogRoute);
-app.use('/user', userRoute);
-app.use('/articles', articlesRoute);
+app.use('/api/blog', blogRoute);
+app.use('/api/user', userRoute);
+app.use('/api/articles', articlesRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
