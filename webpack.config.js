@@ -24,6 +24,9 @@ const config = {
     entry: path.join(__dirname, 'src', 'server.js'),
     devtool: 'eval-source-map',
     target: 'node',
+    node: {
+        __dirname: true
+    },
     output: {
         path: path.join(__dirname, 'dist'),
         filename: outputFile,
