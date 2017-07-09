@@ -14,6 +14,7 @@ import './models/user';
 import blogRoute from './routes/blog';
 import userRoute from './routes/user';
 import articlesRoute from './routes/articles';
+import imagesRoute from './routes/images';
 
 import {register, login} from './routes/auth';
 
@@ -54,6 +55,7 @@ app.use('/api/login', login);
 app.use('/api/blog', blogRoute);
 app.use('/api/user', userRoute);
 app.use('/api/articles', articlesRoute);
+app.use('/api/images', imagesRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

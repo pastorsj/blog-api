@@ -33,7 +33,8 @@
     "readline": "^1.3.0",
     "serve-favicon": "~2.3.0",
     "sinon": "^2.3.5",
-    "sinon-mongoose": "^2.0.2"
+    "sinon-mongoose": "^2.0.2",
+    "wysiwyg-editor-node-sdk": "git+https://github.com/froala/wysiwyg-editor-node-sdk.git"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
