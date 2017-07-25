@@ -32,4 +32,7 @@ router.use(methodOverride(function(req, res) {
 router.route('/gethash')
     .get(auth, ImagesController.get.bind(ImagesController));
 
+router.route('/')
+    .delete(auth, ImagesController.delete.bind(ImagesController));
+
 export default router;
