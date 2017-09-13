@@ -1,5 +1,5 @@
 ## API Documentation Setup
-[Link to Documentation](http://docs.blog.apiary.io/#)
+[Link to Documentation](http://docs.blog64.apiary.io/#)
 
 ### Software
 * [API Blueprint](https://apiblueprint.org)
