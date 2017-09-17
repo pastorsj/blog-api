@@ -1,11 +1,16 @@
 import mongoose from 'mongoose';
-var User = mongoose.model('User');
+const User = mongoose.model('User');
 
-var sendJSONresponse = (res, status, content) => {
+const sendJSONresponse = (res, status, content) => {
     res.status(status);
     res.json(content);
 };
 
+/**
+ * A route that allows a user to register themselves into the database with a username that must be unique, a password, email and name.
+ * @param {object} req The request object
+ * @param {object} res The response object
+ */
 export function register(req, res) {
     if (!req.body.username || !req.body.name || !req.body.email ||
         !req.body.password) {
@@ -15,6 +20,11 @@ export function register(req, res) {
         return;
     }
     User.findOne({username: req.body.username}, (err, auser) => {
+        if (err) {
+            sendJSONresponse(res, 404, {
+                message: "An error has occcured: " + err
+            });
+        }
         if (auser) {
             sendJSONresponse(res, 409, {
                 message: "Username is taken."
@@ -42,6 +52,11 @@ export function register(req, res) {
     });
 }
 
+/**
+ * A route that allows a user to verify their username and password and retrieve a JWT if it is correct
+ * @param {object} req The request
+ * @param {object} res The response
+ */
 export function login(req, res) {
     if (!req.headers.authorization || req.headers.authorization.split(':').length !== 2) {
         sendJSONresponse(res, 401, {
