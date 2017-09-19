@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
     hash: {
         type: String,
         required: true
+    },
+    profilePicture: {
+        type: String
     }
 });
 
