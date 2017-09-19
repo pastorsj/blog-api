@@ -20,33 +20,33 @@ export function register(req, res) {
         return;
     }
     User.findOne({username: req.body.username}, (err, auser) => {
-        if (err) {
-            sendJSONresponse(res, 404, {
-                message: "An error has occcured: " + err
-            });
-        }
         if (auser) {
             sendJSONresponse(res, 409, {
                 message: "Username is taken."
             });
-            return;
-        }
-    });
-    var user = new User();
-
-    user.username = req.body.username;
-    user.name = req.body.name;
-    user.email = req.body.email;
-
-    user.setPassword(req.body.password);
-
-    user.save(err => {
-        if (err) {
-            sendJSONresponse(res, 404, err);
+        } else if (err) {
+            console.log('Error', err);
+            sendJSONresponse(res, 404, {
+                message: "An error has occcured: " + err
+            });
         } else {
-            let token = user.generateJwt();
-            sendJSONresponse(res, 200, {
-                token: token
+            var user = new User();
+
+            user.username = req.body.username;
+            user.name = req.body.name;
+            user.email = req.body.email;
+
+            user.setPassword(req.body.password);
+
+            user.save(err => {
+                if (err) {
+                    sendJSONresponse(res, 404, err);
+                } else {
+                    let token = user.generateJwt();
+                    sendJSONresponse(res, 200, {
+                        token: token
+                    });
+                }
             });
         }
     });
