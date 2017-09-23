@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: false
+        required: false,
+        select: false
     },
     name: {
         type: String,
@@ -34,11 +35,13 @@ const userSchema = new mongoose.Schema({
     },
     salt: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     hash: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     profilePicture: {
         type: String

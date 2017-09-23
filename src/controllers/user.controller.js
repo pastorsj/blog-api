@@ -27,6 +27,9 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else {
+                user = user.toObject();
+                delete user._id;
+                delete user.__v;
                 sendJSONresponse(res, 200, {
                     data: user
                 });
