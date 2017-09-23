@@ -4,3 +4,5 @@ src/config.json
 
 dist/
 public/
+.DS_Store
+uploads/

@@ -25,7 +25,7 @@ export function register(req, res) {
                 message: "Username is taken."
             });
         } else if (err) {
-            console.log('Error', err);
+            console.error('Error', err);
             sendJSONresponse(res, 404, {
                 message: "An error has occcured: " + err
             });

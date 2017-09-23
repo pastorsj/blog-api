@@ -5,8 +5,35 @@ import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import jwt from 'express-jwt';
 import {config} from '../config';
+import multer from 'multer';
+import crypto from 'crypto';
+import mime from 'mime';
 
 import UserController from '../controllers/user.controller';
+
+const MAX_SIZE = 100000;
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        crypto.pseudoRandomBytes(16, (err, raw) => {
+            if (err) {
+                console.error(err);
+            } else {
+                cb(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype));
+            }
+        });
+    },
+    limits: {fileSize: MAX_SIZE}
+});
+const upload = multer({storage: storage});
+const pictureUpload = upload.fields([
+    {
+        name: 'profilePicture', maxCount: 1
+    }
+]);
 
 const router = express.Router();
 
@@ -31,7 +58,7 @@ const auth = jwt({
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserController.get.bind(UserController))
-    .put(auth, UserController.put.bind(UserController))
+    .put(auth, pictureUpload, UserController.put.bind(UserController))
     .delete(auth, UserController.delete.bind(UserController));
 
 module.exports = router;
