@@ -46,8 +46,8 @@ const UserController = {
                 });
             } else {
                 _.assign(user, req.body);
-                if (req.files.profilePicture) {
-                    const profilePicture = req.files.profilePicture[0];
+                if (req.file) {
+                    const profilePicture = req.file;
                     const filepath = path.join(__dirname, '../../', profilePicture.path);
                     try {
                         const file = fs.readFileSync(filepath);

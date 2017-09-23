@@ -29,11 +29,6 @@ const storage = multer.diskStorage({
     limits: {fileSize: MAX_SIZE}
 });
 const upload = multer({storage: storage});
-const pictureUpload = upload.fields([
-    {
-        name: 'profilePicture', maxCount: 1
-    }
-]);
 
 const router = express.Router();
 
@@ -58,7 +53,7 @@ const auth = jwt({
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserController.get.bind(UserController))
-    .put(auth, pictureUpload, UserController.put.bind(UserController))
+    .put(auth, upload.single('profilePicture'), UserController.put.bind(UserController))
     .delete(auth, UserController.delete.bind(UserController));
 
 module.exports = router;
