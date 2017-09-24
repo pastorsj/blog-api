@@ -11,7 +11,7 @@ import mime from 'mime';
 
 import UserController from '../controllers/user.controller';
 
-const MAX_SIZE = 100000;
+const MAX_SIZE = 500000;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -53,7 +53,8 @@ const auth = jwt({
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserController.get.bind(UserController))
-    .put(auth, upload.single('profilePicture'), UserController.put.bind(UserController))
+    .post(auth, upload.single('profilePicture'), UserController.post.bind(UserController))
+    .put(auth, UserController.put.bind(UserController))
     .delete(auth, UserController.delete.bind(UserController));
 
 module.exports = router;
