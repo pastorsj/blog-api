@@ -20,7 +20,7 @@ router.use(methodOverride(function(req, res) {
     return method;
 }));
 
-// Availible via the base_url/article route
+// Availible via the base_url/expired route
 router.route('/expired')
     .post(JwtController.post.bind(JwtController));
 

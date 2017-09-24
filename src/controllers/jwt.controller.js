@@ -18,7 +18,6 @@ const JwtController = {
             sendJSONresponse(res, 401, {
                 message: 'Authorization header not included'
             });
-            return;
         }
         const authorizationHeader = req.headers.authorization;
         if (authorizationHeader.startsWith('Bearer ')) {
@@ -28,7 +27,15 @@ const JwtController = {
                     sendJSONresponse(res, 401, {
                         message: 'JWT is expired'
                     });
+                } else {
+                    sendJSONresponse(res, 204, {
+                        message: 'JWT is not expired'
+                    });
                 }
+            });
+        } else {
+            sendJSONresponse(res, 500, {
+                message: 'Authorization header is malformed. It needs to start with Bearer '
             });
         }
     }
