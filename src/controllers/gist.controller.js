@@ -17,7 +17,7 @@ const GistController = {
             gistify(link)
                 .then(html => {
                     sendJSONresponse(res, 200, {
-                        message: html
+                        data: html
                     });
                 })
                 .catch(err => {
