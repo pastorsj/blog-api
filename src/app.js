@@ -17,6 +17,7 @@ import articlesRoute from './routes/articles';
 import imagesRoute from './routes/images';
 import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
+import tagsRoute from './routes/tags';
 
 import {register, login} from './routes/auth';
 
@@ -60,6 +61,7 @@ app.use('/api/articles', articlesRoute);
 app.use('/api/images', imagesRoute);
 app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
+app.use('/api/tags', tagsRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
