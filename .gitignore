@@ -6,3 +6,4 @@ dist/
 public/
 .DS_Store
 uploads/
+*.rdb

@@ -66,41 +66,50 @@ const TagsController = {
             });
         }
     },
-    getPrefixes: async function(req, res) {
+    getPrefixes: async (req, res) => {
         try {
             const results = [];
             const rangeLen = 50;
             const prefix = req.body.prefix;
             let count = req.body.count;
-            let start = await zrank(setName, prefix);
-
-            if (!start) {
+            if (!prefix || !count) {
+                sendJSONResponse(res, 400, {
+                    data: 'Prefix or count was not included in the body of the request'
+                });
+            } else {
+                let start = await zrank(setName, prefix);
+    
+                if (!start) {
+                    start = await zrank(setName, prefix + "*");
+                    if (!start) {
+                        sendJSONResponse(res, 200, {
+                            data: results
+                        });
+                    }
+                }
+    
+                while (results.length !== count) {
+                    let range = await zrange(setName, start, start + rangeLen - 1)
+                    start += rangeLen;
+                    if (!range || range.length === 0) {
+                        break;
+                    }
+                    // eslint-disable-next-line
+                    range.forEach((entry, index) => {
+                        const minLength = Math.min(entry.length, prefix.length);
+                        if (entry.slice(0, minLength) !== prefix.slice(0, minLength)) {
+                            count = results.length;
+                            return;
+                        }
+                        if (entry.slice(-1) === '*' && results.length !== count) {
+                            results.push(entry.slice(0, -1));
+                        }
+                    });
+                }
                 sendJSONResponse(res, 200, {
                     data: results
                 });
             }
-
-            while (results.length !== count) {
-                let range = await zrange(setName, start, start + rangeLen - 1)
-                start += rangeLen;
-                if (!range || range.length === 0) {
-                    break;
-                }
-                // eslint-disable-next-line
-                range.forEach((entry, index) => {
-                    const minLength = Math.min(entry.length, prefix.length);
-                    if (entry.slice(0, minLength) !== prefix.slice(0, minLength)) {
-                        count = results.length;
-                        return;
-                    }
-                    if (entry.slice(-1) === '*' && results.length !== count) {
-                        results.push(entry.slice(0, -1));
-                    }
-                });
-            }
-            sendJSONResponse(res, 200, {
-                data: results
-            });
         } catch (e) {
             sendJSONResponse(res, 500, {
                 error: 'Error!' + e
