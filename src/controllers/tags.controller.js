@@ -115,9 +115,6 @@ const TagsController = {
                 error: 'Error!' + e
             });
         }
-    },
-    delete: (req, res) => {
-
     }
 };
 
