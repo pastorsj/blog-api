@@ -27,7 +27,8 @@ const blogPostSchema = new mongoose.Schema({
     },
     tags: {
         type: Array,
-        required: false
+        required: false,
+        default: []
     }
 });
 
