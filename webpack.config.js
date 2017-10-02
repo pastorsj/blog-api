@@ -28,7 +28,7 @@ const config = {
         __dirname: true
     },
     output: {
-        path: path.join(__dirname, 'dist'),
+        path: path.join(__dirname, 'server-dist'),
         filename: outputFile,
         library: libraryName,
         libraryTarget: 'umd',
@@ -39,11 +39,6 @@ const config = {
             {
                 test: /(\.js)$/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /(\.js)$/,
-                loader: 'eslint-loader',
                 exclude: /node_modules/
             }
         ]
