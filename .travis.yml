@@ -21,7 +21,7 @@ deploy:
   on:
     branch: master
     tags: true
-after_deploy:
+after_script:
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
