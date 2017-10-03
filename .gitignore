@@ -3,6 +3,7 @@ npm-debug.log
 src/config.json
 
 dist/
+server-dist/
 public/
 .DS_Store
 uploads/
