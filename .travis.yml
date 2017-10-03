@@ -21,5 +21,7 @@ deploy:
   on:
     all_branches: true
 after_deploy:
-- echo Successfully deployed
-- exit 0
+- eval "$(ssh-agent -k)"
+- echo "Killed SSH Agent"
+- rm -rf deploy_key.pem
+
