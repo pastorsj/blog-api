@@ -1,35 +1,63 @@
-/**
- * Module dependencies.
- */
+'use strict';
 
 import app from './app';
 import http from 'http';
+import https from 'https';
+import fs from 'fs';
+import yargs from 'yargs';
+
+const argv = yargs.argv;
+const type = argv.type;
+const portArg = argv.port;
 
 /**
- * Get port from environment and store in Express.
+ * Creates an http server
+ * @param {Number} httpPort - The port for http
  */
+function createHttpServer(httpPort = 3000) {
+    const port = normalizePort(process.env.HTTP_PORT || httpPort);
+    const server = http.createServer(app);
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+    app.set('port', port);
+
+    server.listen(port);
+    server.on('error', onError.bind(null, port));
+    server.on('listening', onListening.bind(null, server));
+}
 
 /**
- * Create HTTP server.
+ * Creates an https server
+ * @param {Number} httpsPort - The port for https
  */
+function createHttpsServer(httpsPort = 3001) {
+    const privateKey = fs.readFileSync(process.env.PRIVATE_KEY, 'utf8');
+    const certificate = fs.readFileSync(process.env.CERTIFICATE, 'utf8');
+    const credentials = {key: privateKey, cert: certificate};
 
-var server = http.createServer(app);
+    const port = normalizePort(process.env.HTTPS_PORT || httpsPort);
+    const httpsServer = https.createServer(credentials, app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    app.set('httpsPort', port);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+    httpsServer.listen(port);
+    httpsServer.on('error', onError.bind(null, port));
+    httpsServer.on('listening', onListeningHttps.bind(null, httpsServer));
+}
+
+if (type === 'https') {
+    createHttpsServer(portArg);
+} else if (type === 'http') {
+    createHttpServer(portArg);
+} else {
+    createHttpServer();
+    createHttpsServer();
+}
 
 /**
  * Normalize a port into a number, string, or false.
+ * @param {string} val - The port in string form
+ * @returns {Number | boolean} - The port in Number form if allowed or false 
  */
-
 function normalizePort(val) {
     var port = parseInt(val, 10);
 
@@ -49,8 +77,9 @@ function normalizePort(val) {
 /**
  * Event listener for HTTP server "error" event.
  * @param {Object} error - The object containing the error
+ * @param {Number} port - The port to listen to
  */
-function onError(error) {
+function onError(error, port) {
     if (error.syscall !== 'listen') {
         throw error;
     }
@@ -74,9 +103,20 @@ function onError(error) {
 
 /**
  * Event listener for HTTP server "listening" event.
+ * @param {Object} server - The server object used for http connections
  */
-function onListening() {
+function onListening(server) {
     var addr = server.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    console.log('Listening on ' + bind);
+    console.log('Http server listening on ' + bind);
+}
+
+/**
+ * 
+ * @param {Object} httpsServer - The server object used for https connections
+ */
+function onListeningHttps(httpsServer) {
+    var addr = httpsServer.address();
+    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    console.log('Https server listening on ' + bind);
 }
