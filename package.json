@@ -14,6 +14,10 @@
   },
   "dependencies": {
     "aws-sdk": "^2.114.0",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
     "body-parser": "~1.18.1",
     "chai": "^4.1.2",
     "cookie-parser": "~1.4.3",
@@ -46,10 +50,6 @@
     "yargs": "^9.0.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
     "eslint": "^4.6.1",
     "eslint-config-rose": "^1.0.5",
     "eslint-config-xo": "^0.18.2",
