@@ -45,6 +45,7 @@
     "serve-favicon": "~2.4.4",
     "sinon": "^3.2.1",
     "sinon-mongoose": "^2.0.2",
+    "spdy": "^3.4.7",
     "transform-runtime": "0.0.0",
     "wysiwyg-editor-node-sdk": "git+https://github.com/froala/wysiwyg-editor-node-sdk.git",
     "yargs": "^9.0.1"
