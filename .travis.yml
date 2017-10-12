@@ -22,7 +22,12 @@ deploy:
     branch: master
     tags: true
 after_script:
-- ssh -p 22 $USER@$HOST "bash -s" < deploy.sh
+- ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
+- eval "$(ssh-agent -k)"
+- echo "Killed SSH Agent"
+- rm -rf deploy_key.pem
+after_failure:
+- ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
