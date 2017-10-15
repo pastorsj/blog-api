@@ -2,10 +2,15 @@
 
 import express from 'express';
 import path from 'path';
-import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import passport from 'passport';
+import session from 'express-session';
+import helmet from 'helmet';
+import compression from 'compression';
+import expressWinston from 'express-winston';
+import winston from 'winston';
 
 import './models/db';
 import './models/blog';
@@ -21,15 +26,10 @@ import tagsRoute from './routes/tags';
 
 import {register, login} from './routes/auth';
 
-import passport from 'passport';
-import session from 'express-session';
-
-import helmet from 'helmet';
+import log from './log';
 
 const app = express();
 
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -37,6 +37,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 
 app.use(session({
     secret: 'random-secret1025',
@@ -45,6 +46,26 @@ app.use(session({
     cookie: {
         httpOnly: true
     }
+}));
+
+app.use(expressWinston.logger({
+    transports: [
+        new winston.transports.Console({
+            colorize: true
+        })
+    ],
+    requestFilter: (req, propName) => {
+        if (propName === "headers") {
+            return Object.keys(req.headers).reduce(function(filteredHeaders, key) {
+                if (key !== "authorization") {
+                    filteredHeaders[key] = req.headers[key];
+                }
+                return filteredHeaders;
+            }, {});
+        }
+        return req[propName];
+    },
+    expressFormat: true
 }));
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
@@ -63,6 +84,14 @@ app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
 
+app.use(expressWinston.errorLogger({
+    transports: [
+        new winston.transports.Console({
+            colorize: true
+        })
+    ]
+}));
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
     const err = new Error('Not Found');
@@ -79,7 +108,7 @@ if (app.get('env') === 'development') {
         } else {
             res.status(err.status || 500);
         }
-        console.error(err);
+        log.crit(err);
     });
 }
 
@@ -91,7 +120,7 @@ app.use((err, req, res, next) => {
     } else {
         res.status(err.status || 500);
     }
-    console.error(err);
+    log.crit(err);
 });
 
 export default app;

@@ -1,12 +1,13 @@
 'use strict';
 
 import redis from 'redis';
+import log from '../log';
 
 const client = redis.createClient();
 const setName = 'tags';
 
 client.on('error', err => {
-    console.error('Error ' + err);
+    log.critical('Error ' + err);
 });
 
 const sendJSONResponse = (res, status, content = {}) => {

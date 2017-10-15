@@ -1,5 +1,7 @@
 'use strict';
 
+import log from '../log';
+
 const FroalaEditor = require('wysiwyg-editor-node-sdk');
 const AWS = require('aws-sdk');
 
@@ -80,7 +82,7 @@ const ImagesController = {
         };
         s3.deleteObjects(params, (err, data) => {
             if (err) {
-                console.error(err, err.stack);
+                log.critical(err, err.stack);
                 res.send({
                     error: err
                 });

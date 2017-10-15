@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import log from '../log';
 const User = mongoose.model('User');
 
 const sendJSONresponse = (res, status, content) => {
@@ -25,7 +26,7 @@ export function register(req, res) {
                 message: "Username is taken."
             });
         } else if (err) {
-            console.error('Error', err);
+            log.critical('Error', err);
             sendJSONresponse(res, 404, {
                 message: "An error has occcured: " + err
             });

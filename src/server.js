@@ -5,6 +5,7 @@ import http from 'http';
 import spdy from 'spdy';
 import fs from 'fs';
 import yargs from 'yargs';
+import log from './log';
 
 const argv = yargs.argv;
 const type = argv.type;
@@ -89,11 +90,11 @@ function onError(error, port) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
+            log.fatal(bind + ' requires elevated privileges');
             process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
+            log.fatal(bind + ' is already in use');
             process.exit(1);
             break;
         default:
@@ -108,7 +109,7 @@ function onError(error, port) {
 function onListening(server) {
     var addr = server.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    console.log('Http server listening on ' + bind);
+    log.info('Http server listening on ' + bind);
 }
 
 /**
@@ -118,5 +119,5 @@ function onListening(server) {
 function onListeningHttps(httpsServer) {
     var addr = httpsServer.address();
     var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    console.log('Https server listening on ' + bind);
+    log.info('Https server listening on ' + bind);
 }
