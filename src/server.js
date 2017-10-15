@@ -2,7 +2,7 @@
 
 import app from './app';
 import http from 'http';
-import https from 'https';
+import spdy from 'spdy';
 import fs from 'fs';
 import yargs from 'yargs';
 
@@ -35,13 +35,13 @@ function createHttpsServer(httpsPort = 3001) {
     const credentials = {key: privateKey, cert: certificate};
 
     const port = normalizePort(process.env.HTTPS_PORT || httpsPort);
-    const httpsServer = https.createServer(credentials, app);
+    const http2Server = spdy.createServer(credentials, app);
 
     app.set('httpsPort', port);
 
-    httpsServer.listen(port);
-    httpsServer.on('error', onError.bind(null, port));
-    httpsServer.on('listening', onListeningHttps.bind(null, httpsServer));
+    http2Server.listen(port);
+    http2Server.on('error', onError.bind(null, port));
+    http2Server.on('listening', onListeningHttps.bind(null, http2Server));
 }
 
 if (type === 'https') {

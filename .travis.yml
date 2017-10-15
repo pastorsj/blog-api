@@ -17,11 +17,17 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: scp -o "StrictHostKeyChecking no" -r $TRAVIS_BUILD_DIR/server-dist $USER@$HOST:/home/ubuntu
+  script: scp -o "StrictHostKeyChecking no" -r $TRAVIS_BUILD_DIR/server-dist $TRAVIS_BUILD_DIR/package.json $USER@$HOST:/home/ubuntu
   on:
     branch: master
     tags: true
 after_script:
+- ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
+- eval "$(ssh-agent -k)"
+- echo "Killed SSH Agent"
+- rm -rf deploy_key.pem
+after_failure:
+- ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
