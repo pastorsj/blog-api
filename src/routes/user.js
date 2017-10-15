@@ -8,6 +8,7 @@ import {config} from '../config';
 import multer from 'multer';
 import crypto from 'crypto';
 import mime from 'mime';
+import log from '../log';
 
 import UserController from '../controllers/user.controller';
 
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         crypto.pseudoRandomBytes(16, (err, raw) => {
             if (err) {
-                console.error(err);
+                log.critical(err);
             } else {
                 cb(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype));
             }

@@ -54,14 +54,14 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else if (req.file) {
-                console.log('File!');
                 const profilePicture = req.file;
                 const filepath = path.join(__dirname, '../../', profilePicture.path);
+
                 try {
                     const file = fs.readFileSync(filepath);
                     const extension = mime.getExtension(profilePicture.mimetype);
                     const mimeType = profilePicture.mimetype;
-                    console.log('ProfilePicture', mimeType);
+
                     fs.unlinkSync(filepath);
                     ImagesController.postImage(`profile_pictures/profile_${user.username}.${extension}`, file, mimeType)
                         .then(result => {
@@ -107,7 +107,6 @@ const UserController = {
                 });
             } else {
                 _.assign(user, req.body);
-                console.log('Update');
                 user.save(err => {
                     if (err) {
                         sendJSONresponse(res, 500, {

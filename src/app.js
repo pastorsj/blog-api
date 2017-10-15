@@ -53,7 +53,19 @@ app.use(expressWinston.logger({
         new winston.transports.Console({
             colorize: true
         })
-    ]
+    ],
+    requestFilter: (req, propName) => {
+        if (propName === "headers") {
+            return Object.keys(req.headers).reduce(function(filteredHeaders, key) {
+                if (key !== "authorization") {
+                    filteredHeaders[key] = req.headers[key];
+                }
+                return filteredHeaders;
+            }, {});
+        }
+        return req[propName];
+    },
+    expressFormat: true
 }));
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
@@ -108,7 +120,7 @@ app.use((err, req, res, next) => {
     } else {
         res.status(err.status || 500);
     }
-    console.error(err);
+    log.crit(err);
 });
 
 export default app;

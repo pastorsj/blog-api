@@ -8,8 +8,8 @@ const customColors = {
     trace: 'white',
     debug: 'green',
     info: 'blue',
-    warn: 'yellow',
-    crit: 'red',
+    warning: 'yellow',
+    critical: 'red',
     fatal: 'red'
 };
 
@@ -22,8 +22,8 @@ const logger = new (Logger)({
     level: logLevel,
     levels: {
         fatal: 0,
-        crit: 1,
-        warn: 2,
+        critical: 1,
+        warning: 2,
         info: 3,
         debug: 4,
         trace: 5
@@ -33,7 +33,7 @@ const logger = new (Logger)({
             colorize: true,
             timestamp: true
         }),
-        new (File)({filename: 'out-prod.log'})
+        new (File)({filename: 'production.log'})
     ]
 });
 
@@ -56,8 +56,8 @@ logger.log = function(level, msg) {
     log.trace('testing')
     log.debug('testing')
     log.info('testing')
-    log.warn('testing')
-    log.crit('testing')
+    log.warning('testing')
+    log.critical('testing')
     log.fatal('testing')
  */
 

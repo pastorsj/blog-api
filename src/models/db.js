@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import {config} from '../config'; // get our config file
+import log from '../log';
 import autoIncrement from 'mongoose-auto-increment';
 
 let gracefulShutdown;
@@ -25,23 +26,23 @@ if (process.platform === "win32") {
     Monirtoring for successful connection through Mongoose
 */
 mongoose.connection.on('connected', () => {
-    console.log(`Mongoose connected to ${dbUri}`);
+    log.info(`Mongoose connected to ${dbUri}`);
 });
 
 /*  Checking for connection error */
 mongoose.connection.on('error', err => {
-    console.log(`Mongoose connection error ${err}`);
+    log.info(`Mongoose connection error ${err}`);
 });
 
 /*  Checking for disconnection event */
 mongoose.connection.on('disconnected', () => {
-    console.log('Mongoose is disconnected');
+    log.info('Mongoose is disconnected');
 });
 
 /*  CAPTURE APP TERMINATION / RESTART EVENTS */
 gracefulShutdown = (msg, callback) => {
     mongoose.connection.close(() => {
-        console.log(`Mongoose disconnection through ${msg}`);
+        log.info(`Mongoose disconnection through ${msg}`);
         callback();
     });
 };
