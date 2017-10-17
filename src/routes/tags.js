@@ -31,6 +31,10 @@ router.use(methodOverride(function(req, res) {
 // Availible via the base_url/images route
 router.route('/')
     .post(auth, TagsController.post.bind(TagsController))
-    .put(auth, TagsController.getPrefixes.bind(TagsController));
+    .put(auth, TagsController.getPrefixes.bind(TagsController))
+    .get(auth, TagsController.getTagsByPopularity.bind(TagsController));
+
+router.route('/:tag')
+    .get(auth, TagsController.getArticleByTag.bind(TagsController));
 
 export default router;
