@@ -133,6 +133,10 @@ const TagsController = {
                             allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
                         });
                     });
+                    // Potentially usable later if we want the top 100 tags
+                    // allTags.sort((t1, t2) => {
+                    //     return allTags[t1] < allTags[t1] ? 1 : -1;
+                    // }).slice(0, 100);
                     sendJSONResponse(res, 200, {
                         data: allTags
                     });

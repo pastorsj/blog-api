@@ -32,9 +32,9 @@ router.use(methodOverride(function(req, res) {
 router.route('/')
     .post(auth, TagsController.post.bind(TagsController))
     .put(auth, TagsController.getPrefixes.bind(TagsController))
-    .get(auth, TagsController.getTagsByPopularity.bind(TagsController));
+    .get(TagsController.getTagsByPopularity.bind(TagsController));
 
 router.route('/:tag')
-    .get(auth, TagsController.getArticleByTag.bind(TagsController));
+    .get(TagsController.getArticleByTag.bind(TagsController));
 
 export default router;
