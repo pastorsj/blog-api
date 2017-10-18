@@ -2,9 +2,10 @@
 
 import redis from 'redis';
 import log from '../log';
+import mongoose from 'mongoose';
 
 const client = redis.createClient();
-const setName = 'tags';
+const SET_NAME = 'tags';
 
 client.on('error', err => {
     log.critical('Error ' + err);
@@ -55,9 +56,9 @@ const TagsController = {
             const tag = req.body.tag;
             for (let i = 0; i < tag.length; i++) {
                 const prefix = tag.slice(0, i);
-                client.zadd(setName, 0, prefix);
+                client.zadd(SET_NAME, 0, prefix);
             }
-            client.zadd(setName, 0, tag + '*');
+            client.zadd(SET_NAME, 0, tag + '*');
             sendJSONResponse(res, 204, {
                 data: 'Successfully added tag'
             });
@@ -78,10 +79,10 @@ const TagsController = {
                     data: 'Prefix or count was not included in the body of the request'
                 });
             } else {
-                let start = await zrank(setName, prefix);
+                let start = await zrank(SET_NAME, prefix);
     
                 if (!start) {
-                    start = await zrank(setName, prefix + "*");
+                    start = await zrank(SET_NAME, prefix + "*");
                     if (!start) {
                         sendJSONResponse(res, 200, {
                             data: results
@@ -90,7 +91,7 @@ const TagsController = {
                 }
     
                 while (results.length !== count) {
-                    let range = await zrange(setName, start, start + rangeLen - 1)
+                    let range = await zrange(SET_NAME, start, start + rangeLen - 1)
                     start += rangeLen;
                     if (!range || range.length === 0) {
                         break;
@@ -111,6 +112,58 @@ const TagsController = {
                     data: results
                 });
             }
+        } catch (e) {
+            sendJSONResponse(res, 500, {
+                error: 'Error!' + e
+            });
+        }
+    },
+    getTagsByPopularity: (req, res) => {
+        try {
+            mongoose.model('BlogPost').find({}, {tags: 1, _id: 0}, (err, tagSet) => {
+                if (err) {
+                    sendJSONResponse(res, 404, {
+                        error: err || 'Blog Post Not Found'
+                    });
+                } else {
+                    const allTags = {};
+                    tagSet.forEach((set) => {
+                        const tags = set.tags;
+                        tags.forEach((tag) => {
+                            allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
+                        });
+                    });
+                    // Potentially usable later if we want the top 100 tags
+                    // allTags.sort((t1, t2) => {
+                    //     return allTags[t1] < allTags[t1] ? 1 : -1;
+                    // }).slice(0, 100);
+                    sendJSONResponse(res, 200, {
+                        data: allTags
+                    });
+                }
+            });
+        } catch (e) {
+            sendJSONResponse(res, 500, {
+                error: 'Error!' + e
+            });
+        }
+    },
+    getArticleByTag: (req, res) => {
+        try {
+            const tag = req.params.tag;
+            mongoose.model('BlogPost').find({
+                tags: tag
+            }, (err, posts) => {
+                if (err) {
+                    sendJSONResponse(res, 404, {
+                        error: err || 'Blog Post Not Found'
+                    });
+                } else {
+                    sendJSONResponse(res, 200, {
+                        data: posts
+                    });
+                }
+            });
         } catch (e) {
             sendJSONResponse(res, 500, {
                 error: 'Error!' + e
