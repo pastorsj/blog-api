@@ -2,6 +2,11 @@
 
 import mongoose from 'mongoose';
 
+const sendJSONresponse = (res, status, content) => {
+    res.status(status);
+    res.json(content);
+};
+
 /**
  * ROUTE: articles/:username
  */
@@ -11,22 +16,12 @@ const ArticlesController = {
         const username = req.params.username;
         mongoose.model('BlogPost').find({author: username}, (err, articles) => {
             if (err) {
-                res.status(500);
-                res.format({
-                    json: () => {
-                        res.json({
-                            error: err || 'Articles Not Found'
-                        });
-                    }
+                sendJSONresponse(res, 500, {
+                    error: err || 'Articles Not Found'
                 });
             } else {
-                res.status(200);
-                res.format({
-                    json: () => {
-                        res.json({
-                            data: articles
-                        });
-                    }
+                sendJSONresponse(res, 200, {
+                    data: articles
                 });
             }
         });

@@ -41,4 +41,7 @@ router.route('/:id')
 router.route('/tag/:tag')
     .get(BlogController.getByTag.bind(BlogController));
 
+router.route('/title/:title')
+    .get(BlogController.getByTitle.bind(BlogController));
+
 export default router;

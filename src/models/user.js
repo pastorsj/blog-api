@@ -27,11 +27,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: Date.now()
     },
-    posts: {
-        type: Array,
-        required: false,
-        default: []
-    },
     salt: {
         type: String,
         required: true
