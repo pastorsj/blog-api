@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import _ from 'lodash';
 
-const sendJSONresponse = (res, status, content) => {
+const sendJSONResponse = (res, status, content) => {
     res.status(status);
     res.json(content);
 };
@@ -34,11 +34,11 @@ const BlogController = {
     post: (req, res) => {
         mongoose.model('BlogPost').create(req.body, (err, blog) => {
             if (err) {
-                sendJSONresponse(res, 500, {
+                sendJSONResponse(res, 500, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
-                sendJSONresponse(res, 200, {
+                sendJSONResponse(res, 200, {
                     data: blog,
                     message: `Blog created by ${blog.author}`
                 });
@@ -48,7 +48,7 @@ const BlogController = {
     getAll: (req, res) => {
         mongoose.model('BlogPost').find({}, (err, posts) => {
             if (err) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
@@ -58,12 +58,12 @@ const BlogController = {
                 });
                 Promise.all(postPromises)
                     .then(result => {
-                        sendJSONresponse(res, 200, {
+                        sendJSONResponse(res, 200, {
                             data: result
                         });
                     })
                     .catch(err => {
-                        sendJSONresponse(res, 404, {
+                        sendJSONResponse(res, 404, {
                             error: err
                         });
                     });
@@ -75,11 +75,11 @@ const BlogController = {
             _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
-                sendJSONresponse(res, 200, {
+                sendJSONResponse(res, 200, {
                     data: blog
                 });
             }
@@ -90,18 +90,18 @@ const BlogController = {
             _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
                 _.assign(blog, req.body);
                 blog.save(err => {
                     if (err) {
-                        sendJSONresponse(res, 400, {
+                        sendJSONResponse(res, 400, {
                             error: err || 'Failed to save blog to the database'
                         });
                     } else {
-                        sendJSONresponse(res, 200, {
+                        sendJSONResponse(res, 200, {
                             data: blog
                         });
                     }
@@ -114,17 +114,17 @@ const BlogController = {
             _id: req.params.id
         }, (err, blog) => {
             if (err || _.isEmpty(blog)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
                 blog.remove(err => {
                     if (err) {
-                        sendJSONresponse(res, 404, {
+                        sendJSONResponse(res, 404, {
                             error: err || 'Blog Post Not Found'
                         });
                     } else {
-                        sendJSONresponse(res, 200, {
+                        sendJSONResponse(res, 200, {
                             data: `The blog with the id ${blog._id} was removed`
                         });
                     }
@@ -139,11 +139,11 @@ const BlogController = {
             }
         }, (err, posts) => {
             if (err || _.isEmpty(posts)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
-                sendJSONresponse(res, 200, {
+                sendJSONResponse(res, 200, {
                     data: posts
                 });
             }
@@ -153,11 +153,11 @@ const BlogController = {
         const titlePrefix = req.params.title;
         mongoose.model('BlogPost').find({title: {$regex: '^' + titlePrefix, $options: 'i'}}, {_id: 1, title: 1, tags: 1}, (err, titles) => {
             if (err) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'No articles with the title found'
                 });
             } else {
-                sendJSONresponse(res, 200, {
+                sendJSONResponse(res, 200, {
                     data: titles
                 });
             }
