@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import log from '../log';
 const User = mongoose.model('User');
 
-const sendJSONresponse = (res, status, content) => {
+const sendJSONResponse = (res, status, content) => {
     res.status(status);
     res.json(content);
 };
@@ -15,19 +15,19 @@ const sendJSONresponse = (res, status, content) => {
 export function register(req, res) {
     if (!req.body.username || !req.body.name || !req.body.email ||
         !req.body.password) {
-        sendJSONresponse(res, 400, {
+        sendJSONResponse(res, 400, {
             message: "All fields required"
         });
         return;
     }
     User.findOne({username: req.body.username}, (err, auser) => {
         if (auser) {
-            sendJSONresponse(res, 409, {
+            sendJSONResponse(res, 409, {
                 message: "Username is taken."
             });
         } else if (err) {
             log.critical('Error', err);
-            sendJSONresponse(res, 404, {
+            sendJSONResponse(res, 404, {
                 message: "An error has occcured: " + err
             });
         } else {
@@ -41,10 +41,10 @@ export function register(req, res) {
 
             user.save(err => {
                 if (err) {
-                    sendJSONresponse(res, 404, err);
+                    sendJSONResponse(res, 404, err);
                 } else {
                     let token = user.generateJwt();
-                    sendJSONresponse(res, 200, {
+                    sendJSONResponse(res, 200, {
                         token: token
                     });
                 }
@@ -60,7 +60,7 @@ export function register(req, res) {
  */
 export function login(req, res) {
     if (!req.headers.authorization || req.headers.authorization.split(':').length !== 2) {
-        sendJSONresponse(res, 401, {
+        sendJSONResponse(res, 401, {
             message: 'Authentication failed. Makes sure that you insert your username and password in the Authorization header split by a colon'
         });
         return;
@@ -73,23 +73,23 @@ export function login(req, res) {
         username
     }, (err, user) => {
         if (err) {
-            sendJSONresponse(res, 404, err);
+            sendJSONResponse(res, 404, err);
             return;
         }
         if (!user) {
-            sendJSONresponse(res, 401, {
+            sendJSONResponse(res, 401, {
                 message: 'Authentication failed. User not found.'
             });
             return;
         }
         if (!user.validPassword(password)) {
-            sendJSONresponse(res, 401, {
+            sendJSONResponse(res, 401, {
                 message: 'Authentication failed. Wrong password.'
             });
             return;
         }
         let token = user.generateJwt();
-        sendJSONresponse(res, 200, {
+        sendJSONResponse(res, 200, {
             token: token
         });
     });

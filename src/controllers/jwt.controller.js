@@ -3,7 +3,7 @@
 import jwt from 'jsonwebtoken';
 import {config} from '../config';
 
-const sendJSONresponse = (res, status, content) => {
+const sendJSONResponse = (res, status, content) => {
     res.status(status);
     res.json(content);
 };
@@ -15,7 +15,7 @@ const sendJSONresponse = (res, status, content) => {
 const JwtController = {
     post: (req, res) => {
         if (!req.headers.authorization) {
-            sendJSONresponse(res, 401, {
+            sendJSONResponse(res, 401, {
                 message: 'Authorization header not included'
             });
         }
@@ -24,17 +24,17 @@ const JwtController = {
             const token = authorizationHeader.slice(7);
             jwt.verify(token, config.secret, err => {
                 if (err) {
-                    sendJSONresponse(res, 401, {
+                    sendJSONResponse(res, 401, {
                         message: 'JWT is expired'
                     });
                 } else {
-                    sendJSONresponse(res, 204, {
+                    sendJSONResponse(res, 204, {
                         message: 'JWT is not expired'
                     });
                 }
             });
         } else {
-            sendJSONresponse(res, 500, {
+            sendJSONResponse(res, 500, {
                 message: 'Authorization header is malformed. It needs to start with Bearer '
             });
         }

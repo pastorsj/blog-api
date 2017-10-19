@@ -28,13 +28,13 @@ router.use(methodOverride(function(req, res) {
     return method;
 }));
 
-// Availible via the base_url/images route
+// Availible via the base_url/tags route
 router.route('/')
     .post(auth, TagsController.post.bind(TagsController))
     .put(auth, TagsController.getPrefixes.bind(TagsController))
     .get(TagsController.getTagsByPopularity.bind(TagsController));
 
 router.route('/:tag')
-    .get(TagsController.getArticleByTag.bind(TagsController));
+    .get(TagsController.getArticlesByTag.bind(TagsController));
 
 export default router;

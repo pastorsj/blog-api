@@ -108,7 +108,7 @@ if (app.get('env') === 'development') {
         } else {
             res.status(err.status || 500);
         }
-        log.crit(err);
+        log.critical(err);
     });
 }
 
@@ -120,7 +120,7 @@ app.use((err, req, res, next) => {
     } else {
         res.status(err.status || 500);
     }
-    log.crit(err);
+    log.critical(err);
 });
 
 export default app;

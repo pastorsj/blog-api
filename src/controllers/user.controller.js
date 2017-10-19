@@ -8,7 +8,7 @@ import mime from 'mime';
 
 import ImagesController from '../controllers/images.controller';
 
-const sendJSONresponse = (res, status, content) => {
+const sendJSONResponse = (res, status, content) => {
     res.status(status);
     if (content) {
         res.json(content);
@@ -33,13 +33,13 @@ const UserController = {
             username: req.params.username
         }, (err, user) => {
             if (err || _.isEmpty(user)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else {
                 user = user.toObject();
                 trimUserInfo(user);
-                sendJSONresponse(res, 200, {
+                sendJSONResponse(res, 200, {
                     data: user
                 });
             }
@@ -50,7 +50,7 @@ const UserController = {
             username: req.params.username
         }, (err, user) => {
             if (err || _.isEmpty(user)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else if (req.file) {
@@ -68,30 +68,30 @@ const UserController = {
                             user.profilePicture = result.url;
                             user.save(err => {
                                 if (err) {
-                                    sendJSONresponse(res, 500, {
+                                    sendJSONResponse(res, 500, {
                                         error: err
                                     });
                                 } else {
                                     user = user.toObject();
                                     trimUserInfo(user);
-                                    sendJSONresponse(res, 200, {
+                                    sendJSONResponse(res, 200, {
                                         data: user
                                     });
                                 }
                             });
                         })
                         .catch(err => {
-                            sendJSONresponse(res, 500, {
+                            sendJSONResponse(res, 500, {
                                 error: err
                             });
                         });
                 } catch (e) {
-                    sendJSONresponse(res, 404, {
+                    sendJSONResponse(res, 404, {
                         error: err
                     });
                 }
             } else {
-                sendJSONresponse(res, 204, {
+                sendJSONResponse(res, 204, {
                     data: ''
                 });
             }
@@ -102,20 +102,20 @@ const UserController = {
             username: req.params.username
         }, (err, user) => {
             if (err || _.isEmpty(user)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else {
                 _.assign(user, req.body);
                 user.save(err => {
                     if (err) {
-                        sendJSONresponse(res, 500, {
+                        sendJSONResponse(res, 500, {
                             error: err
                         });
                     } else {
                         user = user.toObject();
                         trimUserInfo(user);
-                        sendJSONresponse(res, 200, {
+                        sendJSONResponse(res, 200, {
                             data: user
                         });
                     }
@@ -128,17 +128,17 @@ const UserController = {
             username: req.params.username
         }, (err, user) => {
             if (err || _.isEmpty(user)) {
-                sendJSONresponse(res, 404, {
+                sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else {
                 user.remove(err => {
                     if (err) {
-                        sendJSONresponse(res, 404, {
+                        sendJSONResponse(res, 404, {
                             error: err || 'User Not Found'
                         });
                     } else {
-                        sendJSONresponse(res, 200, {
+                        sendJSONResponse(res, 200, {
                             data: `The user with the username ${user.username} was removed`
                         });
                     }
