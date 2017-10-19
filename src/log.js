@@ -1,7 +1,7 @@
 import winston from 'winston';
 
 // set default log level.
-const logLevel = 'info';
+const logLevel = 'debug';
 
 // Set up logger
 const customColors = {

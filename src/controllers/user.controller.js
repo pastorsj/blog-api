@@ -2,11 +2,8 @@
 
 import mongoose from 'mongoose';
 import _ from 'lodash';
-import fs from 'fs';
-import path from 'path';
-import mime from 'mime';
 
-import ImagesController from '../controllers/images.controller';
+import ImageService from '../services/image.service';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
@@ -54,42 +51,28 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else if (req.file) {
-                const profilePicture = req.file;
-                const filepath = path.join(__dirname, '../../', profilePicture.path);
-
-                try {
-                    const file = fs.readFileSync(filepath);
-                    const extension = mime.getExtension(profilePicture.mimetype);
-                    const mimeType = profilePicture.mimetype;
-
-                    fs.unlinkSync(filepath);
-                    ImagesController.postImage(`profile_pictures/profile_${user.username}.${extension}`, file, mimeType)
-                        .then(result => {
-                            user.profilePicture = result.url;
-                            user.save(err => {
-                                if (err) {
-                                    sendJSONResponse(res, 500, {
-                                        error: err
-                                    });
-                                } else {
-                                    user = user.toObject();
-                                    trimUserInfo(user);
-                                    sendJSONResponse(res, 200, {
-                                        data: user
-                                    });
-                                }
-                            });
-                        })
-                        .catch(err => {
-                            sendJSONResponse(res, 500, {
-                                error: err
-                            });
+                ImageService.postImage(req.file, user)
+                    .then(result => {
+                        user.profilePicture = result.url;
+                        user.save(err => {
+                            if (err) {
+                                sendJSONResponse(res, 500, {
+                                    error: err
+                                });
+                            } else {
+                                user = user.toObject(); // Not needed, use projections
+                                trimUserInfo(user);
+                                sendJSONResponse(res, 200, {
+                                    data: user
+                                });
+                            }
                         });
-                } catch (e) {
-                    sendJSONResponse(res, 404, {
-                        error: err
+                    })
+                    .catch(err => {
+                        sendJSONResponse(res, err.status, {
+                            error: err.error
+                        });
                     });
-                }
             } else {
                 sendJSONResponse(res, 204, {
                     data: ''
