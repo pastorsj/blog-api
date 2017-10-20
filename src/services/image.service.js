@@ -1,11 +1,11 @@
 'use strict';
 
 import FroalaEditor from 'wysiwyg-editor-node-sdk';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import mime from 'mime';
 
-import {BUCKET, REGION, KEY_START} from './aws/config';
+import {BUCKET, REGION, KEY_START} from '../config/aws.config';
 import log from '../log';
 import AWSService from './aws.service';
 
@@ -29,7 +29,7 @@ const ImagesService = {
 
         return FroalaEditor.S3.getHash(configs);
     },
-    postImage: (picture, user) => {
+    postImage: (picture, serverPath) => {
         return new Promise((resolve, reject) => {
             try {
                 const filepath = path.join(__dirname, '../../', picture.path);
@@ -38,7 +38,7 @@ const ImagesService = {
                 const mimeType = picture.mimetype;
 
                 fs.unlinkSync(filepath);
-                AWSService.postImage(`profile_pictures/profile_${user.username}.${extension}`, file, mimeType)
+                AWSService.postImage(`${serverPath}.${extension}`, file, mimeType)
                     .then(result => {
                         resolve(result);
                     })

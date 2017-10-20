@@ -1,13 +1,13 @@
 'use strict';
 import log from '../log';
-import {KEY_START, BUCKET, S3} from './aws/config';
+import {KEY_START, BUCKET, S3} from '../config/aws.config';
 
 const AWSService = {
     deleteImage: src => {
         return new Promise((resolve, reject) => {
             try {
                 const key = KEY_START + src.split('%2F')[1];
-    
+
                 const params = {
                     Bucket: BUCKET,
                     Delete: {

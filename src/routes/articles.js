@@ -4,14 +4,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import jwt from 'express-jwt';
-import {config} from '../config';
+import {SECRET} from '../config/mongo.config';
 
 import ArticlesController from '../controllers/articles.controller';
 
 const router = express.Router();
 
 const auth = jwt({
-    secret: config.secret,
+    secret: SECRET,
     /* req.payload contains the payload of the decoded token */
     userProperty: 'payload'
 });
