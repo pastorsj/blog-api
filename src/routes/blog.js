@@ -4,14 +4,15 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import jwt from 'express-jwt';
-import {config} from '../config';
+import {SECRET} from '../config/mongo.config';
+import {upload} from '../config/multer.config';
 
 import BlogController from '../controllers/blog.controller';
 
 const router = express.Router();
 
 const auth = jwt({
-    secret: config.secret,
+    secret: SECRET,
     /* req.payload contains the payload of the decoded token */
     userProperty: 'payload'
 });
@@ -36,6 +37,7 @@ router.route('/')
 router.route('/:id')
     .get(BlogController.get.bind(BlogController))
     .put(auth, BlogController.put.bind(BlogController))
+    .post(auth, upload.single('coverPhoto'), BlogController.postCoverPhoto.bind(BlogController))
     .delete(auth, BlogController.delete.bind(BlogController));
 
 router.route('/tag/:tag')

@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import {config} from '../config'; // get our config file
+import {DATABASE} from '../config/mongo.config';
 import log from '../log';
 import autoIncrement from 'mongoose-auto-increment';
 
 let gracefulShutdown;
-const dbUri = config.database;
+const dbUri = DATABASE;
 var connection = mongoose.connect(dbUri);
 
 autoIncrement.initialize(connection);

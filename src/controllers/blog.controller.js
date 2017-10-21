@@ -3,6 +3,9 @@
 import mongoose from 'mongoose';
 import _ from 'lodash';
 
+import ImageService from '../services/image.service';
+import log from '../log';
+
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
     res.json(content);
@@ -41,6 +44,48 @@ const BlogController = {
                 sendJSONResponse(res, 200, {
                     data: blog,
                     message: `Blog created by ${blog.author}`
+                });
+            }
+        });
+    },
+    postCoverPhoto: (req, res) => {
+        mongoose.model('BlogPost').findOne({
+            _id: req.params.id
+        }, (err, blog) => {
+            log.debug('Blog', blog);
+            log.debug('File?', req.file);
+            if (err || _.isEmpty(blog)) {
+                sendJSONResponse(res, 404, {
+                    error: err || 'Article Not Found'
+                });
+            } else if (req.file) {
+                const file = req.file;
+                const path = `cover_photo/cover_${blog._id}`;
+                ImageService.postImage(file, path)
+                    .then(result => {
+                        blog.coverPhoto = result.url;
+                        blog.save(err => {
+                            if (err) {
+                                log.critical('Error while trying to save the blog with the new cover photo', err);
+                                sendJSONResponse(res, 500, {
+                                    error: err
+                                });
+                            } else {
+                                sendJSONResponse(res, 200, {
+                                    data: blog
+                                });
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        log.critical('Error while trying to post image', err);
+                        sendJSONResponse(res, err.status, {
+                            error: err.error
+                        });
+                    });
+            } else {
+                sendJSONResponse(res, 204, {
+                    data: ''
                 });
             }
         });

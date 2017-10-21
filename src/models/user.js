@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import {config} from '../config';
+import {SECRET} from '../config/mongo.config';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -59,7 +59,7 @@ userSchema.methods.generateJwt = function() {
         username: this.username,
         name: this.name,
         exp: parseInt(expiry.getTime() / 1000, 10)
-    }, config.secret);
+    }, SECRET);
 };
 
 const UserModel = mongoose.model('User', userSchema);

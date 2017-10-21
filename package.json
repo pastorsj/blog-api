@@ -10,7 +10,7 @@
     "http": "babel-node ./src/server.js --type=http",
     "build": "webpack --env build --display-error-details",
     "dev": "webpack --progress --colors --env dev --display-error-details",
-    "lint": "eslint src/*.js"
+    "lint": "eslint src/*"
   },
   "dependencies": {
     "aws-sdk": "^2.114.0",

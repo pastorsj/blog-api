@@ -29,6 +29,11 @@ const blogPostSchema = new mongoose.Schema({
         type: Array,
         required: false,
         default: []
+    },
+    coverPhoto: {
+        type: String,
+        required: false,
+        default: ''
     }
 });
 

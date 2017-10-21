@@ -51,7 +51,9 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else if (req.file) {
-                ImageService.postImage(req.file, user)
+                const file = req.file;
+                const path = `profile_pictures/profile_${user.username}`;
+                ImageService.postImage(file, path)
                     .then(result => {
                         user.profilePicture = result.url;
                         user.save(err => {
