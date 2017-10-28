@@ -33,18 +33,18 @@ const logger = new (Logger)({
             colorize: true,
             timestamp: true
         }),
-        new (File)({filename: 'production.log'})
+        new (File)({ filename: 'production.log' })
     ]
 });
 
 winston.addColors(customColors);
 
 // Extend logger object to properly log 'Error' types
-var origLog = logger.log;
+const origLog = logger.log;
 
-logger.log = function(level, msg) {
+logger.log = function (level, msg) {
     if (msg instanceof Error) {
-        var args = Array.prototype.slice.call(arguments);
+        const args = Array.prototype.slice.call(arguments);
         args[1] = msg.stack;
         origLog.apply(logger, args);
     } else {

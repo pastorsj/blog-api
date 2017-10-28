@@ -1,11 +1,11 @@
-'use strict';
+
 
 import express from 'express';
 import bodyParser from 'body-parser';
 import methodOverride from 'method-override';
 import jwt from 'express-jwt';
-import {SECRET} from '../config/mongo.config';
-import {upload} from '../config/multer.config';
+import { SECRET } from '../config/mongo.config';
+import { upload } from '../config/multer.config';
 
 import UserController from '../controllers/user.controller';
 
@@ -15,7 +15,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.use(methodOverride(function(req, res) {
+router.use(methodOverride((req, res) => {
     const method = req.body._method;
     if (req.body && typeof req.body.toString() === 'object' && '_method' in req.body) {
         delete req.body._method;

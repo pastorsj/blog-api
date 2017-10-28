@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
-import {DATABASE} from '../config/mongo.config';
+import { DATABASE } from '../config/mongo.config';
 import log from '../log';
 import autoIncrement from 'mongoose-auto-increment';
 
 let gracefulShutdown;
 const dbUri = DATABASE;
-var connection = mongoose.connect(dbUri);
+const connection = mongoose.connect(dbUri);
 
 autoIncrement.initialize(connection);
 
 /*  Emulateing disconnection events on Windows */
 import readLine from 'readline';
-if (process.platform === "win32") {
-    let rl = readLine.createInterface({
+
+if (process.platform === 'win32') {
+    const rl = readLine.createInterface({
         input: process.stdin,
         output: process.stdout
     });
@@ -30,7 +31,7 @@ mongoose.connection.on('connected', () => {
 });
 
 /*  Checking for connection error */
-mongoose.connection.on('error', err => {
+mongoose.connection.on('error', (err) => {
     log.info(`Mongoose connection error ${err}`);
 });
 
@@ -49,7 +50,7 @@ gracefulShutdown = (msg, callback) => {
 
 /*  For app termination */
 process.on('SIGINT', () => {
-    gracefulShutdown("app termination", () => {
+    gracefulShutdown('app termination', () => {
         process.exit(0);
     });
 });

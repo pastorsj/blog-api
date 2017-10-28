@@ -1,18 +1,18 @@
-'use strict';
+
 import redis from 'redis';
 import log from '../log';
 
 const client = redis.createClient();
 
-client.on('error', err => {
-    log.critical('Error ' + err);
+client.on('error', (err) => {
+    log.critical(`Error ${err}`);
 });
 
 /**
  * Promisify the zadd command
- * @param {String} setName - The name of the sorted set 
+ * @param {String} setName - The name of the sorted set
  * @param {Number} start - The beginning of the sorted set
- * @param {String} prefix - The prefix of the string you want to check 
+ * @param {String} prefix - The prefix of the string you want to check
  * @returns {Promise} - Either the zrank command command succeeds or fails
  */
 function zadd(setName, start, prefix) {
@@ -32,8 +32,8 @@ function zadd(setName, start, prefix) {
 
 /**
  * Promisify the zrank command
- * @param {String} setName - The name of the sorted set 
- * @param {String} prefix - The prefix of the string you want to check 
+ * @param {String} setName - The name of the sorted set
+ * @param {String} prefix - The prefix of the string you want to check
  * @returns {Promise} - Either the zrank command command succeeds or fails
  */
 function zrank(setName, prefix) {
@@ -53,15 +53,15 @@ function zrank(setName, prefix) {
 
 /**
  * Promisify the zrange command
- * @param {String} setName - The name of the sorted set 
+ * @param {String} setName - The name of the sorted set
  * @param {Number} start - The beginning of the range
- * @param {Number} end - The end of the range 
+ * @param {Number} end - The end of the range
  * @returns {Promise} Either the zrange commands succeeds or fails
  */
 function zrange(setName, start, end) {
     return new Promise((resolve, reject) => {
         try {
-            if(!setName || !start || !end) {
+            if (!setName || !start || !end) {
                 reject('Either the start or end is not defined');
             }
             client.zrange(setName, start, end, (err, range) => {
@@ -77,94 +77,90 @@ function zrange(setName, start, end) {
 }
 
 const RedisService = {
-    addNew: (word, setName) => {
-        return new Promise((resolve, reject) => {
-            try {
-                let adds = [];
-                for (let i = 0; i < word.length; i++) {
-                    const prefix = word.slice(0, i);
-                    adds.push(zadd(setName, 0, prefix));
-                }
-                adds.push(zadd(setName, 0, word + '*'));
-                Promise.all(adds)
-                    .then(() => {
-                        resolve({
-                            status: 204,
-                            data: ''
-                        });
-                    })
-                    .catch((err) => {
-                        reject({
-                            actualError: err,
-                            error: 'An error occured while trying to add a prefix to the database',
-                            status: 400
-                        });
-                    });
-            } catch (e) {
-                log.critical('Failed to add new prefix/word', e);
-                reject({
-                    error: e,
-                    status: 500
-                });
+    addNew: (word, setName) => new Promise((resolve, reject) => {
+        try {
+            const adds = [];
+            for (let i = 0; i < word.length; i++) {
+                const prefix = word.slice(0, i);
+                adds.push(zadd(setName, 0, prefix));
             }
-        })
-    },
-    getPrefixes: (prefix, count, setName) => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const results = [];
-                const rangeLen = 50;
-                if (!prefix || !count) {
-                    log.critical(`Prefix or count was not included in the body of the request. Prefix: ${prefix}; Count: ${count}`);
-                    reject({
-                        status: 400,
-                        error: 'Prefix or count was not included in the body of the request'
-                    });
-                } else {
-                    let start = await zrank(setName, prefix);
-        
-                    if (!start) {
-                        start = await zrank(setName, prefix + "*");
-                        if (!start) {
-                            resolve({
-                                status: 200,
-                                data: results
-                            });
-                        }
-                    }
-        
-                    while (results.length !== count) {
-                        let range = await zrange(setName, start, start + rangeLen - 1)
-                        start += rangeLen;
-                        if (!range || range.length === 0) {
-                            break;
-                        }
-                        // eslint-disable-next-line
-                        range.forEach((entry, index) => {
-                            const minLength = Math.min(entry.length, prefix.length);
-                            if (entry.slice(0, minLength) !== prefix.slice(0, minLength)) {
-                                count = results.length;
-                                return;
-                            }
-                            if (entry.slice(-1) === '*' && results.length !== count) {
-                                results.push(entry.slice(0, -1));
-                            }
-                        });
-                    }
+            adds.push(zadd(setName, 0, `${word}*`));
+            Promise.all(adds)
+                .then(() => {
                     resolve({
-                        status: 200,
-                        data: results
+                        status: 204,
+                        data: ''
+                    });
+                })
+                .catch((err) => {
+                    reject({
+                        actualError: err,
+                        error: 'An error occured while trying to add a prefix to the database',
+                        status: 400
+                    });
+                });
+        } catch (e) {
+            log.critical('Failed to add new prefix/word', e);
+            reject({
+                error: e,
+                status: 500
+            });
+        }
+    }),
+    getPrefixes: (prefix, count, setName) => new Promise(async (resolve, reject) => {
+        try {
+            const results = [];
+            const rangeLen = 50;
+            if (!prefix || !count) {
+                log.critical(`Prefix or count was not included in the body of the request. Prefix: ${prefix}; Count: ${count}`);
+                reject({
+                    status: 400,
+                    error: 'Prefix or count was not included in the body of the request'
+                });
+            } else {
+                let start = await zrank(setName, prefix);
+
+                if (!start) {
+                    start = await zrank(setName, `${prefix}*`);
+                    if (!start) {
+                        resolve({
+                            status: 200,
+                            data: results
+                        });
+                    }
+                }
+
+                while (results.length !== count) {
+                    const range = await zrange(setName, start, start + rangeLen - 1);
+                    start += rangeLen;
+                    if (!range || range.length === 0) {
+                        break;
+                    }
+                    // eslint-disable-next-line
+                        range.forEach((entry, index) => {
+                        const minLength = Math.min(entry.length, prefix.length);
+                        if (entry.slice(0, minLength) !== prefix.slice(0, minLength)) {
+                            count = results.length;
+                            return;
+                        }
+                        if (entry.slice(-1) === '*' && results.length !== count) {
+                            results.push(entry.slice(0, -1));
+                        }
                     });
                 }
-            } catch (e) {
-                log.critical('Error while getting prefixes', e);
-                reject({
-                    status: 500,
-                    error: 'An error has occured: ' + e
+                resolve({
+                    status: 200,
+                    data: results
                 });
             }
-        })
-    } 
+        } catch (e) {
+            log.critical('Error while getting prefixes', e);
+            reject({
+                status: 500,
+                error: `An error has occured: ${e}`
+            });
+        }
+    })
 };
 
 export default RedisService;

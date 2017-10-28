@@ -1,4 +1,4 @@
-'use strict';
+
 
 import app from './app';
 import http from 'http';
@@ -33,7 +33,7 @@ function createHttpServer(httpPort = 3000) {
 function createHttpsServer(httpsPort = 3001) {
     const privateKey = fs.readFileSync(process.env.PRIVATE_KEY, 'utf8');
     const certificate = fs.readFileSync(process.env.CERTIFICATE, 'utf8');
-    const credentials = {key: privateKey, cert: certificate};
+    const credentials = { key: privateKey, cert: certificate };
 
     const port = normalizePort(process.env.HTTPS_PORT || httpsPort);
     const http2Server = spdy.createServer(credentials, app);
@@ -57,10 +57,10 @@ if (type === 'https') {
 /**
  * Normalize a port into a number, string, or false.
  * @param {string} val - The port in string form
- * @returns {Number | boolean} - The port in Number form if allowed or false 
+ * @returns {Number | boolean} - The port in Number form if allowed or false
  */
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
     if (isNaN(port)) {
         // named pipe
@@ -85,20 +85,20 @@ function onError(error, port) {
         throw error;
     }
 
-    var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-        case 'EACCES':
-            log.fatal(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            log.fatal(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
-            throw error;
+    case 'EACCES':
+        log.fatal(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+    case 'EADDRINUSE':
+        log.fatal(`${bind} is already in use`);
+        process.exit(1);
+        break;
+    default:
+        throw error;
     }
 }
 
@@ -107,17 +107,17 @@ function onError(error, port) {
  * @param {Object} server - The server object used for http connections
  */
 function onListening(server) {
-    var addr = server.address();
-    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    log.info('Http server listening on ' + bind);
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    log.info(`Http server listening on ${bind}`);
 }
 
 /**
- * 
+ *
  * @param {Object} httpsServer - The server object used for https connections
  */
 function onListeningHttps(httpsServer) {
-    var addr = httpsServer.address();
-    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    log.info('Https server listening on ' + bind);
+    const addr = httpsServer.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    log.info(`Https server listening on ${bind}`);
 }

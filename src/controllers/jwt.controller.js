@@ -1,7 +1,7 @@
-'use strict';
+
 
 import jwt from 'jsonwebtoken';
-import {SECRET} from '../config/mongo.config';
+import { SECRET } from '../config/mongo.config';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
@@ -22,7 +22,7 @@ const JwtController = {
         const authorizationHeader = req.headers.authorization;
         if (authorizationHeader.startsWith('Bearer ')) {
             const token = authorizationHeader.slice(7);
-            jwt.verify(token, SECRET, err => {
+            jwt.verify(token, SECRET, (err) => {
                 if (err) {
                     sendJSONResponse(res, 401, {
                         message: 'JWT is expired'

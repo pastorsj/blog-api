@@ -1,4 +1,4 @@
-'use strict';
+
 
 import mongoose from 'mongoose';
 
@@ -14,7 +14,7 @@ const sendJSONResponse = (res, status, content) => {
 const ArticlesController = {
     get: (req, res) => {
         const username = req.params.username;
-        mongoose.model('BlogPost').find({author: username}, (err, articles) => {
+        mongoose.model('BlogPost').find({ author: username }, (err, articles) => {
             if (err) {
                 sendJSONResponse(res, 500, {
                     error: err || 'Articles Not Found'

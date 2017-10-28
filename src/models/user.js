@@ -1,9 +1,9 @@
-'use strict';
+
 
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import {SECRET} from '../config/mongo.config';
+import { SECRET } from '../config/mongo.config';
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -40,18 +40,18 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.methods.setPassword = function(password) {
+userSchema.methods.setPassword = function (password) {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
 };
 
-userSchema.methods.validPassword = function(password) {
-    var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
+userSchema.methods.validPassword = function (password) {
+    const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
     return this.hash === hash;
 };
 
-userSchema.methods.generateJwt = function() {
-    var expiry = new Date();
+userSchema.methods.generateJwt = function () {
+    const expiry = new Date();
     expiry.setDate(expiry.getDate() + 1);
 
     return jwt.sign({

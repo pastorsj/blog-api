@@ -1,18 +1,16 @@
-'use strict';
+
 
 import FroalaEditor from 'wysiwyg-editor-node-sdk';
 import fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 
-import {BUCKET, REGION, KEY_START} from '../config/aws.config';
+import { BUCKET, REGION, KEY_START } from '../config/aws.config';
 import log from '../log';
 import AWSService from './aws.service';
 
 const ImagesService = {
-    deleteImage: src => {
-        return AWSService.deleteImage(src);
-    },
+    deleteImage: src => AWSService.deleteImage(src),
     getImage: () => {
         const configs = {
             bucket: BUCKET,
@@ -29,35 +27,33 @@ const ImagesService = {
 
         return FroalaEditor.S3.getHash(configs);
     },
-    postImage: (picture, serverPath) => {
-        return new Promise((resolve, reject) => {
-            try {
-                const filepath = path.join(__dirname, '../../', picture.path);
-                const file = fs.readFileSync(filepath);
-                const extension = mime.getExtension(picture.mimetype);
-                const mimeType = picture.mimetype;
+    postImage: (picture, serverPath) => new Promise((resolve, reject) => {
+        try {
+            const filepath = path.join(__dirname, '../../', picture.path);
+            const file = fs.readFileSync(filepath);
+            const extension = mime.getExtension(picture.mimetype);
+            const mimeType = picture.mimetype;
 
-                fs.unlinkSync(filepath);
-                AWSService.postImage(`${serverPath}.${extension}`, file, mimeType)
-                    .then(result => {
-                        resolve(result);
-                    })
-                    .catch(err => {
-                        log.critical('Error when posting image', err);
-                        reject({
-                            status: 400,
-                            error: err
-                        });
+            fs.unlinkSync(filepath);
+            AWSService.postImage(`${serverPath}.${extension}`, file, mimeType)
+                .then((result) => {
+                    resolve(result);
+                })
+                .catch((err) => {
+                    log.critical('Error when posting image', err);
+                    reject({
+                        status: 400,
+                        error: err
                     });
-            } catch (e) {
-                log.critical('Error while getting image off of server (catch)', e);
-                reject({
-                    status: 500,
-                    error: e
                 });
-            }
-        });
-    }
+        } catch (e) {
+            log.critical('Error while getting image off of server (catch)', e);
+            reject({
+                status: 500,
+                error: e
+            });
+        }
+    })
 };
 
 export default ImagesService;

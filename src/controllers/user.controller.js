@@ -1,4 +1,4 @@
-'use strict';
+
 
 import mongoose from 'mongoose';
 import _ from 'lodash';
@@ -16,7 +16,7 @@ const sendJSONResponse = (res, status, content) => {
  * ROUTE: user/:username
  */
 
-const trimUserInfo = function(user) {
+const trimUserInfo = function (user) {
     delete user._id;
     delete user.__v;
     delete user.password;
@@ -42,7 +42,7 @@ const UserController = {
             }
         });
     },
-    post: function(req, res) {
+    post(req, res) {
         mongoose.model('User').findOne({
             username: req.params.username
         }, (err, user) => {
@@ -54,9 +54,9 @@ const UserController = {
                 const file = req.file;
                 const path = `profile_pictures/profile_${user.username}`;
                 ImageService.postImage(file, path)
-                    .then(result => {
+                    .then((result) => {
                         user.profilePicture = result.url;
-                        user.save(err => {
+                        user.save((err) => {
                             if (err) {
                                 sendJSONResponse(res, 500, {
                                     error: err
@@ -70,7 +70,7 @@ const UserController = {
                             }
                         });
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         sendJSONResponse(res, err.status, {
                             error: err.error
                         });
@@ -82,7 +82,7 @@ const UserController = {
             }
         });
     },
-    put: function(req, res) {
+    put(req, res) {
         mongoose.model('User').findOne({
             username: req.params.username
         }, (err, user) => {
@@ -92,7 +92,7 @@ const UserController = {
                 });
             } else {
                 _.assign(user, req.body);
-                user.save(err => {
+                user.save((err) => {
                     if (err) {
                         sendJSONResponse(res, 500, {
                             error: err
@@ -117,7 +117,7 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else {
-                user.remove(err => {
+                user.remove((err) => {
                     if (err) {
                         sendJSONResponse(res, 404, {
                             error: err || 'User Not Found'

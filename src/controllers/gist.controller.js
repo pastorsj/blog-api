@@ -1,4 +1,4 @@
-'use strict';
+
 
 import gistify from 'node-gist-html';
 
@@ -15,12 +15,12 @@ const GistController = {
         if (req.body && req.body.link) {
             const link = req.body.link;
             gistify(link)
-                .then(html => {
+                .then((html) => {
                     sendJSONResponse(res, 200, {
                         data: html
                     });
                 })
-                .catch(err => {
+                .catch((err) => {
                     sendJSONResponse(res, 400, {
                         message: err
                     });

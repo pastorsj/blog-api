@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import log from '../log';
+
 const User = mongoose.model('User');
 
 const sendJSONResponse = (res, status, content) => {
@@ -16,22 +17,22 @@ export function register(req, res) {
     if (!req.body.username || !req.body.name || !req.body.email ||
         !req.body.password) {
         sendJSONResponse(res, 400, {
-            message: "All fields required"
+            message: 'All fields required'
         });
         return;
     }
-    User.findOne({username: req.body.username}, (err, auser) => {
+    User.findOne({ username: req.body.username }, (err, auser) => {
         if (auser) {
             sendJSONResponse(res, 409, {
-                message: "Username is taken."
+                message: 'Username is taken.'
             });
         } else if (err) {
             log.critical('Error', err);
             sendJSONResponse(res, 404, {
-                message: "An error has occcured: " + err
+                message: `An error has occcured: ${err}`
             });
         } else {
-            var user = new User();
+            const user = new User();
 
             user.username = req.body.username;
             user.name = req.body.name;
@@ -39,13 +40,13 @@ export function register(req, res) {
 
             user.setPassword(req.body.password);
 
-            user.save(err => {
+            user.save((err) => {
                 if (err) {
                     sendJSONResponse(res, 404, err);
                 } else {
-                    let token = user.generateJwt();
+                    const token = user.generateJwt();
                     sendJSONResponse(res, 200, {
-                        token: token
+                        token
                     });
                 }
             });
@@ -88,9 +89,9 @@ export function login(req, res) {
             });
             return;
         }
-        let token = user.generateJwt();
+        const token = user.generateJwt();
         sendJSONResponse(res, 200, {
-            token: token
+            token
         });
     });
 }

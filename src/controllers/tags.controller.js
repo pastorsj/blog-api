@@ -1,4 +1,4 @@
-'use strict';
+
 
 import log from '../log';
 import mongoose from 'mongoose';
@@ -13,12 +13,12 @@ const sendJSONResponse = (res, status, content = {}) => {
 
 /**
  * Retrieves the full author for a blog post
- * @param {Object} post - A blog post 
+ * @param {Object} post - A blog post
  * @returns {Promise} - Either it returns the updated post or an error
  */
 function retrieveAuthor(post) {
     return new Promise((resolve, reject) => {
-        mongoose.model('User').find({username: post.author}, {name: 1, username: 1}).limit(1).exec((err, author) => {
+        mongoose.model('User').find({ username: post.author }, { name: 1, username: 1 }).limit(1).exec((err, author) => {
             if (err || author.length < 1) {
                 reject(err || 'No authors found');
             }
@@ -57,7 +57,7 @@ const TagsController = {
                 log.info(result);
                 sendJSONResponse(res, result.status, {
                     data: result.data
-                })
+                });
             }).catch((err) => {
                 log.info(err);
                 sendJSONResponse(res, err.status, {
@@ -67,7 +67,7 @@ const TagsController = {
     },
     getTagsByPopularity: (req, res) => {
         try {
-            mongoose.model('BlogPost').find({}, {tags: 1, _id: 0}, (err, tagSet) => {
+            mongoose.model('BlogPost').find({}, { tags: 1, _id: 0 }, (err, tagSet) => {
                 if (err) {
                     sendJSONResponse(res, 404, {
                         error: err || 'Blog Post Not Found'
@@ -91,7 +91,7 @@ const TagsController = {
             });
         } catch (e) {
             sendJSONResponse(res, 500, {
-                error: 'Error!' + e
+                error: `Error!${e}`
             });
         }
     },
@@ -106,17 +106,17 @@ const TagsController = {
                         error: err || 'Blog Post Not Found'
                     });
                 } else {
-                    let postPromises = [];
-                    posts.forEach(post => {
+                    const postPromises = [];
+                    posts.forEach((post) => {
                         postPromises.push(retrieveAuthor(post));
                     });
                     Promise.all(postPromises)
-                        .then(result => {
+                        .then((result) => {
                             sendJSONResponse(res, 200, {
                                 data: result
                             });
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             sendJSONResponse(res, 404, {
                                 error: err
                             });
@@ -125,7 +125,7 @@ const TagsController = {
             });
         } catch (e) {
             sendJSONResponse(res, 500, {
-                error: 'Error!' + e
+                error: `Error!${e}`
             });
         }
     }
