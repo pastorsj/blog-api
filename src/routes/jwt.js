@@ -12,7 +12,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.use(useMethodOverride());
+router.use(useMethodOverride);
 
 // Availible via the base_url/expired route
 router.route('/expired')

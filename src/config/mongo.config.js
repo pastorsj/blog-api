@@ -1,2 +1,2 @@
 
-const DATABASE = 'mongodb://localhost/blog'; //eslint-disable-line
+export const DATABASE = 'mongodb://localhost/blog'; //eslint-disable-line

@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.use(useMethodOverride());
+router.use(useMethodOverride);
 
 // Availible via the base_url/article route
 router.route('/:username')

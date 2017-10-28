@@ -13,7 +13,7 @@ const customColors = {
     fatal: 'red'
 };
 
-const { Logger } = winston.Logger;
+const { Logger } = winston;
 const { Console, File } = winston.transports;
 
 const logger = new (Logger)({
@@ -32,18 +32,18 @@ const logger = new (Logger)({
             colorize: true,
             timestamp: true
         }),
-        new (File)({ filename: 'production.log' })
+        new (File)({filename: 'production.log'})
     ]
 });
 
 winston.addColors(customColors);
 
 // Extend logger object to properly log 'Error' types
-const origLog = logger.log;
+var origLog = logger.log;
 
-logger.log = (level, msg) => {
+logger.log = function(level, msg) {
     if (msg instanceof Error) {
-        const args = Array.prototype.slice.call(arguments);
+        var args = Array.prototype.slice.call(arguments);
         args[1] = msg.stack;
         origLog.apply(logger, args);
     } else {
