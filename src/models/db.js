@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
-import {DATABASE} from '../config/mongo.config';
-import log from '../log';
+import readLine from 'readline';
 import autoIncrement from 'mongoose-auto-increment';
 
-let gracefulShutdown;
+import { DATABASE } from '../config/mongo.config';
+import log from '../log';
+
 const dbUri = DATABASE;
-var connection = mongoose.connect(dbUri);
+const connection = mongoose.connect(dbUri);
 
 autoIncrement.initialize(connection);
 
 /*  Emulateing disconnection events on Windows */
-import readLine from 'readline';
-if (process.platform === "win32") {
-    let rl = readLine.createInterface({
+
+if (process.platform === 'win32') {
+    const rl = readLine.createInterface({
         input: process.stdin,
         output: process.stdout
     });
@@ -30,7 +31,7 @@ mongoose.connection.on('connected', () => {
 });
 
 /*  Checking for connection error */
-mongoose.connection.on('error', err => {
+mongoose.connection.on('error', (err) => {
     log.info(`Mongoose connection error ${err}`);
 });
 
@@ -40,7 +41,7 @@ mongoose.connection.on('disconnected', () => {
 });
 
 /*  CAPTURE APP TERMINATION / RESTART EVENTS */
-gracefulShutdown = (msg, callback) => {
+const gracefulShutdown = (msg, callback) => {
     mongoose.connection.close(() => {
         log.info(`Mongoose disconnection through ${msg}`);
         callback();
@@ -49,12 +50,12 @@ gracefulShutdown = (msg, callback) => {
 
 /*  For app termination */
 process.on('SIGINT', () => {
-    gracefulShutdown("app termination", () => {
+    gracefulShutdown('app termination', () => {
         process.exit(0);
     });
 });
 
-/*  Listens for SIGUSR2, whih is hat nodemon uses when it restarts app */
+/*  Listens for SIGUSR2, whih is what nodemon uses when it restarts app */
 process.once('SIGUSR2', () => {
     gracefulShutdown('nodemon reatart', () => {
         process.kill(process.id, 'SIGUSR2');

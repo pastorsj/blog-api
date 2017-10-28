@@ -1,4 +1,4 @@
-'use strict';
+
 import multer from 'multer';
 import crypto from 'crypto';
 import mime from 'mime';
@@ -15,11 +15,11 @@ const storage = multer.diskStorage({
             if (err) {
                 log.critical('Error encrypting filename', err);
             } else {
-                cb(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype));
+                cb(null, `${raw.toString('hex') + Date.now()}.${mime.getExtension(file.mimetype)}`);
             }
         });
     },
-    limits: {fileSize: MAX_SIZE}
+    limits: { fileSize: MAX_SIZE }
 });
 
-export const upload = multer({storage: storage});
+export const upload = multer({ storage }); // eslint-disable-line

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import log from '../log';
+
 const User = mongoose.model('User');
 
 const sendJSONResponse = (res, status, content) => {
@@ -8,7 +9,8 @@ const sendJSONResponse = (res, status, content) => {
 };
 
 /**
- * A route that allows a user to register themselves into the database with a username that must be unique, a password, email and name.
+ * A route that allows a user to register themselves
+ * into the database with a username that must be unique, a password, email and name.
  * @param {object} req The request object
  * @param {object} res The response object
  */
@@ -16,22 +18,22 @@ export function register(req, res) {
     if (!req.body.username || !req.body.name || !req.body.email ||
         !req.body.password) {
         sendJSONResponse(res, 400, {
-            message: "All fields required"
+            message: 'All fields required'
         });
         return;
     }
-    User.findOne({username: req.body.username}, (err, auser) => {
+    User.findOne({ username: req.body.username }, (err, auser) => {
         if (auser) {
             sendJSONResponse(res, 409, {
-                message: "Username is taken."
+                message: 'Username is taken.'
             });
         } else if (err) {
             log.critical('Error', err);
             sendJSONResponse(res, 404, {
-                message: "An error has occcured: " + err
+                message: `An error has occcured: ${err}`
             });
         } else {
-            var user = new User();
+            const user = new User();
 
             user.username = req.body.username;
             user.name = req.body.name;
@@ -39,13 +41,13 @@ export function register(req, res) {
 
             user.setPassword(req.body.password);
 
-            user.save(err => {
+            user.save((error) => {
                 if (err) {
-                    sendJSONResponse(res, 404, err);
+                    sendJSONResponse(res, 404, error);
                 } else {
-                    let token = user.generateJwt();
+                    const token = user.generateJwt();
                     sendJSONResponse(res, 200, {
-                        token: token
+                        token
                     });
                 }
             });
@@ -54,7 +56,8 @@ export function register(req, res) {
 }
 
 /**
- * A route that allows a user to verify their username and password and retrieve a JWT if it is correct
+ * A route that allows a user to verify their username
+ * and password and retrieve a JWT if it is correct
  * @param {object} req The request
  * @param {object} res The response
  */
@@ -88,9 +91,9 @@ export function login(req, res) {
             });
             return;
         }
-        let token = user.generateJwt();
+        const token = user.generateJwt();
         sendJSONResponse(res, 200, {
-            token: token
+            token
         });
     });
 }

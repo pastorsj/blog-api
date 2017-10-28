@@ -1,4 +1,4 @@
-'use strict';
+
 
 import ImageService from '../services/image.service';
 
@@ -19,16 +19,16 @@ const ImagesController = {
         res.send(imageHash);
     },
     delete: (req, res) => {
-        const src = req.body.src;
+        const { src } = req.body;
         ImageService.deleteImage(src)
-            .then(result => {
+            .then((result) => {
                 sendJSONResponse(res, result.status, {
                     data: result.data
                 });
             })
-            .catch(err => {
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+            .catch((err) => {
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     }

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import express from 'express';
 import path from 'path';
@@ -24,7 +24,7 @@ import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
 import tagsRoute from './routes/tags';
 
-import {register, login} from './routes/auth';
+import { register, login } from './routes/auth';
 
 import log from './log';
 
@@ -55,12 +55,13 @@ app.use(expressWinston.logger({
         })
     ],
     requestFilter: (req, propName) => {
-        if (propName === "headers") {
-            return Object.keys(req.headers).reduce(function(filteredHeaders, key) {
-                if (key !== "authorization") {
-                    filteredHeaders[key] = req.headers[key];
+        if (propName === 'headers') {
+            return Object.keys(req.headers).reduce((filteredHeaders, key) => {
+                const headers = filteredHeaders;
+                if (key !== 'authorization') {
+                    headers[key] = req.headers[key];
                 }
-                return filteredHeaders;
+                return headers;
             }, {});
         }
         return req[propName];
@@ -102,9 +103,9 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use((err, req, res, next) => {
+    app.use((err, req, res) => {
         if (err.name === 'UnauthorizedError') {
-            res.status(401).send({error: err});
+            res.status(401).send({ error: err });
         } else {
             res.status(err.status || 500);
         }
@@ -114,9 +115,9 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     if (err.name === 'UnauthorizedError') {
-        res.status(401).send({error: err});
+        res.status(401).send({ error: err });
     } else {
         res.status(err.status || 500);
     }

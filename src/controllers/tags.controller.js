@@ -1,7 +1,8 @@
-'use strict';
+
+
+import mongoose from 'mongoose';
 
 import log from '../log';
-import mongoose from 'mongoose';
 import redis from '../services/redis.service';
 
 const SET_NAME = 'tags';
@@ -13,17 +14,17 @@ const sendJSONResponse = (res, status, content = {}) => {
 
 /**
  * Retrieves the full author for a blog post
- * @param {Object} post - A blog post 
+ * @param {Object} post - A blog post
  * @returns {Promise} - Either it returns the updated post or an error
  */
 function retrieveAuthor(post) {
     return new Promise((resolve, reject) => {
-        mongoose.model('User').find({username: post.author}, {name: 1, username: 1}).limit(1).exec((err, author) => {
+        mongoose.model('User').find({ username: post.author }, { name: 1, username: 1 }).limit(1).exec((err, author) => {
             if (err || author.length < 1) {
                 reject(err || 'No authors found');
             }
             const postObject = post.toObject();
-            postObject.author = author[0];
+            postObject.author = author.pop();
             resolve(postObject);
         });
     });
@@ -35,7 +36,7 @@ function retrieveAuthor(post) {
 
 const TagsController = {
     post: (req, res) => {
-        const tag = req.body.tag;
+        const { tag } = req.body;
         redis.addNew(tag, SET_NAME)
             .then((result) => {
                 log.info(result);
@@ -44,30 +45,29 @@ const TagsController = {
                 });
             }).catch((err) => {
                 log.info(err);
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     },
     getPrefixes: async (req, res) => {
-        const prefix = req.body.prefix;
-        const count = req.body.count;
+        const { prefix, count } = req.body;
         redis.getPrefixes(prefix, count, SET_NAME)
             .then((result) => {
                 log.info(result);
                 sendJSONResponse(res, result.status, {
                     data: result.data
-                })
+                });
             }).catch((err) => {
                 log.info(err);
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     },
     getTagsByPopularity: (req, res) => {
         try {
-            mongoose.model('BlogPost').find({}, {tags: 1, _id: 0}, (err, tagSet) => {
+            mongoose.model('BlogPost').find({}, { tags: 1, _id: 0 }, (err, tagSet) => {
                 if (err) {
                     sendJSONResponse(res, 404, {
                         error: err || 'Blog Post Not Found'
@@ -75,7 +75,7 @@ const TagsController = {
                 } else {
                     const allTags = {};
                     tagSet.forEach((set) => {
-                        const tags = set.tags;
+                        const { tags } = set;
                         tags.forEach((tag) => {
                             allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
                         });
@@ -91,13 +91,13 @@ const TagsController = {
             });
         } catch (e) {
             sendJSONResponse(res, 500, {
-                error: 'Error!' + e
+                error: `Error!${e}`
             });
         }
     },
     getArticlesByTag: (req, res) => {
         try {
-            const tag = req.params.tag;
+            const { tag } = req.params;
             mongoose.model('BlogPost').find({
                 tags: tag
             }, (err, posts) => {
@@ -106,26 +106,26 @@ const TagsController = {
                         error: err || 'Blog Post Not Found'
                     });
                 } else {
-                    let postPromises = [];
-                    posts.forEach(post => {
+                    const postPromises = [];
+                    posts.forEach((post) => {
                         postPromises.push(retrieveAuthor(post));
                     });
                     Promise.all(postPromises)
-                        .then(result => {
+                        .then((result) => {
                             sendJSONResponse(res, 200, {
                                 data: result
                             });
                         })
-                        .catch(err => {
+                        .catch((error) => {
                             sendJSONResponse(res, 404, {
-                                error: err
+                                error
                             });
                         });
                 }
             });
         } catch (e) {
             sendJSONResponse(res, 500, {
-                error: 'Error!' + e
+                error: `Error!${e}`
             });
         }
     }
