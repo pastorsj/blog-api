@@ -54,7 +54,7 @@ const UserController = {
                 const path = `profile_pictures/profile_${user.username}`;
                 ImageService.postImage(file, path)
                     .then((result) => {
-                        user.profilePicture = result.url;
+                        user.profilePicture = result.url; //eslint-disable-line
                         user.save((error) => {
                             if (err) {
                                 sendJSONResponse(res, 500, {

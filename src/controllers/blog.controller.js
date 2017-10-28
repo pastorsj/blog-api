@@ -23,7 +23,7 @@ function retrieveAuthor(post) {
                 reject(err || 'No authors found');
             }
             const postObject = post.toObject();
-            postObject.author = author[0];
+            postObject.author = author.pop();
             resolve(postObject);
         });
     });
@@ -63,7 +63,7 @@ const BlogController = {
                 const path = `cover_photo/cover_${blog._id}`;
                 ImageService.postImage(file, path)
                     .then((result) => {
-                        blog.coverPhoto = result.url;
+                        blog.coverPhoto = result.url; //eslint-disable-line
                         blog.save((error) => {
                             if (error) {
                                 log.critical('Error while trying to save the blog with the new cover photo', err);

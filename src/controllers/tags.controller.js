@@ -24,7 +24,7 @@ function retrieveAuthor(post) {
                 reject(err || 'No authors found');
             }
             const postObject = post.toObject();
-            postObject.author = author[0];
+            postObject.author = author.pop();
             resolve(postObject);
         });
     });
