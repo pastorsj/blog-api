@@ -5,7 +5,6 @@ import bodyParser from 'body-parser';
 
 import { auth } from '../config/jwt.config';
 import { upload } from '../config/multer.config';
-import useMethodOverride from './common/methodOverride.config';
 
 import UserController from '../controllers/user.controller';
 
@@ -14,8 +13,6 @@ const router = express.Router();
 router.use(bodyParser.urlencoded({
     extended: true
 }));
-
-router.use(useMethodOverride);
 
 // Availible via the base_url/user route
 router.route('/:username')

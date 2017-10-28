@@ -4,7 +4,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import { auth } from '../config/jwt.config';
-import useMethodOverride from './common/methodOverride.config';
 
 import TagsController from '../controllers/tags.controller';
 
@@ -13,8 +12,6 @@ const router = express.Router();
 router.use(bodyParser.urlencoded({
     extended: true
 }));
-
-router.use(useMethodOverride);
 
 // Availible via the base_url/tags route
 router.route('/')
