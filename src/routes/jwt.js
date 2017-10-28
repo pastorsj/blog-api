@@ -2,8 +2,8 @@
 
 import express from 'express';
 import bodyParser from 'body-parser';
-import methodOverride from 'method-override';
 
+import useMethodOverride from './common/methodOverride.config';
 import JwtController from '../controllers/jwt.controller';
 
 const router = express.Router();
@@ -12,13 +12,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.use(methodOverride((req, res) => {
-    const method = req.body._method;
-    if (req.body && typeof req.body.toString() === 'object' && '_method' in req.body) {
-        delete req.body._method;
-    }
-    return method;
-}));
+router.use(useMethodOverride());
 
 // Availible via the base_url/expired route
 router.route('/expired')

@@ -1,7 +1,8 @@
 
 
-import log from '../log';
 import mongoose from 'mongoose';
+
+import log from '../log';
 import redis from '../services/redis.service';
 
 const SET_NAME = 'tags';
@@ -35,7 +36,7 @@ function retrieveAuthor(post) {
 
 const TagsController = {
     post: (req, res) => {
-        const tag = req.body.tag;
+        const { tag } = req.body;
         redis.addNew(tag, SET_NAME)
             .then((result) => {
                 log.info(result);
@@ -44,14 +45,13 @@ const TagsController = {
                 });
             }).catch((err) => {
                 log.info(err);
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     },
     getPrefixes: async (req, res) => {
-        const prefix = req.body.prefix;
-        const count = req.body.count;
+        const { prefix, count } = req.body;
         redis.getPrefixes(prefix, count, SET_NAME)
             .then((result) => {
                 log.info(result);
@@ -60,8 +60,8 @@ const TagsController = {
                 });
             }).catch((err) => {
                 log.info(err);
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     },
@@ -75,7 +75,7 @@ const TagsController = {
                 } else {
                     const allTags = {};
                     tagSet.forEach((set) => {
-                        const tags = set.tags;
+                        const { tags } = set;
                         tags.forEach((tag) => {
                             allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
                         });
@@ -97,7 +97,7 @@ const TagsController = {
     },
     getArticlesByTag: (req, res) => {
         try {
-            const tag = req.params.tag;
+            const { tag } = req.params;
             mongoose.model('BlogPost').find({
                 tags: tag
             }, (err, posts) => {
@@ -116,9 +116,9 @@ const TagsController = {
                                 data: result
                             });
                         })
-                        .catch((err) => {
+                        .catch((error) => {
                             sendJSONResponse(res, 404, {
-                                error: err
+                                error
                             });
                         });
                 }

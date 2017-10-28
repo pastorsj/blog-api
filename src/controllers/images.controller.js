@@ -19,7 +19,7 @@ const ImagesController = {
         res.send(imageHash);
     },
     delete: (req, res) => {
-        const src = req.body.src;
+        const { src } = req.body;
         ImageService.deleteImage(src)
             .then((result) => {
                 sendJSONResponse(res, result.status, {
@@ -27,8 +27,8 @@ const ImagesController = {
                 });
             })
             .catch((err) => {
-                sendJSONResponse(res, err.status, {
-                    error: err.error
+                sendJSONResponse(res, 400, {
+                    error: err
                 });
             });
     }

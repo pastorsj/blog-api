@@ -9,7 +9,8 @@ const sendJSONResponse = (res, status, content) => {
 };
 
 /**
- * A route that allows a user to register themselves into the database with a username that must be unique, a password, email and name.
+ * A route that allows a user to register themselves
+ * into the database with a username that must be unique, a password, email and name.
  * @param {object} req The request object
  * @param {object} res The response object
  */
@@ -40,9 +41,9 @@ export function register(req, res) {
 
             user.setPassword(req.body.password);
 
-            user.save((err) => {
+            user.save((error) => {
                 if (err) {
-                    sendJSONResponse(res, 404, err);
+                    sendJSONResponse(res, 404, error);
                 } else {
                     const token = user.generateJwt();
                     sendJSONResponse(res, 200, {
@@ -55,7 +56,8 @@ export function register(req, res) {
 }
 
 /**
- * A route that allows a user to verify their username and password and retrieve a JWT if it is correct
+ * A route that allows a user to verify their username
+ * and password and retrieve a JWT if it is correct
  * @param {object} req The request
  * @param {object} res The response
  */

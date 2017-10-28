@@ -59,16 +59,16 @@ const BlogController = {
                     error: err || 'Article Not Found'
                 });
             } else if (req.file) {
-                const file = req.file;
+                const { file } = req;
                 const path = `cover_photo/cover_${blog._id}`;
                 ImageService.postImage(file, path)
                     .then((result) => {
                         blog.coverPhoto = result.url;
-                        blog.save((err) => {
-                            if (err) {
+                        blog.save((error) => {
+                            if (error) {
                                 log.critical('Error while trying to save the blog with the new cover photo', err);
                                 sendJSONResponse(res, 500, {
-                                    error: err
+                                    error
                                 });
                             } else {
                                 sendJSONResponse(res, 200, {
@@ -77,10 +77,10 @@ const BlogController = {
                             }
                         });
                     })
-                    .catch((err) => {
+                    .catch((error) => {
                         log.critical('Error while trying to post image', err);
-                        sendJSONResponse(res, err.status, {
-                            error: err.error
+                        sendJSONResponse(res, error.status, {
+                            error: error.error
                         });
                     });
             } else {
@@ -107,9 +107,9 @@ const BlogController = {
                             data: result
                         });
                     })
-                    .catch((err) => {
+                    .catch((error) => {
                         sendJSONResponse(res, 404, {
-                            error: err
+                            error
                         });
                     });
             }
@@ -140,10 +140,10 @@ const BlogController = {
                 });
             } else {
                 _.assign(blog, req.body);
-                blog.save((err) => {
+                blog.save((error) => {
                     if (err) {
                         sendJSONResponse(res, 400, {
-                            error: err || 'Failed to save blog to the database'
+                            error: error || 'Failed to save blog to the database'
                         });
                     } else {
                         sendJSONResponse(res, 200, {
@@ -163,10 +163,10 @@ const BlogController = {
                     error: err || 'Blog Post Not Found'
                 });
             } else {
-                blog.remove((err) => {
+                blog.remove((error) => {
                     if (err) {
                         sendJSONResponse(res, 404, {
-                            error: err || 'Blog Post Not Found'
+                            error: error || 'Blog Post Not Found'
                         });
                     } else {
                         sendJSONResponse(res, 200, {
@@ -195,8 +195,13 @@ const BlogController = {
         });
     },
     getByTitle: (req, res) => {
+        const projection = {
+            _id: 1,
+            title: 1,
+            tags: 1
+        };
         const titlePrefix = req.params.title;
-        mongoose.model('BlogPost').find({ title: { $regex: `^${titlePrefix}`, $options: 'i' } }, { _id: 1, title: 1, tags: 1 }, (err, titles) => {
+        mongoose.model('BlogPost').find({ title: { $regex: `^${titlePrefix}`, $options: 'i' } }, projection, (err, titles) => {
             if (err) {
                 sendJSONResponse(res, 404, {
                     error: err || 'No articles with the title found'

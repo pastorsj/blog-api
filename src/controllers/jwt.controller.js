@@ -1,7 +1,7 @@
 
 
 import jwt from 'jsonwebtoken';
-import { SECRET } from '../config/mongo.config';
+import { SECRET } from '../config/jwt.config';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);

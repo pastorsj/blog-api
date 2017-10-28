@@ -16,26 +16,25 @@ const sendJSONResponse = (res, status, content) => {
  * ROUTE: user/:username
  */
 
-const trimUserInfo = function (user) {
-    delete user._id;
-    delete user.__v;
-    delete user.password;
-    delete user.salt;
-    delete user.hash;
+const projection = {
+    _id: 0,
+    username: 1,
+    name: 1,
+    email: 1,
+    joinedDate: 1,
+    profilePicture: 1
 };
 
 const UserController = {
     get: (req, res) => {
         mongoose.model('User').findOne({
             username: req.params.username
-        }, (err, user) => {
+        }, projection, (err, user) => {
             if (err || _.isEmpty(user)) {
                 sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else {
-                user = user.toObject();
-                trimUserInfo(user);
                 sendJSONResponse(res, 200, {
                     data: user
                 });
@@ -45,34 +44,32 @@ const UserController = {
     post(req, res) {
         mongoose.model('User').findOne({
             username: req.params.username
-        }, (err, user) => {
+        }, projection, (err, user) => {
             if (err || _.isEmpty(user)) {
                 sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else if (req.file) {
-                const file = req.file;
+                const { file } = req;
                 const path = `profile_pictures/profile_${user.username}`;
                 ImageService.postImage(file, path)
                     .then((result) => {
                         user.profilePicture = result.url;
-                        user.save((err) => {
+                        user.save((error) => {
                             if (err) {
                                 sendJSONResponse(res, 500, {
-                                    error: err
+                                    error
                                 });
                             } else {
-                                user = user.toObject(); // Not needed, use projections
-                                trimUserInfo(user);
                                 sendJSONResponse(res, 200, {
                                     data: user
                                 });
                             }
                         });
                     })
-                    .catch((err) => {
-                        sendJSONResponse(res, err.status, {
-                            error: err.error
+                    .catch((error) => {
+                        sendJSONResponse(res, error.status, {
+                            error: error.error
                         });
                     });
             } else {
@@ -85,21 +82,19 @@ const UserController = {
     put(req, res) {
         mongoose.model('User').findOne({
             username: req.params.username
-        }, (err, user) => {
+        }, projection, (err, user) => {
             if (err || _.isEmpty(user)) {
                 sendJSONResponse(res, 404, {
                     error: err || 'User Not Found'
                 });
             } else {
                 _.assign(user, req.body);
-                user.save((err) => {
+                user.save((error) => {
                     if (err) {
                         sendJSONResponse(res, 500, {
-                            error: err
+                            error
                         });
                     } else {
-                        user = user.toObject();
-                        trimUserInfo(user);
                         sendJSONResponse(res, 200, {
                             data: user
                         });
@@ -117,10 +112,10 @@ const UserController = {
                     error: err || 'User Not Found'
                 });
             } else {
-                user.remove((err) => {
+                user.remove((error) => {
                     if (err) {
                         sendJSONResponse(res, 404, {
-                            error: err || 'User Not Found'
+                            error: error || 'User Not Found'
                         });
                     } else {
                         sendJSONResponse(res, 200, {

@@ -13,7 +13,7 @@ const sendJSONResponse = (res, status, content) => {
 
 const ArticlesController = {
     get: (req, res) => {
-        const username = req.params.username;
+        const { username } = req.params;
         mongoose.model('BlogPost').find({ author: username }, (err, articles) => {
             if (err) {
                 sendJSONResponse(res, 500, {

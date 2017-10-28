@@ -62,7 +62,7 @@ function zrange(setName, start, end) {
     return new Promise((resolve, reject) => {
         try {
             if (!setName || !start || !end) {
-                reject('Either the start or end is not defined');
+                reject(new Error('Either the start or end is not defined'));
             }
             client.zrange(setName, start, end, (err, range) => {
                 if (err) {
@@ -80,7 +80,7 @@ const RedisService = {
     addNew: (word, setName) => new Promise((resolve, reject) => {
         try {
             const adds = [];
-            for (let i = 0; i < word.length; i++) {
+            for (let i = 0; i < word.length; i += 1) {
                 const prefix = word.slice(0, i);
                 adds.push(zadd(setName, 0, prefix));
             }
@@ -93,18 +93,12 @@ const RedisService = {
                     });
                 })
                 .catch((err) => {
-                    reject({
-                        actualError: err,
-                        error: 'An error occured while trying to add a prefix to the database',
-                        status: 400
-                    });
+                    log.critical('An error occured while trying to add a prefix to the database', err);
+                    reject(new Error('An error occured while trying to add a prefix to the database'));
                 });
         } catch (e) {
             log.critical('Failed to add new prefix/word', e);
-            reject({
-                error: e,
-                status: 500
-            });
+            reject(new Error(e));
         }
     }),
     getPrefixes: (prefix, count, setName) => new Promise(async (resolve, reject) => {
@@ -113,10 +107,7 @@ const RedisService = {
             const rangeLen = 50;
             if (!prefix || !count) {
                 log.critical(`Prefix or count was not included in the body of the request. Prefix: ${prefix}; Count: ${count}`);
-                reject({
-                    status: 400,
-                    error: 'Prefix or count was not included in the body of the request'
-                });
+                reject(new Error('Prefix or count was not included in the body of the request'));
             } else {
                 let start = await zrank(setName, prefix);
 
@@ -131,7 +122,7 @@ const RedisService = {
                 }
 
                 while (results.length !== count) {
-                    const range = await zrange(setName, start, start + rangeLen - 1);
+                    const range = await zrange(setName, start, start + (rangeLen - 1));
                     start += rangeLen;
                     if (!range || range.length === 0) {
                         break;
@@ -155,10 +146,7 @@ const RedisService = {
             }
         } catch (e) {
             log.critical('Error while getting prefixes', e);
-            reject({
-                status: 500,
-                error: `An error has occured: ${e}`
-            });
+            reject(new Error(`An error has occured: ${e}`));
         }
     })
 };

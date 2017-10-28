@@ -57,10 +57,11 @@ app.use(expressWinston.logger({
     requestFilter: (req, propName) => {
         if (propName === 'headers') {
             return Object.keys(req.headers).reduce((filteredHeaders, key) => {
+                const headers = filteredHeaders;
                 if (key !== 'authorization') {
-                    filteredHeaders[key] = req.headers[key];
+                    headers[key] = req.headers[key];
                 }
-                return filteredHeaders;
+                return headers;
             }, {});
         }
         return req[propName];
@@ -102,7 +103,7 @@ app.use((req, res, next) => {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-    app.use((err, req, res, next) => {
+    app.use((err, req, res) => {
         if (err.name === 'UnauthorizedError') {
             res.status(401).send({ error: err });
         } else {
@@ -114,7 +115,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).send({ error: err });
     } else {

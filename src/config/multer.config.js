@@ -22,4 +22,4 @@ const storage = multer.diskStorage({
     limits: { fileSize: MAX_SIZE }
 });
 
-export const upload = multer({ storage });
+export const upload = multer({ storage }); // eslint-disable-line

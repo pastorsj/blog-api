@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
-import { DATABASE } from '../config/mongo.config';
-import log from '../log';
+import readLine from 'readline';
 import autoIncrement from 'mongoose-auto-increment';
 
-let gracefulShutdown;
+import { DATABASE } from '../config/mongo.config';
+import log from '../log';
+
 const dbUri = DATABASE;
 const connection = mongoose.connect(dbUri);
 
 autoIncrement.initialize(connection);
 
 /*  Emulateing disconnection events on Windows */
-import readLine from 'readline';
 
 if (process.platform === 'win32') {
     const rl = readLine.createInterface({
@@ -41,7 +41,7 @@ mongoose.connection.on('disconnected', () => {
 });
 
 /*  CAPTURE APP TERMINATION / RESTART EVENTS */
-gracefulShutdown = (msg, callback) => {
+const gracefulShutdown = (msg, callback) => {
     mongoose.connection.close(() => {
         log.info(`Mongoose disconnection through ${msg}`);
         callback();

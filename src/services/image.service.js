@@ -41,17 +41,11 @@ const ImagesService = {
                 })
                 .catch((err) => {
                     log.critical('Error when posting image', err);
-                    reject({
-                        status: 400,
-                        error: err
-                    });
+                    reject(new Error(`Error when posting image: ${err}`));
                 });
         } catch (e) {
             log.critical('Error while getting image off of server (catch)', e);
-            reject({
-                status: 500,
-                error: e
-            });
+            reject(new Error(`Error while getting image off of server (catch) ${e})`));
         }
     })
 };

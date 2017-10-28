@@ -1,58 +1,15 @@
 
 
-import app from './app';
 import http from 'http';
 import spdy from 'spdy';
 import fs from 'fs';
 import yargs from 'yargs';
+
+import app from './app';
 import log from './log';
 
-const argv = yargs.argv;
-const type = argv.type;
-const portArg = argv.port;
+const { type, portArg } = yargs.argv;
 
-/**
- * Creates an http server
- * @param {Number} httpPort - The port for http
- */
-function createHttpServer(httpPort = 3000) {
-    const port = normalizePort(process.env.HTTP_PORT || httpPort);
-    const server = http.createServer(app);
-
-    app.set('port', port);
-
-    server.listen(port);
-    server.on('error', onError.bind(null, port));
-    server.on('listening', onListening.bind(null, server));
-}
-
-/**
- * Creates an https server
- * @param {Number} httpsPort - The port for https
- */
-function createHttpsServer(httpsPort = 3001) {
-    const privateKey = fs.readFileSync(process.env.PRIVATE_KEY, 'utf8');
-    const certificate = fs.readFileSync(process.env.CERTIFICATE, 'utf8');
-    const credentials = { key: privateKey, cert: certificate };
-
-    const port = normalizePort(process.env.HTTPS_PORT || httpsPort);
-    const http2Server = spdy.createServer(credentials, app);
-
-    app.set('httpsPort', port);
-
-    http2Server.listen(port);
-    http2Server.on('error', onError.bind(null, port));
-    http2Server.on('listening', onListeningHttps.bind(null, http2Server));
-}
-
-if (type === 'https') {
-    createHttpsServer(portArg);
-} else if (type === 'http') {
-    createHttpServer(portArg);
-} else {
-    createHttpServer();
-    createHttpsServer();
-}
 
 /**
  * Normalize a port into a number, string, or false.
@@ -62,7 +19,7 @@ if (type === 'https') {
 function normalizePort(val) {
     const port = parseInt(val, 10);
 
-    if (isNaN(port)) {
+    if (Number.isNaN(port)) {
         // named pipe
         return val;
     }
@@ -120,4 +77,47 @@ function onListeningHttps(httpsServer) {
     const addr = httpsServer.address();
     const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
     log.info(`Https server listening on ${bind}`);
+}
+
+/**
+ * Creates an http server
+ * @param {Number} httpPort - The port for http
+ */
+function createHttpServer(httpPort = 3000) {
+    const port = normalizePort(process.env.HTTP_PORT || httpPort);
+    const server = http.createServer(app);
+
+    app.set('port', port);
+
+    server.listen(port);
+    server.on('error', onError.bind(null, port));
+    server.on('listening', onListening.bind(null, server));
+}
+
+/**
+ * Creates an https server
+ * @param {Number} httpsPort - The port for https
+ */
+function createHttpsServer(httpsPort = 3001) {
+    const privateKey = fs.readFileSync(process.env.PRIVATE_KEY, 'utf8');
+    const certificate = fs.readFileSync(process.env.CERTIFICATE, 'utf8');
+    const credentials = { key: privateKey, cert: certificate };
+
+    const port = normalizePort(process.env.HTTPS_PORT || httpsPort);
+    const http2Server = spdy.createServer(credentials, app);
+
+    app.set('httpsPort', port);
+
+    http2Server.listen(port);
+    http2Server.on('error', onError.bind(null, port));
+    http2Server.on('listening', onListeningHttps.bind(null, http2Server));
+}
+
+if (type === 'https') {
+    createHttpsServer(portArg);
+} else if (type === 'http') {
+    createHttpServer(portArg);
+} else {
+    createHttpServer();
+    createHttpsServer();
 }
