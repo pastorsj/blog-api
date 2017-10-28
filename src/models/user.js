@@ -40,17 +40,18 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-userSchema.methods.setPassword = (password) => {
+// These functions cannot be converted to arrow functions since the 'this' environment matters
+userSchema.methods.setPassword = function setPassword(password) {
     this.salt = crypto.randomBytes(16).toString('hex');
     this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
 };
 
-userSchema.methods.validPassword = (password) => {
+userSchema.methods.validPassword = function validPassword(password) {
     const hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64, 'sha512').toString('hex');
     return this.hash === hash;
 };
 
-userSchema.methods.generateJwt = () => {
+userSchema.methods.generateJwt = function generateJwt() {
     const expiry = new Date();
     expiry.setDate(expiry.getDate() + 1);
 

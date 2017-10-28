@@ -13,8 +13,7 @@ const customColors = {
     fatal: 'red'
 };
 
-const { Logger } = winston;
-const { Console, File } = winston.transports;
+const { Logger, transports: { Console, File } } = winston;
 
 const logger = new (Logger)({
     colors: customColors,
