@@ -59,8 +59,6 @@ const BlogController = {
                 mongoose.model('BlogPost').findOne({
                     _id: req.params.id
                 }, (err, blog) => {
-                    log.debug('Blog', blog);
-                    log.debug('File?', req.file);
                     if (err || _.isEmpty(blog)) {
                         sendJSONResponse(res, 404, {
                             error: err || 'Article Not Found'
