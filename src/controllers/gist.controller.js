@@ -13,7 +13,7 @@ const sendJSONResponse = (res, status, content) => {
 const GistController = {
     post: (req, res) => {
         if (req.body && req.body.link) {
-            const { link } = req.bodyx;
+            const { link } = req.body;
             gistify(link)
                 .then((html) => {
                     sendJSONResponse(res, 200, {

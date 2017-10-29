@@ -67,7 +67,7 @@ const TagsController = {
     },
     getTagsByPopularity: (req, res) => {
         try {
-            mongoose.model('BlogPost').find({}, { tags: 1, _id: 0 }, (err, tagSet) => {
+            mongoose.model('BlogPost').find({ isPublished: true }, { tags: 1, _id: 0 }, (err, tagSet) => {
                 if (err) {
                     sendJSONResponse(res, 404, {
                         error: err || 'Blog Post Not Found'
