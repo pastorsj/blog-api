@@ -34,6 +34,11 @@ const blogPostSchema = new mongoose.Schema({
         type: String,
         required: false,
         default: ''
+    },
+    isPublished: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 });
 

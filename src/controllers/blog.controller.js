@@ -98,7 +98,7 @@ const BlogController = {
         });
     },
     getAll: (req, res) => {
-        mongoose.model('BlogPost').find({}, (err, posts) => {
+        mongoose.model('BlogPost').find({ isPublished: true }, { __v: 0 }, (err, posts) => {
             if (err) {
                 sendJSONResponse(res, 404, {
                     error: err || 'Blog Post Not Found'
@@ -147,6 +147,9 @@ const BlogController = {
                 });
             } else {
                 _.assign(blog, req.body);
+                if (req.body.isPublished) {
+                    blog.datePosted = Date.now(); //eslint-disable-line
+                }
                 blog.save((error) => {
                     if (err) {
                         sendJSONResponse(res, 400, {
@@ -188,7 +191,8 @@ const BlogController = {
         mongoose.model('BlogPost').find({
             tags: {
                 $elemMatch: req.params.tag
-            }
+            },
+            isPublished: true
         }, (err, posts) => {
             if (err || _.isEmpty(posts)) {
                 sendJSONResponse(res, 404, {
@@ -208,7 +212,13 @@ const BlogController = {
             tags: 1
         };
         const titlePrefix = req.params.title;
-        mongoose.model('BlogPost').find({ title: { $regex: `^${titlePrefix}`, $options: 'i' } }, projection, (err, titles) => {
+        mongoose.model('BlogPost').find({
+            title: {
+                $regex: `^${titlePrefix}`,
+                $options: 'i'
+            },
+            isPublished: true
+        }, projection, (err, titles) => {
             if (err) {
                 sendJSONResponse(res, 404, {
                     error: err || 'No articles with the title found'
