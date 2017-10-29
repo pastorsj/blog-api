@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 import ImageService from '../services/image.service';
 import log from '../log';
+import { upload } from '../config/multer.config';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
@@ -49,43 +50,49 @@ const BlogController = {
         });
     },
     postCoverPhoto: (req, res) => {
-        mongoose.model('BlogPost').findOne({
-            _id: req.params.id
-        }, (err, blog) => {
-            log.debug('Blog', blog);
-            log.debug('File?', req.file);
-            if (err || _.isEmpty(blog)) {
-                sendJSONResponse(res, 404, {
-                    error: err || 'Article Not Found'
+        upload.single('coverPhoto')(req, res, (fileError) => {
+            if (fileError) {
+                sendJSONResponse(res, 400, {
+                    error: 'The file uploaded was larger than 1mb'
                 });
-            } else if (req.file) {
-                const { file } = req;
-                const path = `cover_photo/cover_${blog._id}`;
-                ImageService.postImage(file, path)
-                    .then((result) => {
-                        blog.coverPhoto = result.url; //eslint-disable-line
-                        blog.save((error) => {
-                            if (error) {
-                                log.critical('Error while trying to save the blog with the new cover photo', err);
-                                sendJSONResponse(res, 500, {
-                                    error
-                                });
-                            } else {
-                                sendJSONResponse(res, 200, {
-                                    data: blog
-                                });
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        log.critical('Error while trying to post image', err);
-                        sendJSONResponse(res, error.status, {
-                            error: error.error
-                        });
-                    });
             } else {
-                sendJSONResponse(res, 204, {
-                    data: ''
+                mongoose.model('BlogPost').findOne({
+                    _id: req.params.id
+                }, (err, blog) => {
+                    if (err || _.isEmpty(blog)) {
+                        sendJSONResponse(res, 404, {
+                            error: err || 'Article Not Found'
+                        });
+                    } else if (req.file) {
+                        const { file } = req;
+                        const path = `cover_photo/cover_${blog._id}`;
+                        ImageService.postImage(file, path)
+                            .then((result) => {
+                                blog.coverPhoto = result.url; //eslint-disable-line
+                                blog.save((error) => {
+                                    if (error) {
+                                        log.critical('Error while trying to save the blog with the new cover photo', err);
+                                        sendJSONResponse(res, 500, {
+                                            error
+                                        });
+                                    } else {
+                                        sendJSONResponse(res, 200, {
+                                            data: blog
+                                        });
+                                    }
+                                });
+                            })
+                            .catch((error) => {
+                                log.critical('Error while trying to post image', err);
+                                sendJSONResponse(res, error.status, {
+                                    error: error.error
+                                });
+                            });
+                    } else {
+                        sendJSONResponse(res, 204, {
+                            data: ''
+                        });
+                    }
                 });
             }
         });
