@@ -4,7 +4,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 
 import { auth } from '../config/jwt.config';
-import { upload } from '../config/multer.config';
 
 import BlogController from '../controllers/blog.controller';
 
@@ -22,7 +21,7 @@ router.route('/')
 router.route('/:id')
     .get(BlogController.get.bind(BlogController))
     .put(auth, BlogController.put.bind(BlogController))
-    .post(auth, upload.single('coverPhoto'), BlogController.postCoverPhoto.bind(BlogController))
+    .post(auth, BlogController.postCoverPhoto.bind(BlogController))
     .delete(auth, BlogController.delete.bind(BlogController));
 
 router.route('/tag/:tag')

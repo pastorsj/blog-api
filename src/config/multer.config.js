@@ -4,7 +4,8 @@ import crypto from 'crypto';
 import mime from 'mime';
 import log from '../log';
 
-const MAX_SIZE = 500000;
+const MAX_SIZE = 1000000;
+const NUMBER_OF_FILES = 1;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -18,8 +19,13 @@ const storage = multer.diskStorage({
                 cb(null, `${raw.toString('hex') + Date.now()}.${mime.getExtension(file.mimetype)}`);
             }
         });
-    },
-    limits: { fileSize: MAX_SIZE }
+    }
 });
 
-export const upload = multer({ storage }); // eslint-disable-line
+export const upload = multer({ // eslint-disable-line
+    storage,
+    limits: {
+        fileSize: MAX_SIZE,
+        files: NUMBER_OF_FILES
+    }
+});

@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import _ from 'lodash';
 
 import ImageService from '../services/image.service';
+import { upload } from '../config/multer.config';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
@@ -42,39 +43,47 @@ const UserController = {
         });
     },
     post(req, res) {
-        mongoose.model('User').findOne({
-            username: req.params.username
-        }, projection, (err, user) => {
-            if (err || _.isEmpty(user)) {
-                sendJSONResponse(res, 404, {
-                    error: err || 'User Not Found'
+        upload.single('profilePicture')(req, res, (fileError) => {
+            if (fileError) {
+                sendJSONResponse(res, 400, {
+                    error: 'The file uploaded was larger than 1mb'
                 });
-            } else if (req.file) {
-                const { file } = req;
-                const path = `profile_pictures/profile_${user.username}`;
-                ImageService.postImage(file, path)
-                    .then((result) => {
-                        user.profilePicture = result.url; //eslint-disable-line
-                        user.save((error) => {
-                            if (err) {
-                                sendJSONResponse(res, 500, {
-                                    error
-                                });
-                            } else {
-                                sendJSONResponse(res, 200, {
-                                    data: user
-                                });
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        sendJSONResponse(res, error.status, {
-                            error: error.error
-                        });
-                    });
             } else {
-                sendJSONResponse(res, 204, {
-                    data: ''
+                mongoose.model('User').findOne({
+                    username: req.params.username
+                }, projection, (err, user) => {
+                    if (err || _.isEmpty(user)) {
+                        sendJSONResponse(res, 404, {
+                            error: err || 'User Not Found'
+                        });
+                    } else if (req.file) {
+                        const { file } = req;
+                        const path = `profile_pictures/profile_${user.username}`;
+                        ImageService.postImage(file, path)
+                            .then((result) => {
+                                user.profilePicture = result.url; //eslint-disable-line
+                                user.save((error) => {
+                                    if (err) {
+                                        sendJSONResponse(res, 500, {
+                                            error
+                                        });
+                                    } else {
+                                        sendJSONResponse(res, 200, {
+                                            data: user
+                                        });
+                                    }
+                                });
+                            })
+                            .catch((error) => {
+                                sendJSONResponse(res, error.status, {
+                                    error: error.error
+                                });
+                            });
+                    } else {
+                        sendJSONResponse(res, 204, {
+                            data: ''
+                        });
+                    }
                 });
             }
         });
