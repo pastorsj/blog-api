@@ -1,12 +1,5 @@
 
-import redis from 'redis';
-import log from '../log';
-
-const client = redis.createClient();
-
-client.on('error', (err) => {
-    log.critical(`Error ${err}`);
-});
+import client from '../config/redis.config';
 
 /**
  * Promisify the zadd command

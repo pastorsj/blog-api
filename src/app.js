@@ -11,6 +11,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import expressWinston from 'express-winston';
 import winston from 'winston';
+import limiter from 'express-limiter';
+import client from './config/redis.config';
 
 import './models/db';
 import './models/blog';
@@ -30,12 +32,22 @@ import log from './log';
 
 const app = express();
 
+const limiterApp = limiter(app, client);
+limiterApp({
+    lookup: ['connection.remoteAddress'],
+    total: 100,
+    expire: 1000 * 60 * 60
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200',
+    optionsSuccessStatus: 200
+}));
 app.use(helmet());
 app.use(compression());
 
