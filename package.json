@@ -4,6 +4,12 @@
   "author": "Sam Pastoriza [pastorsj](https://github.com/pastorsj)",
   "repository": "https://github.com/pastorsj/blog-api",
   "private": false,
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pastorsj/blog-api/issues"
+  },
+  "homepage": "https://github.com/pastorsj/blog-api#readme",
+  "description": "A simple express-based api to serve a blog",
   "scripts": {
     "start": "babel-node ./src/server.js",
     "https": "babel-node ./src/server.js --type=https",
@@ -11,7 +17,11 @@
     "build": "webpack --env build --display-error-details",
     "dev": "webpack --progress --colors --env dev --display-error-details",
     "lint": "eslint src/*",
-    "autofix": "eslint --fix src/*"
+    "autofix": "eslint --fix src/*",
+    "test": "mocha --compilers js:babel-core/register --colors --timeout 5000 --exit ./tests/**/*.test.js",
+    "test:watch": "mocha --compilers js:babel-core/register --colors --timeout 5000 -w ./tests/**/*.test.js",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --timeout 5000 --reporter dot ./tests/**/*.test.js",
+    "cover:coveralls": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --timeout 5000 --reporter spec ./tests/**/*.test.js"
   },
   "dependencies": {
     "aws-sdk": "^2.114.0",
@@ -20,7 +30,6 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "body-parser": "~1.18.1",
-    "chai": "^4.1.2",
     "compression": "^1.7.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
@@ -52,11 +61,18 @@
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-import": "^2.8.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
+    "sinon": "^4.0.2",
+    "sinon-chai": "^2.14.0",
+    "supertest": "^3.0.0",
     "webpack": "^3.8.1",
     "webpack-node-externals": "^1.6.0"
   }
