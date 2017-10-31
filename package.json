@@ -18,10 +18,10 @@
     "dev": "webpack --progress --colors --env dev --display-error-details",
     "lint": "eslint src/*",
     "autofix": "eslint --fix src/*",
-    "test": "mocha --compilers js:babel-core/register --colors --timeout 5000 --exit ./tests/**/*.test.js",
-    "test:watch": "mocha --compilers js:babel-core/register --colors --timeout 5000 --exit -w ./tests/**/*.test.js",
-    "cover": "istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --timeout 5000 --exit --reporter dot ./tests/**/*.test.js",
-    "cover:coveralls": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --timeout 5000 --exit --reporter spec ./tests/**/*.test.js"
+    "test": "NODE_ENV=TEST mocha --compilers js:babel-core/register --colors --timeout 5000 --exit ./tests/**/*.test.js",
+    "test:watch": "NODE_ENV=TEST mocha --compilers js:babel-core/register --colors --timeout 5000 --exit -w ./tests/**/*.test.js",
+    "coverage": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:babel-core/register --colors --timeout 5000 --exit --reporter dot ./tests/**/*.test.js",
+    "coverage:coveralls": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:babel-core/register --colors --timeout 5000 --exit --reporter spec ./tests/**/*.test.js"
   },
   "dependencies": {
     "aws-sdk": "^2.114.0",

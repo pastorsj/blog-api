@@ -60,26 +60,28 @@ app.use(session({
     }
 }));
 
-app.use(expressWinston.logger({
-    transports: [
-        new winston.transports.Console({
-            colorize: true
-        })
-    ],
-    requestFilter: (req, propName) => {
-        if (propName === 'headers') {
-            return Object.keys(req.headers).reduce((filteredHeaders, key) => {
-                const headers = filteredHeaders;
-                if (key !== 'authorization') {
-                    headers[key] = req.headers[key];
-                }
-                return headers;
-            }, {});
-        }
-        return req[propName];
-    },
-    expressFormat: true
-}));
+if (process.env.NODE_ENV !== 'TEST') {
+    app.use(expressWinston.logger({
+        transports: [
+            new winston.transports.Console({
+                colorize: true
+            }),
+        ],
+        requestFilter: (req, propName) => {
+            if (propName === 'headers') {
+                return Object.keys(req.headers).reduce((filteredHeaders, key) => {
+                    const headers = filteredHeaders;
+                    if (key !== 'authorization') {
+                        headers[key] = req.headers[key];
+                    }
+                    return headers;
+                }, {});
+            }
+            return req[propName];
+        },
+        expressFormat: true
+    }));
+}
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
@@ -97,13 +99,15 @@ app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
 
-app.use(expressWinston.errorLogger({
-    transports: [
-        new winston.transports.Console({
-            colorize: true
-        })
-    ]
-}));
+if (process.env.NODE_ENV !== 'TEST') {
+    app.use(expressWinston.errorLogger({
+        transports: [
+            new winston.transports.Console({
+                colorize: true
+            })
+        ]
+    }));
+}
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
