@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import _ from 'lodash';
 
-const articlesMock = [
+export const articlesMock = [
     {
         text: '<p>New Article</p>',
         title: 'My new article',
@@ -25,7 +25,7 @@ const articlesMock = [
         title: 'An unpublished article',
         description: 'This article is not published',
         author: 'testuser',
-        isPublished: false,
+        isPublished: true,
         coverPhoto: '',
         tags: []
     }
