@@ -46,16 +46,22 @@ export const setupArticlesCollection = async (done) => {
     }
 };
 
-export const createCounter = async () => {
-    const Counter = mongoose.model('IdentityCounter');
-    const counter = new Counter();
-    counter.model = 'BlogPost';
-    counter.count = 0;
-    await counter.save();
+export const createCounter = async (done) => {
+    try {
+        const Counter = mongoose.model('IdentityCounter');
+        const counter = new Counter();
+        counter.model = 'BlogPost';
+        counter.count = 0;
+        counter.field = '_id';
+        await counter.save();
+        done();
+    } catch (e) {
+        done(e);
+    }
 };
 
 export function resetCounter(done) {
-    mongoose.model('IdentityCounter').remove({}).then(() => {
+    mongoose.model('IdentityCounter').collection.drop().then(() => {
         done();
     }).catch((err) => {
         done(err);

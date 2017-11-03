@@ -11,15 +11,16 @@ const { expect } = chai;
 describe('Test the /blog route', () => {
     let jwt = '';
     before((done) => {
-        createCounter(done).then(() => {
+        createCounter((err) => {
+            if (err) {
+                done(err);
+            }
             setupUserCollection((error) => {
                 if (error) {
                     done(error);
                 }
                 setupArticlesCollection(done);
             });
-        }).catch((err) => {
-            done(err);
         });
     });
     beforeEach((done) => {
@@ -75,7 +76,7 @@ describe('Test the /blog route', () => {
         describe('GET', () => {
             it('should get a single article', (done) => {
                 request(app)
-                    .get('/api/blog/0')
+                    .get('/api/blog/1')
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
@@ -94,7 +95,7 @@ describe('Test the /blog route', () => {
         describe('PUT', () => {
             it('should update a single article', (done) => {
                 request(app)
-                    .put('/api/blog/0')
+                    .put('/api/blog/1')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .send({
                         text: '<p>An updated article</p>'
@@ -110,7 +111,7 @@ describe('Test the /blog route', () => {
             });
             it('should update the datePosted field', (done) => {
                 request(app)
-                    .put('/api/blog/0')
+                    .put('/api/blog/1')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .send({
                         isPublished: true

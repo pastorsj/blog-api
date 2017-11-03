@@ -6,6 +6,8 @@ import { setupUserCollection, destroyUsersCollection } from '../mocks/user.mock'
 
 const { expect } = chai;
 
+const jwtRegex = /([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/;
+
 describe('Test the /auth route', () => {
     before((done) => {
         setupUserCollection(done);
@@ -23,7 +25,7 @@ describe('Test the /auth route', () => {
                     if (err) {
                         done(err);
                     }
-                    expect(res.body.token).to.match(/(\w+\.\w+\.\w+)/);
+                    expect(res.body.token).to.match(jwtRegex);
                     done();
                 });
         });
@@ -52,7 +54,7 @@ describe('Test the /auth route', () => {
                     if (err) {
                         done(err);
                     }
-                    expect(res.body.token).to.match(/(\w+\.\w+\.\w+)/);
+                    expect(res.body.token).to.match(jwtRegex);
                     done();
                 });
         });
