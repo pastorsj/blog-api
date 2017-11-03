@@ -11,17 +11,14 @@ const { expect } = chai;
 describe('Test the /blog route', () => {
     let jwt = '';
     beforeEach((done) => {
-        createCounter((err) => {
-            if (err) {
+        createCounter()
+            .then(() => setupUserCollection()
+                .then(() => setupArticlesCollection()
+                    .then(() => {
+                        done();
+                    }))).catch((err) => {
                 done(err);
-            }
-            setupUserCollection((error) => {
-                if (error) {
-                    done(error);
-                }
-                setupArticlesCollection(done);
             });
-        });
     });
     beforeEach((done) => {
         acquireJwt(app).then((res) => {
@@ -32,7 +29,11 @@ describe('Test the /blog route', () => {
         });
     });
     afterEach((done) => {
-        destroyArticlesCollection(done);
+        destroyArticlesCollection().then(() => {
+            done();
+        }).catch((err) => {
+            done(err);
+        });
     });
     describe('/', () => {
         it('should create an blog post and return it', (done) => {

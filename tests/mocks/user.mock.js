@@ -12,21 +12,13 @@ export const userMock = {
     username: 'testuser'
 };
 
-export function setupUserCollection(done) {
+export const setupUserCollection = async () => {
     const User = mongoose.model('User');
     const user = new User();
     _.assign(user, userMock);
-    user.save().then(() => {
-        done();
-    }).catch((err) => {
-        done(err);
-    });
-}
+    await user.save();
+};
 
-export function destroyUsersCollection(done) {
-    mongoose.model('User').remove({}).then(() => {
-        done();
-    }).catch((err) => {
-        done(err);
-    });
-}
+export const destroyUsersCollection = async () => {
+    await mongoose.model('User').remove({});
+};

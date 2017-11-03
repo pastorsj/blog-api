@@ -10,10 +10,18 @@ const jwtRegex = /([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/;
 
 describe('Test the /auth route', () => {
     before((done) => {
-        setupUserCollection(done);
+        setupUserCollection().then(() => {
+            done();
+        }).catch((err) => {
+            done(err);
+        });
     });
     after((done) => {
-        destroyUsersCollection(done);
+        destroyUsersCollection().then(() => {
+            done();
+        }).catch((err) => {
+            done(err);
+        });
     });
     describe('/login', () => {
         it('should return a jwt after successfully logging in', (done) => {
@@ -23,10 +31,10 @@ describe('Test the /auth route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     expect(res.body.token).to.match(jwtRegex);
-                    done();
+                    return done();
                 });
         });
         it('should fail to login', (done) => {
@@ -35,7 +43,7 @@ describe('Test the /auth route', () => {
                 .set({ Authorization: 'testuser:test1' })
                 .expect(404)
                 .end(() => {
-                    done();
+                    return done();
                 });
         });
     });
@@ -52,10 +60,10 @@ describe('Test the /auth route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     expect(res.body.token).to.match(jwtRegex);
-                    done();
+                    return done();
                 });
         });
         it('should not successfully register a new user since the username is take', (done) => {
@@ -70,10 +78,10 @@ describe('Test the /auth route', () => {
                 .expect(409)
                 .end((err, res) => {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     expect(res.body.message).to.be.eq('Username is taken.');
-                    done();
+                    return done();
                 });
         });
     });

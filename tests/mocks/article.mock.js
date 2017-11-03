@@ -32,52 +32,30 @@ export const articlesMock = [
     }
 ];
 
-export const setupArticlesCollection = async (done) => {
+export const setupArticlesCollection = async () => {
     const Article = mongoose.model('BlogPost');
-    try {
-        for (let a of articlesMock) { //eslint-disable-line
-            const article = new Article();
-            _.assign(article, a);
-            await article.save(); //eslint-disable-line
-        }
-        done();
-    } catch (e) {
-        done(e);
+    for (let a of articlesMock) { //eslint-disable-line
+        const article = new Article();
+        _.assign(article, a);
+        await article.save(); //eslint-disable-line
     }
 };
 
-export const createCounter = async (done) => {
-    try {
-        const Counter = mongoose.model('IdentityCounter');
-        const counter = new Counter();
-        counter.model = 'BlogPost';
-        counter.count = 0;
-        counter.field = '_id';
-        await counter.save();
-        done();
-    } catch (e) {
-        done(e);
-    }
+export const createCounter = async () => {
+    const Counter = mongoose.model('IdentityCounter');
+    const counter = new Counter();
+    counter.model = 'BlogPost';
+    counter.count = 0;
+    counter.field = '_id';
+    await counter.save();
 };
 
-export function resetCounter(done) {
-    mongoose.model('IdentityCounter').collection.drop().then(() => {
-        done();
-    }).catch((err) => {
-        done(err);
-    });
-}
+export const resetCounter = async () => {
+    await mongoose.model('IdentityCounter').collection.drop();
+};
 
-export function destroyArticlesCollection(done) {
-    resetCounter((err) => {
-        if (err) {
-            done(err);
-        }
-        mongoose.model('BlogPost').remove({}).then(() => {
-            done();
-        }).catch((error) => {
-            done(error);
-        });
-    });
-}
+export const destroyArticlesCollection = async () => {
+    await resetCounter();
+    await mongoose.model('BlogPost').remove({});
+};
 

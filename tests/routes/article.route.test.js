@@ -11,11 +11,10 @@ const { expect } = chai;
 describe('Test the /articles route', () => {
     let jwt = '';
     before((done) => {
-        setupUserCollection((err) => {
-            if (err) {
-                done(err);
-            }
-            setupArticlesCollection(done);
+        setupUserCollection().then(() => setupArticlesCollection()).then(() => {
+            done();
+        }).catch((err) => {
+            done(err);
         });
     });
     beforeEach((done) => {
@@ -27,7 +26,11 @@ describe('Test the /articles route', () => {
         });
     });
     after((done) => {
-        destroyArticlesCollection(done);
+        destroyArticlesCollection().then(() => {
+            done();
+        }).catch((err) => {
+            done(err);
+        });
     });
     describe('/articles/:username', () => {
         it('should return two articles written by testuser', (done) => {
@@ -37,10 +40,10 @@ describe('Test the /articles route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     expect(res.body.data.length).to.be.eq(2);
-                    done();
+                    return done();
                 });
         });
         it('should return no articles written by the fakeuser', (done) => {
@@ -50,10 +53,10 @@ describe('Test the /articles route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        done(err);
+                        return done(err);
                     }
                     expect(res.body.data.length).to.be.eq(0);
-                    done();
+                    return done();
                 });
         });
     });
