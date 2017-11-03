@@ -10,7 +10,7 @@ const { expect } = chai;
 
 describe('Test the /blog route', () => {
     let jwt = '';
-    before((done) => {
+    beforeEach((done) => {
         createCounter((err) => {
             if (err) {
                 done(err);
@@ -31,7 +31,7 @@ describe('Test the /blog route', () => {
             done(err);
         });
     });
-    after((done) => {
+    afterEach((done) => {
         destroyArticlesCollection(done);
     });
     describe('/', () => {
@@ -135,6 +135,44 @@ describe('Test the /blog route', () => {
                         text: '<p>Failed to update</p>'
                     })
                     .expect(404, done);
+            });
+        });
+        describe('DELETE', () => {
+            it('should delete an article', (done) => {
+                request(app)
+                    .delete('/api/blog/1')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.message).to.be.eq('The blog with the id 1 was removed');
+                        return done();
+                    });
+            });
+            it('should delete an article', (done) => {
+                request(app)
+                    .delete('/api/blog/10')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(404, done);
+            });
+        });
+    });
+    describe('/tag/:tag', () => {
+        describe('GET', () => {
+            it('should get all articles that are published and have a specific tag', (done) => {
+                request(app)
+                    .get('/api/blog/tag/redis')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.data.length).to.be.eq(1);
+                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
+                        return done();
+                    });
             });
         });
     });
