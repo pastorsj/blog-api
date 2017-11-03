@@ -174,6 +174,34 @@ describe('Test the /blog route', () => {
                         return done();
                     });
             });
+            it('should not find any article with the given tag', (done) => {
+                request(app)
+                    .get('/api/blog/tag/dne')
+                    .expect(404, done);
+            });
+        });
+    });
+    describe('/title/:title', () => {
+        describe('GET', () => {
+            it('should get all articles that are published that have part of the given title', (done) => {
+                request(app)
+                    .get('/api/blog/title/My')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.data.length).to.be.eq(1);
+                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
+                        expect(res.body.data[0].tags).to.deep.equal(articlesMock[0].tags);
+                        return done();
+                    });
+            });
+            it('should get all articles that are published that have part of the given title', (done) => {
+                request(app)
+                    .get('/api/blog/title/Testing')
+                    .expect(404, done);
+            });
         });
     });
 });
