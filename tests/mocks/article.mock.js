@@ -9,6 +9,7 @@ export const articlesMock = [
         author: 'testuser',
         tags: ['redis', 'express', 'databases'],
         coverPhoto: 'https://imgur.com/somephoto.png',
+        datePosted: Date.now(),
         isPublished: true
     },
     {
@@ -31,15 +32,30 @@ export const articlesMock = [
     }
 ];
 
-export function setupArticlesCollection(done) {
+export const setupArticlesCollection = async (done) => {
     const Article = mongoose.model('BlogPost');
-    const articleInserts = [];
-    articlesMock.forEach((a) => {
-        const article = new Article();
-        _.assign(article, a);
-        articleInserts.push(article.save());
-    });
-    Promise.all(articleInserts).then((res) => {
+    try {
+        for (let a of articlesMock) { //eslint-disable-line
+            const article = new Article();
+            _.assign(article, a);
+            await article.save(); //eslint-disable-line
+        }
+        done();
+    } catch (e) {
+        done(e);
+    }
+};
+
+export const createCounter = async () => {
+    const Counter = mongoose.model('IdentityCounter');
+    const counter = new Counter();
+    counter.model = 'BlogPost';
+    counter.count = 0;
+    await counter.save();
+};
+
+export function resetCounter(done) {
+    mongoose.model('IdentityCounter').remove({}).then(() => {
         done();
     }).catch((err) => {
         done(err);
@@ -47,9 +63,15 @@ export function setupArticlesCollection(done) {
 }
 
 export function destroyArticlesCollection(done) {
-    mongoose.model('BlogPost').remove({}).then(() => {
-        done();
-    }).catch((err) => {
-        done(err);
+    resetCounter((err) => {
+        if (err) {
+            done(err);
+        }
+        mongoose.model('BlogPost').remove({}).then(() => {
+            done();
+        }).catch((error) => {
+            done(error);
+        });
     });
 }
+
