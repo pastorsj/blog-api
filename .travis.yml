@@ -17,7 +17,7 @@ before_install:
 install:
 - npm install
 script:
-- npm run cover:coveralls
+- npm run coverage:coveralls
 before_deploy:
 - npm run build
 deploy:
