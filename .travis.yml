@@ -13,6 +13,7 @@ before_install:
 - eval "$(ssh-agent -s)"
 - chmod 600 deploy_key.pem
 - ssh-add deploy_key.pem
+- mkdir -p uploads
 install:
 - npm install
 before_deploy:
