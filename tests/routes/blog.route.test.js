@@ -1,16 +1,26 @@
 import request from 'supertest';
 import chai from 'chai';
+import sinonChai from 'sinon-chai';
+import sinon from 'sinon';
+import fs from 'fs';
+import path from 'path';
 
 import app from '../../src/app';
 import { setupArticlesCollection, destroyArticlesCollection, articlesMock, createCounter } from '../mocks/article.mock';
 import { setupUserCollection } from '../mocks/user.mock';
 import acquireJwt from '../common/jwt.common';
+import ImageService from '../../src/services/image.service';
 
 const { expect } = chai;
 
+chai.use(sinonChai);
+
 describe('Test the /blog route', () => {
     let jwt = '';
+    let sandbox;
+
     beforeEach((done) => {
+        sandbox = sinon.sandbox.create();
         createCounter()
             .then(() => setupUserCollection()
                 .then(() => setupArticlesCollection()
@@ -29,6 +39,7 @@ describe('Test the /blog route', () => {
         });
     });
     afterEach((done) => {
+        sandbox.restore();
         destroyArticlesCollection().then(() => {
             done();
         }).catch((err) => {
@@ -136,6 +147,72 @@ describe('Test the /blog route', () => {
                         text: '<p>Failed to update</p>'
                     })
                     .expect(404, done);
+            });
+        });
+        describe('POST', () => {
+            afterEach((done) => {
+                fs.readdir('uploads', (err, files) => {
+                    if (err) {
+                        done(err);
+                    }
+                    files.forEach((file) => {
+                        fs.unlinkSync(path.join('uploads', file));
+                    });
+                    done();
+                });
+            });
+            it('should update/add a cover photo for an article', (done) => {
+                const postImageStub = sandbox.stub(ImageService, 'postImage').resolves({ url: 'https://flickr.com' });
+                request(app)
+                    .post('/api/blog/1')
+                    .attach('coverPhoto', 'tests/common/testing.png')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.data.coverPhoto).to.be.eq('https://flickr.com');
+                        expect(res.body.data.author).to.be.eq('testuser');
+                        postImageStub.restore();
+                        return done();
+                    });
+            });
+            it('should fail to add a cover photo since the article does not exist', (done) => {
+                request(app)
+                    .post('/api/blog/10')
+                    .attach('coverPhoto', 'tests/common/testing.png')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(404, done);
+            });
+            it('should fail to add a cover photo since service failed to post', (done) => {
+                sandbox.stub(ImageService, 'postImage').rejects({ status: 400, error: 'Error' });
+                request(app)
+                    .post('/api/blog/1')
+                    .attach('coverPhoto', 'tests/common/testing.png')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(400)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.error).to.be.eq('Error');
+                        return done();
+                    });
+            });
+            it('should return nothing when a file is not uploaded', (done) => {
+                sandbox.stub(ImageService, 'postImage').rejects({ status: 400, error: 'Error' });
+                request(app)
+                    .post('/api/blog/1')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(204, done);
+            });
+            it('should not upload the image since it is greater that 1mb', (done) => {
+                request(app)
+                    .post('/api/blog/1')
+                    .attach('coverPhoto', 'tests/common/large.jpg')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(400, done);
             });
         });
         describe('DELETE', () => {
