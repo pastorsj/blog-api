@@ -35,6 +35,12 @@ describe('Test the /gist route', () => {
                         return done();
                     });
             });
+            it('should error out when no link is provided', (done) => {
+                request(app)
+                    .post('/api/gist')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(400, done);
+            });
         });
     });
 });

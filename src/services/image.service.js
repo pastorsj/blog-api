@@ -1,5 +1,3 @@
-
-
 import FroalaEditor from 'wysiwyg-editor-node-sdk';
 import fs from 'fs';
 import path from 'path';
