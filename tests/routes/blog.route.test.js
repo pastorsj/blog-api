@@ -94,7 +94,8 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.title).to.be.eq(articlesMock[0].title);
+                        const { data } = res.body;
+                        expect(data.title).to.be.eq(articlesMock[0].title);
                         return done();
                     });
             });
@@ -117,7 +118,8 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.text).to.be.eq('<p>An updated article</p>');
+                        const { data } = res.body;
+                        expect(data.text).to.be.eq('<p>An updated article</p>');
                         return done();
                     });
             });
@@ -133,7 +135,8 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        const returnedDate = new Date(res.body.data.datePosted);
+                        const { data } = res.body;
+                        const returnedDate = new Date(data.datePosted);
                         const originalDate = new Date(articlesMock[0].datePosted);
                         expect(returnedDate).to.be.greaterThan(originalDate);
                         return done();
@@ -172,8 +175,9 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.coverPhoto).to.be.eq('https://flickr.com');
-                        expect(res.body.data.author).to.be.eq('testuser');
+                        const { data } = res.body;
+                        expect(data.coverPhoto).to.be.eq('https://flickr.com');
+                        expect(data.author).to.be.eq('testuser');
                         postImageStub.restore();
                         return done();
                     });
@@ -196,7 +200,8 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.error).to.be.eq('Error');
+                        const { error } = res.body;
+                        expect(error).to.be.eq('Error');
                         return done();
                     });
             });
@@ -247,8 +252,9 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.length).to.be.eq(1);
-                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
+                        const { data } = res.body;
+                        expect(data.length).to.be.eq(1);
+                        expect(data[0].title).to.be.eq(articlesMock[0].title);
                         return done();
                     });
             });
@@ -269,9 +275,10 @@ describe('Test the /blog route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.length).to.be.eq(1);
-                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
-                        expect(res.body.data[0].tags).to.deep.equal(articlesMock[0].tags);
+                        const { data } = res.body;
+                        expect(data.length).to.be.eq(1);
+                        expect(data[0].title).to.be.eq(articlesMock[0].title);
+                        expect(data[0].tags).to.deep.equal(articlesMock[0].tags);
                         return done();
                     });
             });

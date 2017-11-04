@@ -52,9 +52,10 @@ describe('Test the /user route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.username).to.be.eq('testuser');
-                        expect(res.body.data.name).to.be.eq('Test User');
-                        expect(res.body.data.email).to.be.eq('testuser@test.com');
+                        const { data } = res.body;
+                        expect(data.username).to.be.eq('testuser');
+                        expect(data.name).to.be.eq('Test User');
+                        expect(data.email).to.be.eq('testuser@test.com');
                         return done();
                     });
             });
@@ -77,7 +78,7 @@ describe('Test the /user route', () => {
                 });
             });
             it('should update/add a profile picture url to a user', (done) => {
-                const postImageStub = sandbox.stub(ImageService, 'postImage').resolves({ url: 'https://flickr.com' });
+                sandbox.stub(ImageService, 'postImage').resolves({ url: 'https://flickr.com' });
                 request(app)
                     .post('/api/user/testuser')
                     .attach('profilePicture', 'tests/common/testing.png')
@@ -87,9 +88,9 @@ describe('Test the /user route', () => {
                         if (err) {
                             return done(err);
                         }
-                        postImageStub.restore();
-                        expect(res.body.data.name).to.be.eq('Test User');
-                        expect(res.body.data.profilePicture).to.be.eq('https://flickr.com');
+                        const { data } = res.body;
+                        expect(data.name).to.be.eq('Test User');
+                        expect(data.profilePicture).to.be.eq('https://flickr.com');
                         return done();
                     });
             });
@@ -143,7 +144,8 @@ describe('Test the /user route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.name).to.be.eq('A New Test User');
+                        const { data } = res.body;
+                        expect(data.name).to.be.eq('A New Test User');
                         return done();
                     });
             });
@@ -167,7 +169,8 @@ describe('Test the /user route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data).to.be.eq('The user with the username testuser was removed');
+                        const { data } = res.body;
+                        expect(data).to.be.eq('The user with the username testuser was removed');
                         return done();
                     });
             });

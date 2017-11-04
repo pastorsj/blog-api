@@ -63,7 +63,9 @@ describe('Test the /images route', () => {
                         }
                         deleteImageStub.restore();
                         sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
-                        expect(res.body.data).to.be.eq('Data');
+
+                        const { data } = res.body;
+                        expect(data).to.be.eq('Data');
                         return done();
                     });
             });

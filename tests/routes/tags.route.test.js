@@ -47,7 +47,9 @@ describe('Test the /tags route', () => {
                         }
                         addNewStub.restore();
                         sinon.assert.calledWith(addNewStub, 'tag', 'tags');
-                        expect(res.body.data).to.be.eq('Data');
+
+                        const { data } = res.body;
+                        expect(data).to.be.eq('Data');
                         return done();
                     });
             });
@@ -85,7 +87,9 @@ describe('Test the /tags route', () => {
                         }
                         getPrefixesStub.restore();
                         sinon.assert.calledWith(getPrefixesStub, 'tag', 50, 'tags');
-                        expect(res.body.data).to.be.eq('Data');
+
+                        const { data } = res.body;
+                        expect(data).to.be.eq('Data');
                         return done();
                     });
             });
@@ -128,7 +132,8 @@ describe('Test the /tags route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data).to.deep.equal({
+                        const { data } = res.body;
+                        expect(data).to.deep.equal({
                             redis: 1,
                             databases: 1,
                             express: 1
@@ -165,9 +170,10 @@ describe('Test the /tags route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data.length).to.be.eq(1);
-                        expect(res.body.data[0].author.username).to.be.eq('testuser');
-                        expect(res.body.data[0].author.name).to.be.eq('Test User');
+                        const { data } = res.body;
+                        expect(data.length).to.be.eq(1);
+                        expect(data[0].author.username).to.be.eq('testuser');
+                        expect(data[0].author.name).to.be.eq('Test User');
                         return done();
                     });
             });

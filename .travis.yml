@@ -16,6 +16,8 @@ before_install:
 - mkdir -p uploads
 install:
 - npm install
+script:
+- npm run cover:coveralls
 before_deploy:
 - npm run build
 deploy:
@@ -26,6 +28,7 @@ deploy:
     branch: master
     tags: true
 after_script:
+- test -e ./coverage/lcov.info && cat ./coverage/lcov.info | coveralls
 - ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"

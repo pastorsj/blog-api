@@ -31,7 +31,8 @@ describe('Test the /gist route', () => {
                         if (err) {
                             return done(err);
                         }
-                        expect(res.body.data).to.have.all.keys('file', 'styles', 'html');
+                        const { data } = res.body;
+                        expect(data).to.have.all.keys('file', 'styles', 'html');
                         return done();
                     });
             });

@@ -42,7 +42,8 @@ describe('Test the /articles route', () => {
                     if (err) {
                         return done(err);
                     }
-                    expect(res.body.data.length).to.be.eq(2);
+                    const { data } = res.body;
+                    expect(data.length).to.be.eq(2);
                     return done();
                 });
         });
@@ -55,7 +56,8 @@ describe('Test the /articles route', () => {
                     if (err) {
                         return done(err);
                     }
-                    expect(res.body.data.length).to.be.eq(0);
+                    const { data } = res.body;
+                    expect(data.length).to.be.eq(0);
                     return done();
                 });
         });
