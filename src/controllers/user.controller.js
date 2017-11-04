@@ -63,8 +63,8 @@ const UserController = {
                             .then((result) => {
                                 user.profilePicture = result.url; //eslint-disable-line
                                 user.save((error) => {
-                                    if (err) {
-                                        sendJSONResponse(res, 500, {
+                                    if (error) {
+                                        sendJSONResponse(res, 400, {
                                             error
                                         });
                                     } else {

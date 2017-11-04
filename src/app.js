@@ -12,7 +12,7 @@ import compression from 'compression';
 import expressWinston from 'express-winston';
 import winston from 'winston';
 import limiter from 'express-limiter';
-import client from './config/redis.config';
+import mongoose from 'mongoose';
 
 import './models/db';
 import './models/blog';
@@ -25,10 +25,12 @@ import imagesRoute from './routes/images';
 import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
 import tagsRoute from './routes/tags';
-
 import { register, login } from './routes/auth';
 
+import client from './config/redis.config';
 import log from './log';
+
+mongoose.Promise = global.Promise;
 
 const app = express();
 
@@ -60,26 +62,28 @@ app.use(session({
     }
 }));
 
-app.use(expressWinston.logger({
-    transports: [
-        new winston.transports.Console({
-            colorize: true
-        })
-    ],
-    requestFilter: (req, propName) => {
-        if (propName === 'headers') {
-            return Object.keys(req.headers).reduce((filteredHeaders, key) => {
-                const headers = filteredHeaders;
-                if (key !== 'authorization') {
-                    headers[key] = req.headers[key];
-                }
-                return headers;
-            }, {});
-        }
-        return req[propName];
-    },
-    expressFormat: true
-}));
+if (process.env.NODE_ENV !== 'TEST') {
+    app.use(expressWinston.logger({
+        transports: [
+            new winston.transports.Console({
+                colorize: true
+            }),
+        ],
+        requestFilter: (req, propName) => {
+            if (propName === 'headers') {
+                return Object.keys(req.headers).reduce((filteredHeaders, key) => {
+                    const headers = filteredHeaders;
+                    if (key !== 'authorization') {
+                        headers[key] = req.headers[key];
+                    }
+                    return headers;
+                }, {});
+            }
+            return req[propName];
+        },
+        expressFormat: true
+    }));
+}
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
@@ -97,13 +101,15 @@ app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
 
-app.use(expressWinston.errorLogger({
-    transports: [
-        new winston.transports.Console({
-            colorize: true
-        })
-    ]
-}));
+if (process.env.NODE_ENV !== 'TEST') {
+    app.use(expressWinston.errorLogger({
+        transports: [
+            new winston.transports.Console({
+                colorize: true
+            })
+        ]
+    }));
+}
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

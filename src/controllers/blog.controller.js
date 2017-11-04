@@ -180,7 +180,7 @@ const BlogController = {
                         });
                     } else {
                         sendJSONResponse(res, 200, {
-                            data: `The blog with the id ${blog._id} was removed`
+                            message: `The blog with the id ${blog._id} was removed`
                         });
                     }
                 });
@@ -188,15 +188,14 @@ const BlogController = {
         });
     },
     getByTag: (req, res) => {
+        const { tag } = req.params;
         mongoose.model('BlogPost').find({
-            tags: {
-                $elemMatch: req.params.tag
-            },
+            tags: tag,
             isPublished: true
         }, (err, posts) => {
             if (err || _.isEmpty(posts)) {
                 sendJSONResponse(res, 404, {
-                    error: err || 'Blog Post Not Found'
+                    error: err || 'No blog posts found with that tag'
                 });
             } else {
                 sendJSONResponse(res, 200, {
@@ -219,7 +218,7 @@ const BlogController = {
             },
             isPublished: true
         }, projection, (err, titles) => {
-            if (err) {
+            if (err || _.isEmpty(titles)) {
                 sendJSONResponse(res, 404, {
                     error: err || 'No articles with the title found'
                 });

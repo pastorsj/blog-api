@@ -4,9 +4,7 @@ import ImageService from '../services/image.service';
 
 const sendJSONResponse = (res, status, content) => {
     res.status(status);
-    if (content) {
-        res.json(content);
-    }
+    res.json(content);
 };
 
 /**

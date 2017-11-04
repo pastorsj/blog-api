@@ -16,6 +16,7 @@ const customColors = {
 const { Logger, transports: { Console, File } } = winston;
 
 const logger = new (Logger)({
+    name: 'console',
     colors: customColors,
     level: logLevel,
     levels: {
@@ -58,5 +59,9 @@ logger.log = function log(level, msg) {
     log.critical('testing')
     log.fatal('testing')
  */
+
+if (process.env.NODE_ENV === 'TEST') {
+    logger.transports.console.silent = true;
+}
 
 export default logger;
