@@ -10,3 +10,5 @@ uploads/
 *.rdb
 *.pem
 *.log
+
+coverage/

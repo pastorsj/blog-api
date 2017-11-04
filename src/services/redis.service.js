@@ -1,4 +1,3 @@
-
 import client from '../config/redis.config';
 import log from '../log';
 
@@ -11,16 +10,12 @@ import log from '../log';
  */
 function zadd(setName, start, prefix) {
     return new Promise((resolve, reject) => {
-        try {
-            client.zadd(setName, start, prefix, (err, result) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
-            });
-        } catch (e) {
-            reject(e);
-        }
+        client.zadd(setName, start, prefix, (err, result) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
     });
 }
 
@@ -32,16 +27,12 @@ function zadd(setName, start, prefix) {
  */
 function zrank(setName, prefix) {
     return new Promise((resolve, reject) => {
-        try {
-            client.zrank(setName, prefix, (err, result) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(result);
-            });
-        } catch (e) {
-            reject(e);
-        }
+        client.zrank(setName, prefix, (err, result) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(result);
+        });
     });
 }
 
@@ -54,18 +45,15 @@ function zrank(setName, prefix) {
  */
 function zrange(setName, start, end) {
     return new Promise((resolve, reject) => {
-        try {
-            if (!setName || !start || !end) {
-                reject(new Error('Either the start or end is not defined'));
-            }
+        if (!setName || !start || !end) {
+            reject(new Error('Either the start or end is not defined'));
+        } else {
             client.zrange(setName, start, end, (err, range) => {
                 if (err) {
                     reject(err);
                 }
                 resolve(range);
             });
-        } catch (e) {
-            reject(e);
         }
     });
 }

@@ -12,7 +12,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// Availible via the base_url/article route
+// Availible via the base_url/articles route
 router.route('/:username')
     .get(auth, ArticlesController.get.bind(ArticlesController));
 

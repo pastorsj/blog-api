@@ -1,9 +1,5 @@
 version: 2
 
-requirements:
-  signed_off_by:
-    required: true
-
 always_pending:
   title_regex: 'WIP'
   explanation: 'Work in progress...'
@@ -12,7 +8,8 @@ always_pending:
 group_defaults:
   approve_by_comment:
     enabled: true
-    approve_regex: '^:\+1:'
+    approve_regex: '^(Approved|:shipit:|:\+1:|LGTM)'
+    reject_regex: '^(Rejected|:-1:)'
   reset_on_push:
     enabled: true
 
@@ -23,6 +20,7 @@ groups:
 
     users:
       - pastorsj
+      - Prescientje
 
     conditions:
       branches:

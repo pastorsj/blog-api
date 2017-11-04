@@ -42,7 +42,7 @@ const blogPostSchema = new mongoose.Schema({
     }
 });
 
-blogPostSchema.plugin(autoIncrement.plugin, 'Blog');
+blogPostSchema.plugin(autoIncrement.plugin, 'BlogPost');
 
 const BlogPostModel = mongoose.model('BlogPost', blogPostSchema);
 

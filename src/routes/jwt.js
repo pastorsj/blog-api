@@ -11,7 +11,7 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// Availible via the base_url/expired route
+// Availible via the base_url/jwt route
 router.route('/expired')
     .post(JwtController.post.bind(JwtController));
 
