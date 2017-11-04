@@ -41,10 +41,7 @@ describe('Test the /auth route', () => {
             request(app)
                 .get('/api/login')
                 .set({ Authorization: 'testuser:test1' })
-                .expect(404)
-                .end(() => {
-                    return done();
-                });
+                .expect(401, done);
         });
     });
     describe('/register', () => {

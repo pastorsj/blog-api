@@ -4,6 +4,9 @@ node_js:
 sudo: false
 addons:
   ssh_known_hosts: $HOST
+services:
+  - mongodb
+  - redis-server
 before_install:
 - openssl aes-256-cbc -K $encrypted_32662055e808_key -iv $encrypted_32662055e808_iv
   -in deploy_key.pem.enc -out deploy_key.pem -d
