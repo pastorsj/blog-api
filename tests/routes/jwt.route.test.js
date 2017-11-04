@@ -3,7 +3,7 @@ import request from 'supertest';
 import app from '../../src/app';
 import acquireJwt from '../common/jwt.common';
 
-describe.only('Test the /jwt route', () => {
+describe('Test the /jwt route', () => {
     let jwt = '';
 
     beforeEach((done) => {

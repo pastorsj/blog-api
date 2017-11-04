@@ -12,7 +12,7 @@ import compression from 'compression';
 import expressWinston from 'express-winston';
 import winston from 'winston';
 import limiter from 'express-limiter';
-import client from './config/redis.config';
+import mongoose from 'mongoose';
 
 import './models/db';
 import './models/blog';
@@ -25,10 +25,12 @@ import imagesRoute from './routes/images';
 import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
 import tagsRoute from './routes/tags';
-
 import { register, login } from './routes/auth';
 
+import client from './config/redis.config';
 import log from './log';
+
+mongoose.Promise = global.Promise;
 
 const app = express();
 

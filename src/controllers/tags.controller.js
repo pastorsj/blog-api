@@ -39,12 +39,10 @@ const TagsController = {
         const { tag } = req.body;
         redis.addNew(tag, SET_NAME)
             .then((result) => {
-                log.info(result);
                 sendJSONResponse(res, result.status, {
                     data: result.data
                 });
             }).catch((err) => {
-                log.info(err);
                 sendJSONResponse(res, 400, {
                     error: err
                 });
@@ -54,12 +52,10 @@ const TagsController = {
         const { prefix, count } = req.body;
         redis.getPrefixes(prefix, count, SET_NAME)
             .then((result) => {
-                log.info(result);
                 sendJSONResponse(res, result.status, {
                     data: result.data
                 });
             }).catch((err) => {
-                log.info(err);
                 sendJSONResponse(res, 400, {
                     error: err
                 });
@@ -80,10 +76,6 @@ const TagsController = {
                             allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
                         });
                     });
-                    // Potentially usable later if we want the top 100 tags
-                    // allTags.sort((t1, t2) => {
-                    //     return allTags[t1] < allTags[t1] ? 1 : -1;
-                    // }).slice(0, 100);
                     sendJSONResponse(res, 200, {
                         data: allTags
                     });
@@ -99,7 +91,8 @@ const TagsController = {
         try {
             const { tag } = req.params;
             mongoose.model('BlogPost').find({
-                tags: tag
+                tags: tag,
+                isPublished: true
             }, (err, posts) => {
                 if (err) {
                     sendJSONResponse(res, 404, {

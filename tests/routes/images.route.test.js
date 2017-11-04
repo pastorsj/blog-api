@@ -49,7 +49,7 @@ describe('Test the /images route', () => {
         describe('DELETE', () => {
             it('should successfully call the delete image service', (done) => {
                 const deleteImageStub = sandbox.stub(ImageService, 'deleteImage')
-                    .returns(Promise.resolve({ status: 200, data: 'Data' }));
+                    .resolves({ status: 200, data: 'Data' });
                 request(app)
                     .delete('/api/images/')
                     .set({ Authorization: `Bearer ${jwt}` })
@@ -69,7 +69,7 @@ describe('Test the /images route', () => {
             });
             it('should call the delete image service and error out', (done) => {
                 const deleteImageStub = sandbox.stub(ImageService, 'deleteImage')
-                    .returns(Promise.reject(new Error('')));
+                    .rejects();
                 request(app)
                     .delete('/api/images/')
                     .set({ Authorization: `Bearer ${jwt}` })
