@@ -2,7 +2,6 @@
 
 import mongoose from 'mongoose';
 
-import log from '../log';
 import redis from '../services/redis.service';
 
 const SET_NAME = 'tags';
