@@ -34,7 +34,7 @@ const JwtController = {
                     }
                 });
             } else {
-                sendJSONResponse(res, 500, {
+                sendJSONResponse(res, 400, {
                     message: 'Authorization header is malformed. It needs to start with Bearer '
                 });
             }

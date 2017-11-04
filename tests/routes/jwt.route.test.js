@@ -33,6 +33,12 @@ describe('Test the /jwt route', () => {
                     .post('/api/jwt/expired')
                     .expect(401, done);
             });
+            it('should return that the jwt is malformed since it did not start with Bearer', (done) => {
+                request(app)
+                    .post('/api/jwt/expired')
+                    .set({ Authorization: `${jwt}1` })
+                    .expect(400, done);
+            });
         });
     });
 });
