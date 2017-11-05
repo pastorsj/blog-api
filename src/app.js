@@ -67,7 +67,7 @@ if (process.env.NODE_ENV !== 'TEST') {
         transports: [
             new winston.transports.Console({
                 colorize: true
-            }),
+            })
         ],
         requestFilter: (req, propName) => {
             if (propName === 'headers') {

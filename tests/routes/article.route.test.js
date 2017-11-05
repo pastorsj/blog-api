@@ -11,19 +11,16 @@ const { expect } = chai;
 describe('Test the /articles route', () => {
     let jwt = '';
     before((done) => {
-        setupUserCollection().then(() => setupArticlesCollection()).then(() => {
-            done();
-        }).catch((err) => {
-            done(err);
-        });
-    });
-    beforeEach((done) => {
-        acquireJwt(app).then((res) => {
-            jwt = res.body.token;
-            done();
-        }).catch((err) => {
-            done(err);
-        });
+        setupUserCollection()
+            .then(() => setupArticlesCollection())
+            .then(() => acquireJwt(app))
+            .then((res) => {
+                jwt = res.body.token;
+                done();
+            })
+            .catch((err) => {
+                done(err);
+            });
     });
     after((done) => {
         destroyArticlesCollection().then(() => {
@@ -47,19 +44,11 @@ describe('Test the /articles route', () => {
                     return done();
                 });
         });
-        it('should return no articles written by the fakeuser', (done) => {
+        it('should not be able to acess any of the articles written by fake user for security reasons', (done) => {
             request(app)
                 .get('/api/articles/fakeuser')
                 .set({ Authorization: `Bearer ${jwt}` })
-                .expect(200)
-                .end((err, res) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    const { data } = res.body;
-                    expect(data.length).to.be.eq(0);
-                    return done();
-                });
+                .expect(401, done);
         });
     });
 });
