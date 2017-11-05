@@ -3,7 +3,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { auth, canDeleteImage } from '../config/jwt.config';
+import { auth } from '../config/jwt.config';
 
 import ImagesController from '../controllers/images.controller';
 
@@ -18,6 +18,6 @@ router.route('/gethash')
     .get(auth, ImagesController.get.bind(ImagesController));
 
 router.route('/')
-    .delete(auth, canDeleteImage, ImagesController.delete.bind(ImagesController));
+    .delete(auth, ImagesController.delete.bind(ImagesController));
 
 export default router;

@@ -54,23 +54,3 @@ export const canPost = (req, res, next) => {
         });
     }
 };
-
-export const canDeleteImage = (req, res, next) => {
-    next();
-    // const { payload, body: { src } } = req;
-    // mongoose.model('BlogPost').findOne({
-    //     coverPhoto: src
-    // }).then((blog) => {
-    //     if (payload.username === blog.author) {
-    //         next();
-    //     } else {
-    //         sendJSONResponse(res, 401, {
-    //             error: 'Unable to delete this image'
-    //         });
-    //     }
-    // }).catch((err) => {
-    //     sendJSONResponse(res, 404, {
-    //         error: err || 'User Not Found'
-    //     });
-    // });
-};
