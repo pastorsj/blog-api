@@ -3,7 +3,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { auth } from '../config/jwt.config';
+import { auth, isAccessible } from '../config/jwt.config';
 
 import UserController from '../controllers/user.controller';
 
@@ -16,8 +16,8 @@ router.use(bodyParser.urlencoded({
 // Availible via the base_url/user route
 router.route('/:username')
     .get(UserController.get.bind(UserController))
-    .post(auth, UserController.post.bind(UserController))
-    .put(auth, UserController.put.bind(UserController))
-    .delete(auth, UserController.delete.bind(UserController));
+    .post(auth, isAccessible, UserController.updateProfilePicture.bind(UserController))
+    .put(auth, isAccessible, UserController.put.bind(UserController))
+    .delete(auth, isAccessible, UserController.delete.bind(UserController));
 
 module.exports = router;

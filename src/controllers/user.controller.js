@@ -42,7 +42,7 @@ const UserController = {
             }
         });
     },
-    post(req, res) {
+    updateProfilePicture(req, res) {
         upload.single('profilePicture')(req, res, (fileError) => {
             if (fileError) {
                 sendJSONResponse(res, 400, {
@@ -52,9 +52,9 @@ const UserController = {
                 mongoose.model('User').findOne({
                     username: req.params.username
                 }, projection, (err, user) => {
-                    if (err || _.isEmpty(user)) {
+                    if (err) {
                         sendJSONResponse(res, 404, {
-                            error: err || 'User Not Found'
+                            error: err
                         });
                     } else if (req.file) {
                         const { file } = req;
@@ -92,9 +92,9 @@ const UserController = {
         mongoose.model('User').findOne({
             username: req.params.username
         }, projection, (err, user) => {
-            if (err || _.isEmpty(user)) {
+            if (err) {
                 sendJSONResponse(res, 404, {
-                    error: err || 'User Not Found'
+                    error: err
                 });
             } else {
                 _.assign(user, req.body);
@@ -116,9 +116,9 @@ const UserController = {
         mongoose.model('User').findOne({
             username: req.params.username
         }, (err, user) => {
-            if (err || _.isEmpty(user)) {
+            if (err) {
                 sendJSONResponse(res, 404, {
-                    error: err || 'User Not Found'
+                    error: err
                 });
             } else {
                 user.remove((error) => {

@@ -49,9 +49,9 @@ describe('Test the /auth route', () => {
             request(app)
                 .post('/api/register')
                 .send({
-                    username: 'newuser',
-                    name: 'New Name',
-                    email: 'email@email.com',
+                    username: 'anewuser',
+                    name: 'A New Name',
+                    email: 'anemail@anemail.com',
                     password: 'password'
                 })
                 .expect(200)
@@ -63,7 +63,7 @@ describe('Test the /auth route', () => {
                     return done();
                 });
         });
-        it('should not successfully register a new user since the username is take', (done) => {
+        it('should not successfully register a new user since the username is taken', (done) => {
             request(app)
                 .post('/api/register')
                 .send({

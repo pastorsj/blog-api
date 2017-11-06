@@ -38,8 +38,8 @@ const BlogController = {
     post: (req, res) => {
         mongoose.model('BlogPost').create(req.body, (err, blog) => {
             if (err) {
-                sendJSONResponse(res, 500, {
-                    error: err || 'Blog Post Not Found'
+                sendJSONResponse(res, 404, {
+                    error: err
                 });
             } else {
                 sendJSONResponse(res, 200, {
@@ -59,7 +59,7 @@ const BlogController = {
                 mongoose.model('BlogPost').findOne({
                     _id: req.params.id
                 }, (err, blog) => {
-                    if (err || _.isEmpty(blog)) {
+                    if (err) {
                         sendJSONResponse(res, 404, {
                             error: err || 'Article Not Found'
                         });
@@ -141,9 +141,9 @@ const BlogController = {
         mongoose.model('BlogPost').findOne({
             _id: req.params.id
         }, (err, blog) => {
-            if (err || _.isEmpty(blog)) {
+            if (err) {
                 sendJSONResponse(res, 404, {
-                    error: err || 'Blog Post Not Found'
+                    error: err
                 });
             } else {
                 _.assign(blog, req.body);
@@ -168,9 +168,9 @@ const BlogController = {
         mongoose.model('BlogPost').findOne({
             _id: req.params.id
         }, (err, blog) => {
-            if (err || _.isEmpty(blog)) {
+            if (err) {
                 sendJSONResponse(res, 404, {
-                    error: err || 'Blog Post Not Found'
+                    error: err
                 });
             } else {
                 blog.remove((error) => {
