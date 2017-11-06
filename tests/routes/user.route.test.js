@@ -20,19 +20,14 @@ describe('Test the /user route', () => {
 
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
-        setupUserCollection().then(() => {
-            done();
-        }).catch((err) => {
-            done(err);
-        });
-    });
-    beforeEach((done) => {
-        acquireJwt(app).then((res) => {
-            jwt = res.body.token;
-            done();
-        }).catch((err) => {
-            done(err);
-        });
+        setupUserCollection()
+            .then(() => acquireJwt(app))
+            .then((res) => {
+                jwt = res.body.token;
+                done();
+            }).catch((err) => {
+                done(err);
+            });
     });
     afterEach((done) => {
         sandbox.restore();
@@ -94,12 +89,12 @@ describe('Test the /user route', () => {
                         return done();
                     });
             });
-            it('should fail to add a profile picture since the user does not exist', (done) => {
+            it('should not update the users profile picture for security reasons', (done) => {
                 request(app)
-                    .post('/api/user/nouser')
+                    .post('/api/user/fakeuser')
                     .attach('profilePicture', 'tests/common/testing.png')
                     .set({ Authorization: `Bearer ${jwt}` })
-                    .expect(404, done);
+                    .expect(401, done);
             });
             it('should fail to add a profile picture since service failed to post', (done) => {
                 sandbox.stub(ImageService, 'postImage').rejects({ status: 400, error: 'Error' });
@@ -149,14 +144,14 @@ describe('Test the /user route', () => {
                         return done();
                     });
             });
-            it('should not update the user since the user could not be found', (done) => {
+            it('should not update the user for security reasons', (done) => {
                 request(app)
                     .put('/api/user/nouser')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .send({
                         name: 'New Name'
                     })
-                    .expect(404, done);
+                    .expect(401, done);
             });
         });
         describe('DELETE', () => {
@@ -174,11 +169,11 @@ describe('Test the /user route', () => {
                         return done();
                     });
             });
-            it('should not delete the user since the user could not be found', (done) => {
+            it('should not delete the user for security reasons', (done) => {
                 request(app)
                     .delete('/api/user/nouser')
                     .set({ Authorization: `Bearer ${jwt}` })
-                    .expect(404, done);
+                    .expect(401, done);
             });
         });
     });

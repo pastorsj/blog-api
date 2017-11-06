@@ -22,21 +22,16 @@ describe('Test the /blog route', () => {
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
         createCounter()
-            .then(() => setupUserCollection()
-                .then(() => setupArticlesCollection()
-                    .then(() => {
-                        done();
-                    }))).catch((err) => {
+            .then(() => setupUserCollection())
+            .then(() => setupArticlesCollection())
+            .then(() => acquireJwt(app))
+            .then((res) => {
+                jwt = res.body.token;
+                done();
+            })
+            .catch((err) => {
                 done(err);
             });
-    });
-    beforeEach((done) => {
-        acquireJwt(app).then((res) => {
-            jwt = res.body.token;
-            done();
-        }).catch((err) => {
-            done(err);
-        });
     });
     afterEach((done) => {
         sandbox.restore();
@@ -47,41 +42,59 @@ describe('Test the /blog route', () => {
         });
     });
     describe('/', () => {
-        it('should create an blog post and return it', (done) => {
-            request(app)
-                .post('/api/blog/')
-                .set({ Authorization: `Bearer ${jwt}` })
-                .send({
-                    text: '<p>A great article on testing</p>',
-                    title: 'A new article on testing',
-                    description: 'This is a testing article',
-                    author: 'testuser',
-                    coverPhoto: '',
-                    tags: ['redis']
-                })
-                .expect(200)
-                .end((err, res) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    expect(res.body.data.title).to.be.eq('A new article on testing');
-                    expect(res.body.message).to.be.eq('Blog created by testuser');
-                    return done();
-                });
+        describe('POST', () => {
+            it('should create an blog post and return it', (done) => {
+                request(app)
+                    .post('/api/blog/')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .send({
+                        text: '<p>A great article on testing</p>',
+                        title: 'A new article on testing',
+                        description: 'This is a testing article',
+                        author: 'testuser',
+                        coverPhoto: '',
+                        tags: ['redis']
+                    })
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.data.title).to.be.eq('A new article on testing');
+                        expect(res.body.message).to.be.eq('Blog created by testuser');
+                        return done();
+                    });
+            });
+            it('should attempt to create a blog post but get rejected for security reasons', (done) => {
+                request(app)
+                    .post('/api/blog/')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .send({
+                        text: '<p>A great article on testing</p>',
+                        title: 'A new article on testing',
+                        description: 'This is a testing article',
+                        author: 'newuser',
+                        coverPhoto: '',
+                        tags: ['redis']
+                    })
+                    .expect(401, done);
+            });
         });
-        it('should retrieve all blog posts that are published', (done) => {
-            request(app)
-                .get('/api/blog/')
-                .expect(200)
-                .end((err, res) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    expect(res.body.data.length).to.be.eq(2);
-                    expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
-                    expect(res.body.data[1].title).to.be.eq(articlesMock[2].title);
-                    return done();
-                });
+        describe('GET', () => {
+            it('should retrieve all blog posts that are published', (done) => {
+                request(app)
+                    .get('/api/blog/')
+                    .expect(200)
+                    .end((err, res) => {
+                        if (err) {
+                            return done(err);
+                        }
+                        expect(res.body.data.length).to.be.eq(2);
+                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
+                        expect(res.body.data[1].title).to.be.eq(articlesMock[2].title);
+                        return done();
+                    });
+            });
         });
     });
     describe('/:id', () => {
@@ -151,6 +164,15 @@ describe('Test the /blog route', () => {
                     })
                     .expect(404, done);
             });
+            it('should not update an article for security reasons', (done) => {
+                request(app)
+                    .put('/api/blog/2')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .send({
+                        text: '<p>Failed to update</p>'
+                    })
+                    .expect(401, done);
+            });
         });
         describe('POST', () => {
             afterEach((done) => {
@@ -189,7 +211,14 @@ describe('Test the /blog route', () => {
                     .set({ Authorization: `Bearer ${jwt}` })
                     .expect(404, done);
             });
-            it('should fail to add a cover photo since service failed to post', (done) => {
+            it('should fail to add a cover photo for security reasons', (done) => {
+                request(app)
+                    .post('/api/blog/2')
+                    .attach('coverPhoto', 'tests/common/testing.png')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(401, done);
+            });
+            it('should fail to add a cover photo since the service failed to post', (done) => {
                 sandbox.stub(ImageService, 'postImage').rejects({ status: 400, error: 'Error' });
                 request(app)
                     .post('/api/blog/1')
@@ -234,11 +263,17 @@ describe('Test the /blog route', () => {
                         return done();
                     });
             });
-            it('should delete an article', (done) => {
+            it('should fail to delete an article since it was not found', (done) => {
                 request(app)
                     .delete('/api/blog/10')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .expect(404, done);
+            });
+            it('should fail to delete an article for security reasons', (done) => {
+                request(app)
+                    .delete('/api/blog/2')
+                    .set({ Authorization: `Bearer ${jwt}` })
+                    .expect(401, done);
             });
         });
     });
@@ -282,7 +317,7 @@ describe('Test the /blog route', () => {
                         return done();
                     });
             });
-            it('should get all articles that are published that have part of the given title', (done) => {
+            it('should fail to get any articles that are published since that title does not exist', (done) => {
                 request(app)
                     .get('/api/blog/title/Testing')
                     .expect(404, done);
