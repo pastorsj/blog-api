@@ -1,49 +1,10 @@
-version: 2
-
-always_pending:
-  title_regex: 'WIP'
-  explanation: 'Work in progress...'
-
-# Group settings to apply to all groups by default, optionally being overridden later
-group_defaults:
-  approve_by_comment:
-    enabled: true
-    approve_regex: '^(Approved|:shipit:|:\+1:|LGTM)'
-    reject_regex: '^(Rejected|:-1:)'
-  reset_on_push:
-    enabled: true
-
-# Groups of reviewers and their respective settings
-groups:
-  reviewers:
-    required: 2
-
-    users:
-      - pastorsj
-      - Prescientje
-
-    conditions:
-      branches:
-        - master  # this group only reviews when PR is merging into master
-      files:
-        include:
-          - '*.md'
-        exclude:
-          - 'README.md'
-      labels:
-        - bug
-
-    approve_by_comment:
-      enabled: true
-      approve_regex: '^(Approved|:shipit:|:\+1:|LGTM)'
-      reject_regex: '^(Rejected|:-1:)'
-    reset_on_push:
-      enabled: true
-
-    author_approval:
-      required: true
-
-    reset_on_reopened:
-      enabled: true
-
-    reject_value: -3
+approve_by_comment: true
+approve_regex: '^(Approved|:shipit:|:\+1:|LGTM)'
+reject_regex: '^(Rejected|:-1:)'
+reset_on_push: false
+reviewers:
+  members:
+  - pastorsj
+  - Prescientje
+  name: pullapprove
+  required: 2
