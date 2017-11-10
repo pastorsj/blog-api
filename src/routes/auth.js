@@ -91,9 +91,11 @@ export function login(req, res) {
             });
             return;
         }
-        const token = user.generateJwt();
+        const { accessToken, refreshToken, expiresIn } = user.generateJwt();
         sendJSONResponse(res, 200, {
-            token
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            expires_in: expiresIn
         });
     });
 }
