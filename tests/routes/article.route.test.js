@@ -15,7 +15,7 @@ describe('Test the /articles route', () => {
             .then(() => setupArticlesCollection())
             .then(() => acquireJwt(app))
             .then((res) => {
-                jwt = res.body.token;
+                jwt = res.body.access_token;
                 done();
             })
             .catch((err) => {
@@ -37,11 +37,12 @@ describe('Test the /articles route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        return done(err);
+                        done(err);
+                    } else {
+                        const { data } = res.body;
+                        expect(data.length).to.be.eq(2);
+                        done();
                     }
-                    const { data } = res.body;
-                    expect(data.length).to.be.eq(2);
-                    return done();
                 });
         });
         it('should not be able to acess any of the articles written by fake user for security reasons', (done) => {

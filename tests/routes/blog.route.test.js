@@ -26,7 +26,7 @@ describe('Test the /blog route', () => {
             .then(() => setupArticlesCollection())
             .then(() => acquireJwt(app))
             .then((res) => {
-                jwt = res.body.token;
+                jwt = res.body.access_token;
                 done();
             })
             .catch((err) => {
@@ -58,11 +58,12 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            expect(res.body.data.title).to.be.eq('A new article on testing');
+                            expect(res.body.message).to.be.eq('Blog created by testuser');
+                            done();
                         }
-                        expect(res.body.data.title).to.be.eq('A new article on testing');
-                        expect(res.body.message).to.be.eq('Blog created by testuser');
-                        return done();
                     });
             });
             it('should attempt to create a blog post but get rejected for security reasons', (done) => {
@@ -87,12 +88,13 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            expect(res.body.data.length).to.be.eq(2);
+                            expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
+                            expect(res.body.data[1].title).to.be.eq(articlesMock[2].title);
+                            done();
                         }
-                        expect(res.body.data.length).to.be.eq(2);
-                        expect(res.body.data[0].title).to.be.eq(articlesMock[0].title);
-                        expect(res.body.data[1].title).to.be.eq(articlesMock[2].title);
-                        return done();
                     });
             });
         });
@@ -105,11 +107,12 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.title).to.be.eq(articlesMock[0].title);
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.title).to.be.eq(articlesMock[0].title);
-                        return done();
                     });
             });
             it('should fail to return the article', (done) => {
@@ -129,11 +132,12 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.text).to.be.eq('<p>An updated article</p>');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.text).to.be.eq('<p>An updated article</p>');
-                        return done();
                     });
             });
             it('should update the datePosted field', (done) => {
@@ -146,13 +150,14 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            const returnedDate = new Date(data.datePosted);
+                            const originalDate = new Date(articlesMock[0].datePosted);
+                            expect(returnedDate).to.be.greaterThan(originalDate);
+                            done();
                         }
-                        const { data } = res.body;
-                        const returnedDate = new Date(data.datePosted);
-                        const originalDate = new Date(articlesMock[0].datePosted);
-                        expect(returnedDate).to.be.greaterThan(originalDate);
-                        return done();
                     });
             });
             it('should not update an article since it was not found', (done) => {
@@ -195,13 +200,14 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.coverPhoto).to.be.eq('https://flickr.com');
+                            expect(data.author).to.be.eq('testuser');
+                            postImageStub.restore();
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.coverPhoto).to.be.eq('https://flickr.com');
-                        expect(data.author).to.be.eq('testuser');
-                        postImageStub.restore();
-                        return done();
                     });
             });
             it('should fail to add a cover photo since the article does not exist', (done) => {
@@ -227,11 +233,12 @@ describe('Test the /blog route', () => {
                     .expect(400)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { error } = res.body;
+                            expect(error).to.be.eq('Error');
+                            done();
                         }
-                        const { error } = res.body;
-                        expect(error).to.be.eq('Error');
-                        return done();
                     });
             });
             it('should return nothing when a file is not uploaded', (done) => {
@@ -257,10 +264,11 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            expect(res.body.message).to.be.eq('The blog with the id 1 was removed');
+                            done();
                         }
-                        expect(res.body.message).to.be.eq('The blog with the id 1 was removed');
-                        return done();
                     });
             });
             it('should fail to delete an article since it was not found', (done) => {
@@ -285,12 +293,13 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.length).to.be.eq(1);
+                            expect(data[0].title).to.be.eq(articlesMock[0].title);
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.length).to.be.eq(1);
-                        expect(data[0].title).to.be.eq(articlesMock[0].title);
-                        return done();
                     });
             });
             it('should not find any article with the given tag', (done) => {
@@ -308,13 +317,14 @@ describe('Test the /blog route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.length).to.be.eq(1);
+                            expect(data[0].title).to.be.eq(articlesMock[0].title);
+                            expect(data[0].tags).to.deep.equal(articlesMock[0].tags);
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.length).to.be.eq(1);
-                        expect(data[0].title).to.be.eq(articlesMock[0].title);
-                        expect(data[0].tags).to.deep.equal(articlesMock[0].tags);
-                        return done();
                     });
             });
             it('should fail to get any articles that are published since that title does not exist', (done) => {

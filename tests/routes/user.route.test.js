@@ -23,7 +23,7 @@ describe('Test the /user route', () => {
         setupUserCollection()
             .then(() => acquireJwt(app))
             .then((res) => {
-                jwt = res.body.token;
+                jwt = res.body.access_token;
                 done();
             }).catch((err) => {
                 done(err);
@@ -45,13 +45,14 @@ describe('Test the /user route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.username).to.be.eq('testuser');
+                            expect(data.name).to.be.eq('Test User');
+                            expect(data.email).to.be.eq('testuser@test.com');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.username).to.be.eq('testuser');
-                        expect(data.name).to.be.eq('Test User');
-                        expect(data.email).to.be.eq('testuser@test.com');
-                        return done();
                     });
             });
             it('should fail to retrieve a single user', (done) => {
@@ -65,11 +66,12 @@ describe('Test the /user route', () => {
                 fs.readdir('uploads', (err, files) => {
                     if (err) {
                         done(err);
+                    } else {
+                        files.forEach((file) => {
+                            fs.unlinkSync(path.join('uploads', file));
+                        });
+                        done();
                     }
-                    files.forEach((file) => {
-                        fs.unlinkSync(path.join('uploads', file));
-                    });
-                    done();
                 });
             });
             it('should update/add a profile picture url to a user', (done) => {
@@ -81,12 +83,13 @@ describe('Test the /user route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.name).to.be.eq('Test User');
+                            expect(data.profilePicture).to.be.eq('https://flickr.com');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.name).to.be.eq('Test User');
-                        expect(data.profilePicture).to.be.eq('https://flickr.com');
-                        return done();
                     });
             });
             it('should not update the users profile picture for security reasons', (done) => {
@@ -105,10 +108,11 @@ describe('Test the /user route', () => {
                     .expect(400)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            expect(res.body.error).to.be.eq('Error');
+                            done();
                         }
-                        expect(res.body.error).to.be.eq('Error');
-                        return done();
                     });
             });
             it('should return nothing when a file is not uploaded', (done) => {
@@ -137,11 +141,12 @@ describe('Test the /user route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.name).to.be.eq('A New Test User');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.name).to.be.eq('A New Test User');
-                        return done();
                     });
             });
             it('should not update the user for security reasons', (done) => {
@@ -162,11 +167,12 @@ describe('Test the /user route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data).to.be.eq('The user with the username testuser was removed');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data).to.be.eq('The user with the username testuser was removed');
-                        return done();
                     });
             });
             it('should not delete the user for security reasons', (done) => {

@@ -11,7 +11,7 @@ describe('Test the /gist route', () => {
 
     beforeEach((done) => {
         acquireJwt(app).then((res) => {
-            jwt = res.body.token;
+            jwt = res.body.access_token;
             done();
         }).catch((err) => {
             done(err);
@@ -29,11 +29,12 @@ describe('Test the /gist route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data).to.have.all.keys('file', 'styles', 'html');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data).to.have.all.keys('file', 'styles', 'html');
-                        return done();
                     });
             });
             it('should error out when no link is provided', (done) => {

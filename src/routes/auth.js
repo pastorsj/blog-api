@@ -104,33 +104,32 @@ export function login(req, res) {
 
 export function refreshAccessToken(req, res) {
     let token = req.headers.authorization;
-    if (token.startsWith('Bearer ')) {
+    if (token && token.startsWith('Bearer ')) {
         token = token.slice(7);
+        User.findOne({
+            refreshToken: token
+        }).then((user) => {
+            if (!user) {
+                sendJSONResponse(res, 401, {
+                    message: 'Authentication failed.'
+                });
+            } else {
+                user.generateJwt().then((tokenObj) => {
+                    const { accessToken, refreshToken, expiresIn } = tokenObj;
+                    sendJSONResponse(res, 200, {
+                        access_token: accessToken,
+                        refresh_token: refreshToken,
+                        expires_in: expiresIn,
+                        token_type: 'Bearer'
+                    });
+                });
+            }
+        }).catch((err) => {
+            sendJSONResponse(res, 401, err);
+        });
     } else {
         sendJSONResponse(res, 401, {
             message: 'Authentication failed. Token was malformed'
         });
     }
-
-    User.findOne({
-        refreshToken: token
-    }).then((user) => {
-        if (!user) {
-            sendJSONResponse(res, 401, {
-                message: 'Authentication failed.'
-            });
-        } else {
-            user.generateJwt().then((tokenObj) => {
-                const { accessToken, refreshToken, expiresIn } = tokenObj;
-                sendJSONResponse(res, 200, {
-                    access_token: accessToken,
-                    refresh_token: refreshToken,
-                    expires_in: expiresIn,
-                    token_type: 'Bearer'
-                });
-            });
-        }
-    }).catch((err) => {
-        sendJSONResponse(res, 401, err);
-    });
 }
