@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import log from '../log';
 
 const User = mongoose.model('User');
 
@@ -15,44 +14,47 @@ const sendJSONResponse = (res, status, content) => {
  * @param {object} res The response object
  */
 export function register(req, res) {
-    if (!req.body.username || !req.body.name || !req.body.email ||
-        !req.body.password) {
+    const {
+        username,
+        name,
+        email,
+        password
+    } = req.body;
+    if (!username || !name || !email || !password) {
         sendJSONResponse(res, 400, {
             message: 'All fields required'
         });
-        return;
-    }
-    User.findOne({ username: req.body.username }, (err, auser) => {
-        if (auser) {
-            sendJSONResponse(res, 409, {
-                message: 'Username is taken.'
-            });
-        } else if (err) {
-            log.critical('Error', err);
+    } else {
+        User.findOne({ username }).then((auser) => {
+            if (auser) {
+                sendJSONResponse(res, 409, {
+                    message: 'Username is taken.'
+                });
+            } else {
+                const user = new User();
+
+                user.username = username;
+                user.name = name;
+                user.email = email;
+                user.setPassword(password);
+
+                user.save()
+                    .then(() => user.generateJwt())
+                    .then((tokenObj) => {
+                        const { accessToken, refreshToken, expiresIn } = tokenObj;
+                        sendJSONResponse(res, 200, {
+                            access_token: accessToken,
+                            refresh_token: refreshToken,
+                            expires_in: expiresIn
+                        });
+                    });
+            }
+        }).catch((err) => {
             sendJSONResponse(res, 404, {
                 message: `An error has occcured: ${err}`
             });
-        } else {
-            const user = new User();
-
-            user.username = req.body.username;
-            user.name = req.body.name;
-            user.email = req.body.email;
-
-            user.setPassword(req.body.password);
-
-            user.save((error) => {
-                if (err) {
-                    sendJSONResponse(res, 404, error);
-                } else {
-                    const token = user.generateJwt();
-                    sendJSONResponse(res, 200, {
-                        token
-                    });
-                }
-            });
-        }
-    });
+        });
+    }
 }
 
 /**
@@ -74,34 +76,26 @@ export function login(req, res) {
 
     User.findOne({
         username
-    }, (err, user) => {
-        if (err) {
-            sendJSONResponse(res, 404, err);
-            return;
-        }
+    }).then((user) => {
         if (!user) {
             sendJSONResponse(res, 401, {
                 message: 'Authentication failed. User not found.'
             });
-            return;
-        }
-        if (!user.validPassword(password)) {
+        } else if (!user.validPassword(password)) {
             sendJSONResponse(res, 401, {
                 message: 'Authentication failed. Wrong password.'
             });
-            return;
+        } else {
+            user.generateJwt().then((tokenObj) => {
+                const { accessToken, refreshToken, expiresIn } = tokenObj;
+                sendJSONResponse(res, 200, {
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                    expires_in: expiresIn
+                });
+            });
         }
-        user.generateJwt().then((tokenObj) => {
-            const { accessToken, refreshToken, expiresIn } = tokenObj;
-            sendJSONResponse(res, 200, {
-                access_token: accessToken,
-                refresh_token: refreshToken,
-                expires_in: expiresIn
-            });
-        }).catch((error) => {
-            sendJSONResponse(res, 500, {
-                error
-            });
-        });
+    }).catch((err) => {
+        sendJSONResponse(res, 404, err);
     });
 }

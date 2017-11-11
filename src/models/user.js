@@ -44,10 +44,7 @@ const userSchema = new mongoose.Schema({
 });
 
 function getAccessToken() {
-    let expiresIn = new Date();
-    expiresIn.setDate(expiresIn.getDate() + 1);
-    expiresIn = parseInt(expiresIn.getTime() / 1000, 10);
-
+    const expiresIn = Math.floor(Date.now() / 1000) + (60 * 60); // 1 hour
     const accessToken = jwt.sign({
         _id: this._id,
         username: this.username,
