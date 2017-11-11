@@ -37,6 +37,9 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String
+    },
+    refreshToken: {
+        type: String
     }
 });
 
@@ -58,11 +61,17 @@ function getAccessToken() {
     };
 }
 
-function getRefreshToken() {
+async function getRefreshToken() {
+    if (this.refreshToken) {
+        return this.refreshToken;
+    }
     const refreshToken = jwt.sign({
         _id: this._id
     }, SECRET);
-    return refreshToken;
+
+    this.refreshToken = refreshToken;
+    await this.save();
+    return this.refreshToken;
 }
 
 // These functions cannot be converted to arrow functions since the 'this' environment matters
@@ -76,9 +85,9 @@ userSchema.methods.validPassword = function validPassword(password) {
     return this.hash === hash;
 };
 
-userSchema.methods.generateJwt = function generateJwt() {
-    const { accessToken, expiresIn } = getAccessToken().bind(this);
-    const refreshToken = getRefreshToken().bind(this);
+userSchema.methods.generateJwt = async function generateJwt() {
+    const { accessToken, expiresIn } = getAccessToken.call(this);
+    const refreshToken = await getRefreshToken.call(this);
     return {
         accessToken,
         expiresIn,

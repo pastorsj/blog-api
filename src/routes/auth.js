@@ -91,11 +91,17 @@ export function login(req, res) {
             });
             return;
         }
-        const { accessToken, refreshToken, expiresIn } = user.generateJwt();
-        sendJSONResponse(res, 200, {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            expires_in: expiresIn
+        user.generateJwt().then((tokenObj) => {
+            const { accessToken, refreshToken, expiresIn } = tokenObj;
+            sendJSONResponse(res, 200, {
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                expires_in: expiresIn
+            });
+        }).catch((error) => {
+            sendJSONResponse(res, 500, {
+                error
+            });
         });
     });
 }

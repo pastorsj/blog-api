@@ -6,7 +6,9 @@ import { DATABASE } from '../config/mongo.config';
 import log from '../log';
 
 const dbUri = DATABASE;
-const connection = mongoose.connect(dbUri);
+const connection = mongoose.connect(dbUri, {
+    useMongoClient: true
+});
 
 autoIncrement.initialize(connection);
 
