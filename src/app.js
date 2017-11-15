@@ -25,7 +25,7 @@ import imagesRoute from './routes/images';
 import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
 import tagsRoute from './routes/tags';
-import { register, login } from './routes/auth';
+import { register, login, refreshAccessToken } from './routes/auth';
 
 import client from './config/redis.config';
 import log from './log';
@@ -92,6 +92,7 @@ app.use(passport.session());
 
 app.use('/api/register', register);
 app.use('/api/login', login);
+app.use('/api/auth/token', refreshAccessToken);
 
 app.use('/api/blog', blogRoute);
 app.use('/api/user', userRoute);

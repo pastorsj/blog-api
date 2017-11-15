@@ -18,7 +18,7 @@ describe('Test the /images route', () => {
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
         acquireJwt(app).then((res) => {
-            jwt = res.body.token;
+            jwt = res.body.access_token;
             done();
         }).catch((err) => {
             done(err);
@@ -37,10 +37,11 @@ describe('Test the /images route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            expect(res.text).to.be.eq('1234567890');
+                            done();
                         }
-                        expect(res.text).to.be.eq('1234567890');
-                        return done();
                     });
             });
         });
@@ -59,14 +60,15 @@ describe('Test the /images route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
-                        }
-                        deleteImageStub.restore();
-                        sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
+                            done(err);
+                        } else {
+                            deleteImageStub.restore();
+                            sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
 
-                        const { data } = res.body;
-                        expect(data).to.be.eq('Data');
-                        return done();
+                            const { data } = res.body;
+                            expect(data).to.be.eq('Data');
+                            done();
+                        }
                     });
             });
             it('should call the delete image service and error out', (done) => {
@@ -81,11 +83,12 @@ describe('Test the /images route', () => {
                     .expect(400)
                     .end((err) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            deleteImageStub.restore();
+                            sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
+                            done();
                         }
-                        deleteImageStub.restore();
-                        sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
-                        return done();
                     });
             });
         });

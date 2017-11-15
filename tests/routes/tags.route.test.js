@@ -20,7 +20,7 @@ describe('Test the /tags route', () => {
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
         acquireJwt(app).then((res) => {
-            jwt = res.body.token;
+            jwt = res.body.access_token;
             done();
         }).catch((err) => {
             done(err);
@@ -43,29 +43,29 @@ describe('Test the /tags route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
-                        }
-                        addNewStub.restore();
-                        sinon.assert.calledWith(addNewStub, 'tag', 'tags');
+                            done(err);
+                        } else {
+                            addNewStub.restore();
+                            sinon.assert.calledWith(addNewStub, 'tag', 'tags');
 
-                        const { data } = res.body;
-                        expect(data).to.be.eq('Data');
-                        return done();
+                            const { data } = res.body;
+                            expect(data).to.be.eq('Data');
+                            done();
+                        }
                     });
             });
             it('should call the addNew function and error out', (done) => {
-                const addNewStub = sandbox.stub(RedisService, 'addNew')
-                    .rejects();
+                sandbox.stub(RedisService, 'addNew').rejects();
                 request(app)
                     .post('/api/tags/')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .expect(400)
                     .end((err) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            done();
                         }
-                        addNewStub.restore();
-                        return done();
                     });
             });
         });
@@ -83,29 +83,29 @@ describe('Test the /tags route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            getPrefixesStub.restore();
+                            sinon.assert.calledWith(getPrefixesStub, 'tag', 50, 'tags');
+    
+                            const { data } = res.body;
+                            expect(data).to.be.eq('Data');
+                            done();
                         }
-                        getPrefixesStub.restore();
-                        sinon.assert.calledWith(getPrefixesStub, 'tag', 50, 'tags');
-
-                        const { data } = res.body;
-                        expect(data).to.be.eq('Data');
-                        return done();
                     });
             });
             it('should call the getPrefixes function and error out', (done) => {
-                const getPrefixesStub = sandbox.stub(RedisService, 'getPrefixes')
-                    .rejects();
+                sandbox.stub(RedisService, 'getPrefixes').rejects();
                 request(app)
                     .put('/api/tags/')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .expect(400)
                     .end((err) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            done();
                         }
-                        getPrefixesStub.restore();
-                        return done();
                     });
             });
         });
@@ -130,15 +130,16 @@ describe('Test the /tags route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data).to.deep.equal({
+                                redis: 1,
+                                databases: 1,
+                                express: 1
+                            });
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data).to.deep.equal({
-                            redis: 1,
-                            databases: 1,
-                            express: 1
-                        });
-                        return done();
                     });
             });
         });
@@ -168,13 +169,14 @@ describe('Test the /tags route', () => {
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
-                            return done(err);
+                            done(err);
+                        } else {
+                            const { data } = res.body;
+                            expect(data.length).to.be.eq(1);
+                            expect(data[0].author.username).to.be.eq('testuser');
+                            expect(data[0].author.name).to.be.eq('Test User');
+                            done();
                         }
-                        const { data } = res.body;
-                        expect(data.length).to.be.eq(1);
-                        expect(data[0].author.username).to.be.eq('testuser');
-                        expect(data[0].author.name).to.be.eq('Test User');
-                        return done();
                     });
             });
         });

@@ -37,8 +37,39 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String
+    },
+    refreshToken: {
+        type: String
     }
 });
+
+function getAccessToken() {
+    const expiresIn = Math.floor(Date.now() + (60 * 60 * 1000)); // 1 hour
+    const accessToken = jwt.sign({
+        _id: this._id,
+        username: this.username,
+        name: this.name,
+        exp: expiresIn
+    }, SECRET);
+
+    return {
+        accessToken,
+        expiresIn
+    };
+}
+
+async function getRefreshToken() {
+    if (this.refreshToken) {
+        return this.refreshToken;
+    }
+    const refreshToken = jwt.sign({
+        _id: this._id
+    }, SECRET);
+
+    this.refreshToken = refreshToken;
+    await this.save();
+    return this.refreshToken;
+}
 
 // These functions cannot be converted to arrow functions since the 'this' environment matters
 userSchema.methods.setPassword = function setPassword(password) {
@@ -51,16 +82,14 @@ userSchema.methods.validPassword = function validPassword(password) {
     return this.hash === hash;
 };
 
-userSchema.methods.generateJwt = function generateJwt() {
-    const expiry = new Date();
-    expiry.setDate(expiry.getDate() + 1);
-
-    return jwt.sign({
-        _id: this._id,
-        username: this.username,
-        name: this.name,
-        exp: parseInt(expiry.getTime() / 1000, 10)
-    }, SECRET);
+userSchema.methods.generateJwt = async function generateJwt() {
+    const { accessToken, expiresIn } = getAccessToken.call(this);
+    const refreshToken = await getRefreshToken.call(this);
+    return {
+        accessToken,
+        expiresIn,
+        refreshToken
+    };
 };
 
 const UserModel = mongoose.model('User', userSchema);

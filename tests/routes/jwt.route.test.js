@@ -8,7 +8,7 @@ describe('Test the /jwt route', () => {
 
     beforeEach((done) => {
         acquireJwt(app).then((res) => {
-            jwt = res.body.token;
+            jwt = res.body.access_token;
             done();
         }).catch((err) => {
             done(err);

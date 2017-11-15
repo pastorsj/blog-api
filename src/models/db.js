@@ -6,7 +6,9 @@ import { DATABASE } from '../config/mongo.config';
 import log from '../log';
 
 const dbUri = DATABASE;
-const connection = mongoose.connect(dbUri);
+const connection = mongoose.connect(dbUri, {
+    useMongoClient: true
+});
 
 autoIncrement.initialize(connection);
 
@@ -55,10 +57,10 @@ process.on('SIGINT', () => {
     });
 });
 
-/*  Listens for SIGUSR2, whih is what nodemon uses when it restarts app */
+/*  Listens for SIGUSR2, which is what nodemon uses when it restarts app */
 process.once('SIGUSR2', () => {
-    gracefulShutdown('nodemon reatart', () => {
-        process.kill(process.id, 'SIGUSR2');
+    gracefulShutdown('nodemon restart', () => {
+        process.exit();
     });
 });
 
