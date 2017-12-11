@@ -14,7 +14,7 @@ const GistController = {
     post: (req, res) => {
         if (req.body && req.body.link) {
             const { link } = req.body;
-            gistify(link)
+            gistify(link, { removeFooter: true })
                 .then((html) => {
                     sendJSONResponse(res, 200, {
                         data: html

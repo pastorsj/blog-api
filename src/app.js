@@ -5,7 +5,6 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import passport from 'passport';
 import session from 'express-session';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -86,9 +85,6 @@ if (process.env.NODE_ENV !== 'TEST') {
 }
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/api/register', register);
 app.use('/api/login', login);
