@@ -36,27 +36,25 @@ Get information about a particular user
             }
         }
 
-### Update a User [POST]
+### Update a User's Profile Picture [POST]
 
 Updates a user's profile picture
 
-+ Request (multipart/form-data)
++ Request (multipart/form-data; boundary=---BOUNDARY)
 
-    + Headers
+        -----BOUNDARY
+        Authorization: Bearer __JWT__
+        Content-Disposition: form-data; name="image[file]"; filename="image.jpg"
+        Content-Type: image/jpeg
+        Content-Transfer-Encoding: base64
 
-            Authorization: Bearer __JWT__
-
-    + Parameters
-
-        + username (string, required) - The username of a particular user
-
-    + Body
-
-            {
-                "profilePicture": "file"
-            }
-
-
+        /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+        HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+        MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIA
+        AhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEB
+        AAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL+AD//Z
+        -----BOUNDARY
+        
 + Response 200 (application/json)
     
         {
@@ -157,7 +155,10 @@ Register a particular user given the information provided. Assuming the username
 + Response 200 (application/json)
 
         {
-            token: "fjsljo;iawejlkjafsljifju9827kkj"
+            access_token: "fjsljo;iawejlkjafsljifju9827kkj",
+            refresh_token: "falsdjfkhasdlkfjhalskdhffh2h893hf",
+            expires_in: 12798,
+            token_type: "Bearer"
         }
 
 ## Login [/login]
@@ -170,12 +171,15 @@ Allows a user to login. The Authorization header must contain the username and p
 
     + Headers
 
-            Authorization: username:password
+            Authorization: {username}:{password}
 
 + Response 200 (application/json)
 
         {
-            token: "fjsljo;iawejlkjafsljifju9827kkj"
+            access_token: "fjsljo;iawejlkjafsljifju9827kkj",
+            refresh_token: "falsdjfkhasdlkfjhalskdhffh2h893hf",
+            expires_in: 12798,
+            token_type: "Bearer"
         }
 
 
@@ -183,7 +187,7 @@ Allows a user to login. The Authorization header must contain the username and p
 
 ### Get all articles [GET]
 
-Get all articles that exist
+Get all articles that are published
 
 + Response 200 (application/json)
 
@@ -195,9 +199,10 @@ Get all articles that exist
                     "title": "Hello world version 2",
                     "description": "This is another test",
                     "author": "doejd",
-                    "__v": 0,
                     "tags": [],
-                    "datePosted": "2017-06-20T13:30:13.408Z"
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": true
                 }
             ]
         }
@@ -231,9 +236,10 @@ Create a new article with the given information
                 "title": "Hello world version 2",
                 "description": "This is another test",
                 "author": "doejd",
-                "__v": 0,
                 "tags": [],
-                "datePosted": "2017-06-20T13:30:13.408Z"
+                "datePosted": "2017-06-20T13:30:13.408Z",
+                "coverPhoto": "https://profile.picture.com",
+                "isPublished": true
             }
         }
 
@@ -259,9 +265,10 @@ Get a single article
                 "title": "Hello world version 2",
                 "description": "This is another test",
                 "author": "doejd",
-                "__v": 0,
                 "tags": [],
-                "datePosted": "2017-06-20T13:30:13.408Z"
+                "datePosted": "2017-06-20T13:30:13.408Z",
+                "coverPhoto": "https://profile.picture.com",
+                "isPublished": true
             }
         }
 
@@ -298,9 +305,46 @@ Update an article with the given information
                 "title": "Hello world version 2",
                 "description": "This is another test",
                 "author": "doejd",
-                "__v": 0,
                 "tags": [],
-                "datePosted": "2017-06-20T13:30:13.408Z"
+                "datePosted": "2017-06-20T13:30:13.408Z",
+                "coverPhoto": "https://profile.picture.com",
+                "isPublished": false
+            }
+        }
+
+### Update an article's cover photo [POST]
+
+Update an article's cover photo
+
+
++ Request (multipart/form-data; boundary=---BOUNDARY)
+
+        -----BOUNDARY
+        Authorization: Bearer __JWT__
+        Content-Disposition: form-data; name="image[file]"; filename="image.jpg"
+        Content-Type: image/jpeg
+        Content-Transfer-Encoding: base64
+
+        /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+        HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+        MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIA
+        AhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEB
+        AAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AL+AD//Z
+        -----BOUNDARY
+        
++ Response 200 (application/json)
+    
+        {
+            "data": {
+                "_id": 0,
+                "text": "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
+                "title": "Hello world version 2",
+                "description": "This is another test",
+                "author": "doejd",
+                "tags": [],
+                "datePosted": "2017-06-20T13:30:13.408Z",
+                "coverPhoto": "https://profile.picture.com",
+                "isPublished": false
             }
         }
 
@@ -318,36 +362,18 @@ Delete an article
 
         + id (number, required) - The id of a particlar article
 
-    + Body
-
-            {
-                title: "A new title",
-                description: "A new description",
-                text: "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
-                author: "doejd"
-            }
-
 
 + Response 200 (application/json)
 
         {
-            "data": {
-                "_id": 0,
-                "text": "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
-                "title": "Hello world version 2",
-                "description": "This is another test",
-                "author": "doejd",
-                "__v": 0,
-                "tags": [],
-                "datePosted": "2017-06-20T13:30:13.408Z"
-            }
+            "message": "The blog with the id 0 was removed"
         }
 
 ## Article Tags [/tag/:tag]
 
 ### Get article by tag [GET]
 
-Get articles by a tag
+Get articles that are published by a tag
 
 + Request (application/json)
 
@@ -370,9 +396,44 @@ Get articles by a tag
                     "title": "Hello world version 2",
                     "description": "This is another test",
                     "author": "doejd",
-                    "__v": 0,
                     "tags": [],
-                    "datePosted": "2017-06-20T13:30:13.408Z"
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": true
+                }
+            ]
+        }
+
+## Article Tags [/title/:title]
+
+### Get article by title [GET]
+
+Get articles that are published by a title
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
+    + Parameters
+
+        + title (string, required) - A title associated with at least one article
+
+
++ Response 200 (application/json)
+
+        {
+            "data": [
+                {
+                    "_id": 0,
+                    "title": "Hello world version 2",
+                    "tags": ["first", "second"]
+                },
+                {
+                    "_id": 1,
+                    "title": "Hello world version 3",
+                    "tags": ["first", "third", "databases"]
                 }
             ]
         }
@@ -381,7 +442,7 @@ Get articles by a tag
 
 ### Get article by username [GET]
 
-Get articles by username
+Get articles by username (both published and unpublished)
 
 + Request (application/json)
 
@@ -400,9 +461,21 @@ Get articles by username
                     "title": "Hello world version 2",
                     "description": "This is another test",
                     "author": "doejd",
-                    "__v": 0,
                     "tags": [],
-                    "datePosted": "2017-06-20T13:30:13.408Z"
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": true
+                },
+                {
+                    "_id": 1,
+                    "text": "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
+                    "title": "Hello world version 3",
+                    "description": "This is another test 2",
+                    "author": "doejd",
+                    "tags": [],
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": false
                 }
             ]
         }
