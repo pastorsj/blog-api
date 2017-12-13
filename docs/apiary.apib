@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://blog.sampastoriza.com/api/
+HOST: https://localhost:3000/api/
 
 # Sam Pastoriza's Blog API
 
@@ -24,6 +24,43 @@ Get information about a particular user
 
         {
             "data": {
+                "hash": "hksdjfhlaksdjhflkashjdflaufh97r98732749",
+                "salt": "fdjkjshdalfhgsdljfgla4y38y98u9uf9uaukzjh",
+                "email": "email@email.com",
+                "name": "John Doe",
+                "username": "doejd",
+                "posts": [],
+                "joinedDate": "2017-06-20T13:17:27.213Z",
+                "profilePicture": "http://profile.picture.com",
+                "refreshToken": "239jfdj.;sofaj8;lfkj.lskdjflkhsjh82"
+            }
+        }
+
+### Update a User [POST]
+
+Updates a user's profile picture
+
++ Request (multipart/form-data)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
+    + Parameters
+
+        + username (string, required) - The username of a particular user
+
+    + Body
+
+            {
+                "profilePicture": "file"
+            }
+
+
++ Response 200 (application/json)
+    
+        {
+            "data": {
                 "_id": "84293874938749723947",
                 "hash": "hksdjfhlaksdjhflkashjdflaufh97r98732749",
                 "salt": "fdjkjshdalfhgsdljfgla4y38y98u9uf9uaukzjh",
@@ -32,7 +69,9 @@ Get information about a particular user
                 "username": "doejd",
                 "__v": 0,
                 "posts": [],
-                "joinedDate": "2017-06-20T13:17:27.213Z"
+                "joinedDate": "2017-06-20T13:17:27.213Z",
+                "profilePicture": "http://profile.picture.com",
+                "refreshToken": "239jfdj.;sofaj8;lfkj.lskdjflkhsjh82"
             }
         }
 
@@ -71,7 +110,9 @@ Updates a new user with the provided data
                 "username": "doejd",
                 "__v": 0,
                 "posts": [],
-                "joinedDate": "2017-06-20T13:17:27.213Z"
+                "joinedDate": "2017-06-20T13:17:27.213Z",
+                "profilePicture": "http://profile.picture.com",
+                "refreshToken": "239jfdj.;sofaj8;lfkj.lskdjflkhsjh82"
             }
         }
 
