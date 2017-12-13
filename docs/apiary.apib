@@ -369,7 +369,7 @@ Delete an article
             "message": "The blog with the id 0 was removed"
         }
 
-## Article Tags [/tag/:tag]
+## Article Tags [/blog/tag/:tag]
 
 ### Get article by tag [GET]
 
@@ -404,7 +404,7 @@ Get articles that are published by a tag
             ]
         }
 
-## Article Tags [/title/:title]
+## Article Titles [/blog/title/:title]
 
 ### Get article by title [GET]
 
@@ -478,4 +478,50 @@ Get articles by username (both published and unpublished)
                     "isPublished": false
                 }
             ]
+        }
+
+## Gist Conversion [/gist]
+
+### Get converted html given url [GET]
+
+Convert a gist or github url to a minified well formatted html string.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
+    + Body
+
+            {
+                link: "https://github.com/pastorsj/blog-api/blob/master/README.md"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "html": "<p>Html plus stylesheet</p>",
+                "file": "<p>Just the html</p>",
+                "stylesheet": "<p>Just the stylesheet html</p>"
+            }
+        }
+
+## JWT [/jwt]
+
+### Check Expiration [POST]
+
+Check if a jwt is expired
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
++ Response 401 (application/json)
+
+        {
+            "message": "JWT is expired"
         }
