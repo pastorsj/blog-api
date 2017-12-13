@@ -525,3 +525,104 @@ Check if a jwt is expired
         {
             "message": "JWT is expired"
         }
+
+## Tags [/tags]
+
+### Create a Tag [POST]
+
+Adds a new tag if it does not exist already
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
+    + Body
+
+            {
+                tag: "database"
+            }
+
++ Response 204
+
+### Get Prefixes [PUT]
+
+Given a prefix of a tag, get all tags that match that prefix, up to a certain count.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer __JWT__
+
+    + Body
+
+            {
+                prefix: "data",
+                count: 50
+            }
+
++ Response 200 (application/json)
+
+        {
+            "data": ["databases", "data migration"]
+        }
+
+### Get Tags by Popularity [GET]
+
+Get all tags by the number of published articles that use that tag.
+
++ Request (application/json)
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "databases" 2,
+                "data migration": 3
+            }
+        }
+
+## Article by Tag [/tags/:tag]
+
+### Get Articles by Tag [PUT]
+
+Get all published with a specific tag.
+
++ Request (application/json)
+
+    + Body
+
+            {
+                tag: "databases"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "data": [
+                {
+                    "_id": 0,
+                    "text": "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
+                    "title": "Hello world version 2",
+                    "description": "This is another test",
+                    "author": "doejd",
+                    "tags": ["databases", "redis"],
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": true
+                },
+                {
+                    "_id": 1,
+                    "text": "<p>Welcome to my first article on the basics of programming. I am really enjoying my time working on this project, which will soon be linked on github</p><p><strong>Hello this is my first article.....</strong></p>",
+                    "title": "Hello world version 3",
+                    "description": "This is another test 2",
+                    "author": "doejd",
+                    "tags": ["mssql", "databases"],
+                    "datePosted": "2017-06-20T13:30:13.408Z",
+                    "coverPhoto": "https://profile.picture.com",
+                    "isPublished": true
+                }
+            ]
+        }
