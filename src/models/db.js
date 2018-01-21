@@ -1,16 +1,11 @@
 import mongoose from 'mongoose';
 import readLine from 'readline';
-import autoIncrement from 'mongoose-auto-increment';
 
 import { DATABASE } from '../config/mongo.config';
 import log from '../log';
 
 const dbUri = DATABASE;
-const connection = mongoose.connect(dbUri, {
-    useMongoClient: true
-});
-
-autoIncrement.initialize(connection);
+mongoose.connect(dbUri);
 
 /*  Emulateing disconnection events on Windows */
 

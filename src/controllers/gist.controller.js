@@ -1,5 +1,3 @@
-
-
 import gistify from 'node-gist-html';
 
 const sendJSONResponse = (res, status, content) => {

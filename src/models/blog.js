@@ -1,7 +1,7 @@
 
 
 import mongoose from 'mongoose';
-import autoIncrement from 'mongoose-auto-increment';
+import { autoIncrement } from 'mongoose-plugin-autoinc';
 
 const blogPostSchema = new mongoose.Schema({
     datePosted: {
@@ -42,7 +42,7 @@ const blogPostSchema = new mongoose.Schema({
     }
 });
 
-blogPostSchema.plugin(autoIncrement.plugin, 'BlogPost');
+blogPostSchema.plugin(autoIncrement, 'BlogPost');
 
 const BlogPostModel = mongoose.model('BlogPost', blogPostSchema);
 

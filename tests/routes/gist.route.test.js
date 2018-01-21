@@ -24,7 +24,7 @@ describe('Test the /gist route', () => {
                     .post('/api/gist')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .send({
-                        link: 'https://github.com/pastorsj/blog-api/blob/master/index.html'
+                        link: 'https://github.com/pastorsj/blog-api/blob/master/tests/routes/gist.route.test.js'
                     })
                     .expect(200)
                     .end((err, res) => {
