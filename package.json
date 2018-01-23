@@ -55,7 +55,7 @@
     "transform-runtime": "0.0.0",
     "winston": "^2.4.0",
     "wysiwyg-editor-node-sdk": "git+https://github.com/froala/wysiwyg-editor-node-sdk.git",
-    "yargs": "^10.0.3"
+    "yargs": "^11.0.0"
   },
   "devDependencies": {
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
