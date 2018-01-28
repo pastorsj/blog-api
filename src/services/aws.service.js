@@ -1,4 +1,3 @@
-
 import log from '../log';
 import { KEY_START, BUCKET, S3 } from '../config/aws.config';
 
@@ -20,10 +19,7 @@ const AWSService = {
                     log.critical('Error when delete image', err);
                     reject(new Error(`Error when deleting image: ${err}`));
                 } else {
-                    resolve({
-                        status: 204,
-                        data
-                    });
+                    resolve(data);
                 }
             });
         } catch (e) {

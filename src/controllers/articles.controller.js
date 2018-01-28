@@ -1,11 +1,5 @@
-
-
-import mongoose from 'mongoose';
-
-const sendJSONResponse = (res, status, content) => {
-    res.status(status);
-    res.json(content);
-};
+import ArticleService from '../services/article.service';
+import Response from '../config/response.config';
 
 /**
  * ROUTE: articles/:username
@@ -14,16 +8,10 @@ const sendJSONResponse = (res, status, content) => {
 const ArticlesController = {
     get: (req, res) => {
         const { username } = req.params;
-        mongoose.model('BlogPost').find({ author: username }, (err, articles) => {
-            if (err) {
-                sendJSONResponse(res, 500, {
-                    error: err || 'Articles Not Found'
-                });
-            } else {
-                sendJSONResponse(res, 200, {
-                    data: articles
-                });
-            }
+        ArticleService.getAllArticlesForAuthor(username).then((articles) => {
+            Response.json(res, 200, articles);
+        }).catch((err) => {
+            Response.json(res, 404, err || 'Articles Not Found');
         });
     }
 };

@@ -1,33 +1,8 @@
-
-
-import mongoose from 'mongoose';
-
-import redis from '../services/redis.service';
+import RedisService from '../services/redis.service';
+import TagService from '../services/tags.service';
+import Response from '../config/response.config';
 
 const SET_NAME = 'tags';
-
-const sendJSONResponse = (res, status, content = {}) => {
-    res.status(status);
-    res.json(content);
-};
-
-/**
- * Retrieves the full author for a blog post
- * @param {Object} post - A blog post
- * @returns {Promise} - Either it returns the updated post or an error
- */
-function retrieveAuthor(post) {
-    return new Promise((resolve, reject) => {
-        mongoose.model('User').find({ username: post.author }, { name: 1, username: 1 }).limit(1).exec((err, author) => {
-            if (err || author.length < 1) {
-                reject(err || 'No authors found');
-            }
-            const postObject = post.toObject();
-            postObject.author = author.pop();
-            resolve(postObject);
-        });
-    });
-}
 
 /**
  * ROUTE: tags/
@@ -36,90 +11,36 @@ function retrieveAuthor(post) {
 const TagsController = {
     post: (req, res) => {
         const { tag } = req.body;
-        redis.addNew(tag, SET_NAME)
+        RedisService.addNew(tag, SET_NAME)
             .then((result) => {
-                sendJSONResponse(res, result.status, {
-                    data: result.data
-                });
+                Response.json(res, 204, result);
             }).catch((err) => {
-                sendJSONResponse(res, 400, {
-                    error: err
-                });
+                Response.error(res, 400, err);
             });
     },
     getPrefixes: async (req, res) => {
         const { prefix, count } = req.body;
-        redis.getPrefixes(prefix, count, SET_NAME)
-            .then((result) => {
-                sendJSONResponse(res, result.status, {
-                    data: result.data
-                });
+        RedisService.getPrefixes(prefix, count, SET_NAME)
+            .then((prefixes) => {
+                Response.json(res, 200, prefixes);
             }).catch((err) => {
-                sendJSONResponse(res, 400, {
-                    error: err
-                });
+                Response.json(res, 400, err);
             });
     },
     getTagsByPopularity: (req, res) => {
-        try {
-            mongoose.model('BlogPost').find({ isPublished: true }, { tags: 1, _id: 0 }, (err, tagSet) => {
-                if (err) {
-                    sendJSONResponse(res, 404, {
-                        error: err || 'Blog Post Not Found'
-                    });
-                } else {
-                    const allTags = {};
-                    tagSet.forEach((set) => {
-                        const { tags } = set;
-                        tags.forEach((tag) => {
-                            allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
-                        });
-                    });
-                    sendJSONResponse(res, 200, {
-                        data: allTags
-                    });
-                }
-            });
-        } catch (e) {
-            sendJSONResponse(res, 500, {
-                error: `Error!${e}`
-            });
-        }
+        TagService.getTagsByPopularity().then((allTags) => {
+            Response.json(res, 200, allTags);
+        }).catch((err) => {
+            Response.error(res, 404, err);
+        });
     },
     getArticlesByTag: (req, res) => {
-        try {
-            const { tag } = req.params;
-            mongoose.model('BlogPost').find({
-                tags: tag,
-                isPublished: true
-            }, (err, posts) => {
-                if (err) {
-                    sendJSONResponse(res, 404, {
-                        error: err || 'Blog Post Not Found'
-                    });
-                } else {
-                    const postPromises = [];
-                    posts.forEach((post) => {
-                        postPromises.push(retrieveAuthor(post));
-                    });
-                    Promise.all(postPromises)
-                        .then((result) => {
-                            sendJSONResponse(res, 200, {
-                                data: result
-                            });
-                        })
-                        .catch((error) => {
-                            sendJSONResponse(res, 404, {
-                                error
-                            });
-                        });
-                }
-            });
-        } catch (e) {
-            sendJSONResponse(res, 500, {
-                error: `Error!${e}`
-            });
-        }
+        const { tag } = req.params;
+        TagService.getArticlesByTag(tag).then((articles) => {
+            Response.json(res, 200, articles);
+        }).catch((err) => {
+            Response.error(res, 404, err);
+        });
     }
 };
 

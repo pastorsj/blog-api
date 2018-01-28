@@ -1,5 +1,3 @@
-
-
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
@@ -24,6 +22,7 @@ import imagesRoute from './routes/images';
 import jwtRoute from './routes/jwt';
 import gistRoute from './routes/gist';
 import tagsRoute from './routes/tags';
+import graphqlRoute from './routes/graphql';
 import { register, login, refreshAccessToken } from './routes/auth';
 
 import client from './config/redis.config';
@@ -97,6 +96,8 @@ app.use('/api/images', imagesRoute);
 app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
+
+app.use('/graphql', graphqlRoute);
 
 if (process.env.NODE_ENV !== 'TEST') {
     app.use(expressWinston.errorLogger({

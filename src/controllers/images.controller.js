@@ -1,11 +1,5 @@
-
-
 import ImageService from '../services/image.service';
-
-const sendJSONResponse = (res, status, content) => {
-    res.status(status);
-    res.json(content);
-};
+import Response from '../config/response.config';
 
 /**
  * ROUTE: articles/:username
@@ -20,14 +14,10 @@ const ImagesController = {
         const { src } = req.body;
         ImageService.deleteImage(src)
             .then((result) => {
-                sendJSONResponse(res, result.status, {
-                    data: result.data
-                });
+                Response.json(res, result.status, result.data);
             })
             .catch((err) => {
-                sendJSONResponse(res, 400, {
-                    error: err
-                });
+                Response.error(res, 400, err);
             });
     }
 };

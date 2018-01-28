@@ -69,10 +69,7 @@ const RedisService = {
             adds.push(zadd(setName, 0, `${word}*`));
             Promise.all(adds)
                 .then(() => {
-                    resolve({
-                        status: 204,
-                        data: ''
-                    });
+                    resolve('');
                 })
                 .catch((err) => {
                     log.critical('An error occured while trying to add a prefix to the database', err);
@@ -96,10 +93,7 @@ const RedisService = {
                 if (!start) {
                     start = await zrank(setName, `${prefix}*`);
                     if (!start) {
-                        resolve({
-                            status: 200,
-                            data: results
-                        });
+                        resolve(results);
                     }
                 }
 
@@ -121,10 +115,7 @@ const RedisService = {
                         }
                     });
                 }
-                resolve({
-                    status: 200,
-                    data: results
-                });
+                resolve(results);
             }
         } catch (e) {
             log.critical('Error while getting prefixes', e);

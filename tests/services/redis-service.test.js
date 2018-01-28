@@ -21,8 +21,7 @@ describe('Test the Redis service', () => {
     describe('addNew', () => {
         it('should call the RedisService.addNew function and return successfully', (done) => {
             RedisService.addNew('quality', SET_NAME).then((res) => {
-                expect(res.status).to.be.eq(204);
-                expect(res.data).to.be.eq('');
+                expect(res).to.be.eq('');
                 done();
             }).catch((err) => {
                 done(err);
@@ -49,8 +48,7 @@ describe('Test the Redis service', () => {
         });
         it('should return successfully', (done) => {
             RedisService.getPrefixes('qual', 50, SET_NAME).then((res) => {
-                expect(res.status).to.be.eq(200);
-                expect(res.data).to.deep.equal(['qualification', 'quality']);
+                expect(res).to.deep.equal(['qualification', 'quality']);
                 done();
             }).catch((err) => {
                 done(err);
@@ -74,8 +72,7 @@ describe('Test the Redis service', () => {
         });
         it('should return successully when the entire word is provided', (done) => {
             RedisService.getPrefixes('quality', 50, SET_NAME).then((res) => {
-                expect(res.status).to.be.eq(200);
-                expect(res.data).to.deep.equal(['quality']);
+                expect(res).to.deep.equal(['quality']);
                 done();
             }).catch((err) => {
                 done(err);
@@ -83,8 +80,7 @@ describe('Test the Redis service', () => {
         });
         it('should return no results when the prefix does not exist', (done) => {
             RedisService.getPrefixes('dne', 50, SET_NAME).then((res) => {
-                expect(res.status).to.be.eq(200);
-                expect(res.data).to.deep.equal([]);
+                expect(res).to.deep.equal([]);
                 done();
             }).catch((err) => {
                 done(err);
@@ -92,8 +88,7 @@ describe('Test the Redis service', () => {
         });
         it('should return successfully when a longer version of a word exists', (done) => {
             RedisService.getPrefixes('qualif', 50, SET_NAME).then((res) => {
-                expect(res.status).to.be.eq(200);
-                expect(res.data).to.deep.equal(['qualification']);
+                expect(res).to.deep.equal(['qualification']);
                 done();
             }).catch((err) => {
                 done(err);

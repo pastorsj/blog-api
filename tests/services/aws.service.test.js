@@ -24,8 +24,7 @@ describe('Test the AWS service', () => {
                 cb(null, 'Data');
             });
             AWSService.deleteImage('https://flickr.com').then((res) => {
-                expect(res.status).to.be.eq(204);
-                expect(res.data).to.be.eq('Data');
+                expect(res).to.be.eq('Data');
                 done();
             }).catch((err) => {
                 done(err);
