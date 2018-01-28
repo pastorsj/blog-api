@@ -6,7 +6,7 @@ import acquireJwt from '../common/jwt.common';
 
 const { expect } = chai;
 
-describe.only('Test the /gist route', () => {
+describe('Test the /gist route', () => {
     let jwt = '';
 
     beforeEach((done) => {

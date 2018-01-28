@@ -33,23 +33,20 @@ describe('Test the /tags route', () => {
         describe('POST', () => {
             it('should call the addNew function and return successfully', (done) => {
                 const addNewStub = sandbox.stub(RedisService, 'addNew')
-                    .resolves({ status: 200, data: 'Data' });
+                    .resolves('');
                 request(app)
                     .post('/api/tags/')
                     .set({ Authorization: `Bearer ${jwt}` })
                     .send({
                         tag: 'tag'
                     })
-                    .expect(200)
+                    .expect(204)
                     .end((err, res) => {
                         if (err) {
                             done(err);
                         } else {
                             addNewStub.restore();
                             sinon.assert.calledWith(addNewStub, 'tag', 'tags');
-
-                            const { data } = res.body;
-                            expect(data).to.be.eq('Data');
                             done();
                         }
                     });
@@ -72,7 +69,7 @@ describe('Test the /tags route', () => {
         describe('PUT', () => {
             it('should call the getPrefixes function and return successfully', (done) => {
                 const getPrefixesStub = sandbox.stub(RedisService, 'getPrefixes')
-                    .resolves({ status: 200, data: 'Data' });
+                    .resolves('Data');
                 request(app)
                     .put('/api/tags/')
                     .set({ Authorization: `Bearer ${jwt}` })

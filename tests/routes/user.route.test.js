@@ -100,7 +100,7 @@ describe('Test the /user route', () => {
                     .expect(401, done);
             });
             it('should fail to add a profile picture since service failed to post', (done) => {
-                sandbox.stub(ImageService, 'postImage').rejects({ status: 400, error: 'Error' });
+                sandbox.stub(ImageService, 'postImage').rejects('Error');
                 request(app)
                     .post('/api/user/testuser')
                     .attach('profilePicture', 'tests/common/testing.png')
@@ -120,7 +120,7 @@ describe('Test the /user route', () => {
                 request(app)
                     .post('/api/user/testuser')
                     .set({ Authorization: `Bearer ${jwt}` })
-                    .expect(204, done);
+                    .expect(200, done);
             });
             it('should not upload the image since it is greater that 1mb', (done) => {
                 request(app)

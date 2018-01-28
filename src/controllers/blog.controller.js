@@ -11,7 +11,7 @@ const BlogController = {
         ArticleService.createArticle(req.body).then((blog) => {
             Response.json(res, 200, blog);
         }).catch((err) => {
-            Response.json(res, 404, err);
+            Response.error(res, 404, err);
         });
     },
     postCoverPhoto: (req, res) => {

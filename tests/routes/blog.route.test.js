@@ -21,8 +21,7 @@ describe('Test the /blog route', () => {
 
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
-        createCounter()
-            .then(() => setupUserCollection())
+        setupUserCollection()
             .then(() => setupArticlesCollection())
             .then(() => acquireJwt(app))
             .then((res) => {
@@ -61,7 +60,7 @@ describe('Test the /blog route', () => {
                             done(err);
                         } else {
                             expect(res.body.data.title).to.be.eq('A new article on testing');
-                            expect(res.body.message).to.be.eq('Blog created by testuser');
+                            expect(res.body.data.text).to.be.eq('<p>A great article on testing</p>');
                             done();
                         }
                     });
