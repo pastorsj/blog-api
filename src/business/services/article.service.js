@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import _ from 'lodash';
 
 import ImageService from './image.service';
-import log from '../log';
+import log from '../../log';
 
 function retrieveAuthor(post) {
     return new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
-import ImageService from '../services/image.service';
-import Response from '../config/response.config';
+import ImageService from '../../business/services/image.service';
+import Response from './response';
 
 /**
  * ROUTE: articles/:username

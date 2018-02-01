@@ -1,8 +1,6 @@
-
-
 import jwt from 'jsonwebtoken';
-import { SECRET } from '../config/jwt.config';
-import Response from '../config/response.config';
+import { SECRET } from '../../config/jwt.config';
+import Response from './response';
 
 /**
  * ROUTE: jwt/expired

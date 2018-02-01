@@ -1,6 +1,6 @@
-import RedisService from '../services/redis.service';
-import TagService from '../services/tags.service';
-import Response from '../config/response.config';
+import RedisService from '../../business/services/redis.service';
+import TagService from '../../business/services/tags.service';
+import Response from './response';
 
 const SET_NAME = 'tags';
 

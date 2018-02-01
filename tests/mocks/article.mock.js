@@ -42,6 +42,7 @@ export const setupArticlesCollection = async () => {
 };
 
 export const createCounter = async () => {
+    await mongoose.model('IdentityCounter').collection.drop();
     const Counter = mongoose.model('IdentityCounter');
     const counter = new Counter();
     counter.model = 'BlogPost';

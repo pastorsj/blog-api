@@ -15,13 +15,14 @@ const { expect } = chai;
 
 chai.use(sinonChai);
 
-describe('Test the /blog route', () => {
+describe.only('Test the /blog route', () => {
     let jwt = '';
     let sandbox;
 
     beforeEach((done) => {
         sandbox = sinon.sandbox.create();
-        setupUserCollection()
+        createCounter()
+            .then(() => setupUserCollection())
             .then(() => setupArticlesCollection())
             .then(() => acquireJwt(app))
             .then((res) => {

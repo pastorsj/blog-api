@@ -1,5 +1,5 @@
-import GistService from '../services/gist.service';
-import Response from '../config/response.config';
+import GistService from '../../business/services/gist.service';
+import Response from './response';
 
 /**
  * ROUTE: gist/

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import readLine from 'readline';
 
-import { DATABASE } from '../config/mongo.config';
-import log from '../log';
+import { DATABASE } from '../../config/mongo.config';
+import log from '../../log';
 
 const dbUri = DATABASE;
 mongoose.connect(dbUri);

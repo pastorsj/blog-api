@@ -1,9 +1,7 @@
-
-
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { auth, canUpdate, canPost } from '../config/jwt.config';
+import { auth, canUpdate, canPost } from '../../config/jwt.config';
 
 import BlogController from '../controllers/blog.controller';
 

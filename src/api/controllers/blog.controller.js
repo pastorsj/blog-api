@@ -1,6 +1,6 @@
-import ArticleService from '../services/article.service';
-import Response from '../config/response.config';
-import { upload } from '../config/multer.config';
+import ArticleService from '../../business/services/article.service';
+import Response from './response';
+import { upload } from '../../config/multer.config';
 
 /**
  * ROUTE: blog/:id

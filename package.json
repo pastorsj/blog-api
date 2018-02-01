@@ -46,7 +46,7 @@
     "lodash": "^4.17.4",
     "method-override": "^2.3.10",
     "mime": "^2.2.0",
-    "mongoose": "^5.0.1",
+    "mongoose": "^5.0.2",
     "mongoose-plugin-autoinc": "^1.1.2",
     "multer": "^1.3.0",
     "node-gist-html": "^1.1.2",

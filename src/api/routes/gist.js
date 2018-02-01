@@ -1,9 +1,7 @@
-
-
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { auth } from '../config/jwt.config';
+import { auth } from '../../config/jwt.config';
 
 import GistController from '../controllers/gist.controller';
 

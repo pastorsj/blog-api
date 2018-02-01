@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import mime from 'mime';
 
-import { BUCKET, REGION, KEY_START } from '../config/aws.config';
-import log from '../log';
+import { BUCKET, REGION, KEY_START } from '../../config/aws.config';
+import log from '../../log';
 import AWSService from './aws.service';
 
 const ImagesService = {

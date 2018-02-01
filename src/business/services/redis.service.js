@@ -1,5 +1,5 @@
-import client from '../config/redis.config';
-import log from '../log';
+import client from '../../config/redis.config';
+import log from '../../log';
 
 /**
  * Promisify the zadd command

@@ -1,9 +1,7 @@
-
-
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { SECRET } from '../config/jwt.config';
+import { SECRET } from '../../config/jwt.config';
 
 const userSchema = new mongoose.Schema({
     username: {

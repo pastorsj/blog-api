@@ -1,5 +1,5 @@
-import log from '../log';
-import { KEY_START, BUCKET, S3 } from '../config/aws.config';
+import log from '../../log';
+import { KEY_START, BUCKET, S3 } from '../../config/aws.config';
 
 const AWSService = {
     deleteImage: src => new Promise((resolve, reject) => {

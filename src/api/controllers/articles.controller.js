@@ -1,5 +1,5 @@
-import ArticleService from '../services/article.service';
-import Response from '../config/response.config';
+import ArticleService from '../../business/services/article.service';
+import Response from './response';
 
 /**
  * ROUTE: articles/:username

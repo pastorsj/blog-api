@@ -1,6 +1,6 @@
-import UserService from '../services/user.service';
-import { upload } from '../config/multer.config';
-import Response from '../config/response.config';
+import UserService from '../../business/services/user.service';
+import { upload } from '../../config/multer.config';
+import Response from './response';
 
 /**
  * ROUTE: user/:username

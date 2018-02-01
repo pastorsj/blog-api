@@ -1,9 +1,7 @@
-
-
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import { auth, isAccessible } from '../config/jwt.config';
+import { auth, isAccessible } from '../../config/jwt.config';
 
 import UserController from '../controllers/user.controller';
 
