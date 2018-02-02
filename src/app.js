@@ -11,19 +11,19 @@ import winston from 'winston';
 import limiter from 'express-limiter';
 import mongoose from 'mongoose';
 
-import './models/db';
-import './models/blog';
-import './models/user';
+import './dal/models/db';
+import './dal/models/blog';
+import './dal/models/user';
 
-import blogRoute from './routes/blog';
-import userRoute from './routes/user';
-import articlesRoute from './routes/articles';
-import imagesRoute from './routes/images';
-import jwtRoute from './routes/jwt';
-import gistRoute from './routes/gist';
-import tagsRoute from './routes/tags';
-import graphqlRoute from './routes/graphql';
-import { register, login, refreshAccessToken } from './routes/auth';
+import blogRoute from './api/routes/blog';
+import userRoute from './api/routes/user';
+import articlesRoute from './api/routes/articles';
+import imagesRoute from './api/routes/images';
+import jwtRoute from './api/routes/jwt';
+import gistRoute from './api/routes/gist';
+import tagsRoute from './api/routes/tags';
+import graphqlRoute from './api/routes/graphql';
+import { register, login, refreshAccessToken } from './api/routes/auth';
 
 import client from './config/redis.config';
 import log from './log';

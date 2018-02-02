@@ -1,29 +1,17 @@
-import mongoose from 'mongoose';
 import _ from 'lodash';
 
+import ArticleRepository from '../../dal/repositories/article.repository';
 import ImageService from './image.service';
+import UserService from './user.service';
 import log from '../../log';
 
-function retrieveAuthor(post) {
-    return new Promise((resolve, reject) => {
-        mongoose.model('User').find({ username: post.author }, { name: 1, username: 1 }).limit(1).exec((err, author) => {
-            if (err || author.length < 1) {
-                reject(err || 'No authors found');
-            }
-            const postObject = post.toObject();
-            postObject.author = author.pop();
-            resolve(postObject);
-        });
-    });
-}
-
 const ArticleService = {
-    getAllArticlesForAuthor: username => mongoose.model('BlogPost').find({ author: username }),
+    getAllArticlesForAuthor: username => ArticleRepository.getAll({ author: username }),
     getAllArticles: () => new Promise((resolve, reject) => {
-        mongoose.model('BlogPost').find({ isPublished: true }, { __v: 0 }).then((posts) => {
+        ArticleRepository.getAll({ isPublished: true }, { __v: 0 }).then((posts) => {
             const postPromises = [];
             posts.forEach((post) => {
-                postPromises.push(retrieveAuthor(post));
+                postPromises.push(UserService.retrieveAuthor(post));
             });
             Promise.all(postPromises).then((result) => {
                 resolve(result);
@@ -32,8 +20,8 @@ const ArticleService = {
             reject(err);
         });
     }),
-    getArticleById: id => mongoose.model('BlogPost').findOne({ _id: id }),
-    getByTag: tag => mongoose.model('BlogPost').find({
+    getArticleById: id => ArticleRepository.get({ _id: id }),
+    getByTag: tag => ArticleRepository.getAll({
         tags: tag,
         isPublished: true
     }),
@@ -43,7 +31,7 @@ const ArticleService = {
             title: 1,
             tags: 1
         };
-        return mongoose.model('BlogPost').find({
+        return ArticleRepository.getAll({
             title: {
                 $regex: `^${titlePrefix}`,
                 $options: 'i'
@@ -51,8 +39,8 @@ const ArticleService = {
             isPublished: true
         }, projection);
     },
-    createArticle: article => mongoose.model('BlogPost').create(article),
-    postCoverPhoto: (id, file) => new Promise((resolve, reject) => mongoose.model('BlogPost').findOne({
+    createArticle: article => ArticleRepository.create(article),
+    postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({
         _id: id
     }).then((article) => {
         if (file) {
@@ -80,7 +68,7 @@ const ArticleService = {
         log.critical('Article not found');
         reject(err);
     })),
-    updateArticle: (id, article) => new Promise((resolve, reject) => mongoose.model('BlogPost').findOne({
+    updateArticle: (id, article) => new Promise((resolve, reject) => ArticleRepository.get({
         _id: id
     }).then((blog) => {
         _.assign(blog, article);
@@ -99,7 +87,7 @@ const ArticleService = {
         log.critical('Article to update not found');
         reject(err);
     })),
-    deleteArticle: id => new Promise((resolve, reject) => mongoose.model('BlogPost').findOne({
+    deleteArticle: id => new Promise((resolve, reject) => ArticleRepository.get({
         _id: id
     }).then((article) => {
         article.remove((error) => {
