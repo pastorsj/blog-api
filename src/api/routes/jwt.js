@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import JwtController from '../controllers/jwt.controller';
+import AuthController from '../controllers/auth.controller';
 
 const router = express.Router();
 
@@ -11,6 +11,6 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/jwt route
 router.route('/expired')
-    .post(JwtController.post.bind(JwtController));
+    .post(AuthController.post.bind(AuthController));
 
 export default router;

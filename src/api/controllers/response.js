@@ -16,6 +16,10 @@ const Response = {
         res.json({
             message: content
         });
+    },
+    custom: (res, status, json) => {
+        res.status(status);
+        res.json(json);
     }
 };
 
