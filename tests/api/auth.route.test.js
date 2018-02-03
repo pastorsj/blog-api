@@ -11,7 +11,7 @@ import AuthService from '../../src/business/services/auth.service';
 const { expect } = chai;
 chai.use(sinonChai);
 
-describe.only('Test the /auth route', () => {
+describe('Test the /auth route', () => {
     const token = jwt.sign({ id: 1 }, SECRET, { expiresIn: 3600 });
     let sandbox;
     beforeEach(() => {
