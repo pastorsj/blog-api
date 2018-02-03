@@ -4,8 +4,8 @@ import sinon from 'sinon';
 import FroalaEditor from 'wysiwyg-editor-node-sdk';
 import fs from 'fs';
 
-import AWSService from '../../src/services/aws.service';
-import ImageService from '../../src/services/image.service';
+import AWSService from '../../src/business/services/aws.service';
+import ImageService from '../../src/business/services/image.service';
 
 const { expect } = chai;
 

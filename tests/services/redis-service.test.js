@@ -2,7 +2,7 @@ import chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
 
-import RedisService from '../../src/services/redis.service';
+import RedisService from '../../src/business/services/redis.service';
 
 const { expect } = chai;
 const SET_NAME = 'TEST_TAGS';

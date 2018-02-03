@@ -5,7 +5,7 @@ import sinon from 'sinon';
 
 import app from '../../src/app';
 import acquireJwt from '../common/jwt.common';
-import ImageService from '../../src/services/image.service';
+import ImageService from '../../src/business/services/image.service';
 
 const { expect } = chai;
 

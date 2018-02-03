@@ -9,13 +9,13 @@ import app from '../../src/app';
 import { setupArticlesCollection, destroyArticlesCollection, articlesMock, createCounter } from '../mocks/article.mock';
 import { setupUserCollection } from '../mocks/user.mock';
 import acquireJwt from '../common/jwt.common';
-import ImageService from '../../src/services/image.service';
+import ImageService from '../../src/business/services/image.service';
 
 const { expect } = chai;
 
 chai.use(sinonChai);
 
-describe.only('Test the /blog route', () => {
+describe('Test the /blog route', () => {
     let jwt = '';
     let sandbox;
 

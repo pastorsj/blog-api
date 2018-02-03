@@ -7,7 +7,7 @@ import app from '../../src/app';
 import acquireJwt from '../common/jwt.common';
 import { setupArticlesCollection, destroyArticlesCollection, createCounter } from '../mocks/article.mock';
 import { setupUserCollection } from '../mocks/user.mock';
-import RedisService from '../../src/services/redis.service';
+import RedisService from '../../src/business/services/redis.service';
 
 const { expect } = chai;
 

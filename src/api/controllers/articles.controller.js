@@ -11,7 +11,7 @@ const ArticlesController = {
         ArticleService.getAllArticlesForAuthor(username).then((articles) => {
             Response.json(res, 200, articles);
         }).catch((err) => {
-            Response.json(res, 404, err || 'Articles Not Found');
+            Response.json(res, 404, `No articles found, error was ${err}`);
         });
     }
 };

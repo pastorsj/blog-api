@@ -8,7 +8,7 @@ import path from 'path';
 import app from '../../src/app';
 import acquireJwt from '../common/jwt.common';
 import { setupUserCollection, destroyUsersCollection } from '../mocks/user.mock';
-import ImageService from '../../src/services/image.service';
+import ImageService from '../../src/business/services/image.service';
 
 const { expect } = chai;
 
