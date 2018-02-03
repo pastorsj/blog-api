@@ -9,7 +9,7 @@ const GistController = {
     post: (req, res) => {
         if (req.body && req.body.link) {
             const { link } = req.body;
-            GistService.post(link).then((html) => {
+            GistService.convert(link).then((html) => {
                 Response.json(res, 200, html);
             }).catch((err) => {
                 Response.error(res, 400, err);
