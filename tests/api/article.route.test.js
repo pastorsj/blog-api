@@ -2,33 +2,11 @@ import request from 'supertest';
 import chai from 'chai';
 
 import app from '../../src/app';
-import { setupArticlesCollection, destroyArticlesCollection } from '../mocks/article.mock';
-import { setupUserCollection } from '../mocks/user.mock';
-import acquireJwt from '../common/jwt.common';
 
 const { expect } = chai;
 
 describe('Test the /articles route', () => {
-    let jwt = '';
-    before((done) => {
-        setupUserCollection()
-            .then(() => setupArticlesCollection())
-            .then(() => acquireJwt(app))
-            .then((res) => {
-                jwt = res.body.access_token;
-                done();
-            })
-            .catch((err) => {
-                done(err);
-            });
-    });
-    after((done) => {
-        destroyArticlesCollection().then(() => {
-            done();
-        }).catch((err) => {
-            done(err);
-        });
-    });
+    const jwt = 'fake_jwt';
     describe('/articles/:username', () => {
         it('should return two articles written by testuser', (done) => {
             request(app)

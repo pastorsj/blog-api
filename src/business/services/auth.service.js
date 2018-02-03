@@ -1,5 +1,6 @@
 import UserRepository from '../../dal/repositories/user.repository';
 import log from '../../log';
+import ArticleRepository from '../../dal/repositories/article.repository';
 
 const AuthService = {
     login: authorizationHeader => new Promise((resolve, reject) => {
@@ -58,6 +59,22 @@ const AuthService = {
             }
         }).catch((err) => {
             reject(new Error(`An error has occcured: ${err}`));
+        });
+    }),
+    canAccess: (payload, username) => {
+        return payload.username === username;
+    },
+    canUpdate: (payload, id) => new Promise((resolve, reject) => {
+        ArticleRepository.get({
+            _id: id
+        }).then((blog) => {
+            if (payload.username === blog.author) {
+                resolve();
+            } else {
+                reject(new Error('Unable to update this article'));
+            }
+        }).catch(() => {
+            reject(new Error('Article not found'));
         });
     })
 };
