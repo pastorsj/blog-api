@@ -3,40 +3,32 @@ import UserService from './user.service';
 
 const TagService = {
     getTagsByPopularity: () => new Promise((resolve, reject) => {
-        try {
-            ArticleRepository.getAll({ isPublished: true }, { tags: 1, _id: 0 }).then((tagSet) => {
-                const allTags = {};
-                tagSet.forEach((set) => {
-                    const { tags } = set;
-                    tags.forEach((tag) => {
-                        allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
-                    });
+        ArticleRepository.getAll({ isPublished: true }, { tags: 1, _id: 0 }).then((tagSet) => {
+            const allTags = {};
+            tagSet.forEach((set) => {
+                const { tags } = set;
+                tags.forEach((tag) => {
+                    allTags[tag] = allTags[tag] ? allTags[tag] + 1 : 1;
                 });
-                resolve(allTags);
-            }).catch((err) => {
-                reject(err || 'Blog Post Not Found');
             });
-        } catch (error) {
-            reject(error);
-        }
+            resolve(allTags);
+        }).catch((err) => {
+            reject(err);
+        });
     }),
     getArticlesByTag: tag => new Promise((resolve, reject) => {
-        try {
-            ArticleRepository.getAll({
-                tags: tag,
-                isPublished: true
-            }).then((posts) => {
-                const postPromises = [];
-                posts.forEach((post) => {
-                    postPromises.push(UserService.retrieveAuthor(post));
-                });
-                resolve(Promise.all(postPromises));
-            }).catch((err) => {
-                reject(err || 'Blog Post Not Found');
+        ArticleRepository.getAll({
+            tags: tag,
+            isPublished: true
+        }).then((posts) => {
+            const postPromises = [];
+            posts.forEach((post) => {
+                postPromises.push(UserService.retrieveAuthor(post));
             });
-        } catch (error) {
-            reject(error);
-        }
+            resolve(Promise.all(postPromises));
+        }).catch((err) => {
+            reject(err);
+        });
     })
 };
 

@@ -55,6 +55,8 @@ const UserService = {
                     resolve(user);
                 }
             });
+        }).catch((err) => {
+            reject(err);
         })),
     deleteUser: username => new Promise((resolve, reject) =>
         UserRepository.get({ username }).then((user) => {
