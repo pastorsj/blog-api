@@ -22,7 +22,7 @@ describe('Test the /blog route', () => {
 
     beforeEach(() => {
         sandbox = sinon.sandbox.create();
-        canAccessStub = sinon.stub(AuthService, 'canAccess').returns(true);
+        canAccessStub = sandbox.stub(AuthService, 'canAccess').returns(true);
     });
     afterEach(() => {
         canAccessStub.restore();
@@ -31,7 +31,7 @@ describe('Test the /blog route', () => {
     describe('/', () => {
         describe('POST', () => {
             it('should create an blog post and return it', (done) => {
-                const articleStub = sinon.stub(ArticleService, 'createArticle').resolves({
+                const articleStub = sandbox.stub(ArticleService, 'createArticle').resolves({
                     text: '<p>A great article on testing</p>',
                     title: 'A new article on testing',
                     description: 'This is a testing article',
@@ -72,7 +72,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should attempt to create a blog post but get rejected', (done) => {
-                sinon.stub(ArticleService, 'createArticle').rejects();
+                sandbox.stub(ArticleService, 'createArticle').rejects();
                 request(app)
                     .post('/api/blog/')
                     .set({ Authorization: `Bearer ${token}` })
@@ -89,7 +89,7 @@ describe('Test the /blog route', () => {
         });
         describe('GET', () => {
             it('should retrieve all blog posts that are published', (done) => {
-                const articleStub = sinon.stub(ArticleService, 'getAllArticles').resolves([
+                const articleStub = sandbox.stub(ArticleService, 'getAllArticles').resolves([
                     {
                         title: 'Title 1',
                         text: '<p>New Article</p>',
@@ -121,7 +121,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should fail to retrieve all blog posts', (done) => {
-                sinon.stub(ArticleService, 'getAllArticles').rejects();
+                sandbox.stub(ArticleService, 'getAllArticles').rejects();
                 request(app)
                     .get('/api/blog/')
                     .expect(404, done);
@@ -131,7 +131,7 @@ describe('Test the /blog route', () => {
     describe('/:id', () => {
         describe('GET', () => {
             it('should get a single article', (done) => {
-                const articleStub = sinon.stub(ArticleService, 'getArticleById').resolves({
+                const articleStub = sandbox.stub(ArticleService, 'getArticleById').resolves({
                     title: 'Title 1',
                     text: '<p>New Article</p>',
                     author: 'testuser',
@@ -154,7 +154,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should fail to return the article', (done) => {
-                sinon.stub(ArticleService, 'getArticleById').rejects();
+                sandbox.stub(ArticleService, 'getArticleById').rejects();
                 request(app)
                     .get('/api/blog/10')
                     .expect(404, done);
@@ -163,13 +163,13 @@ describe('Test the /blog route', () => {
         describe('PUT', () => {
             let canUpdate;
             beforeEach(() => {
-                canUpdate = sinon.stub(AuthService, 'canUpdate').resolves();
+                canUpdate = sandbox.stub(AuthService, 'canUpdate').resolves();
             });
             afterEach(() => {
                 canUpdate.restore();
             });
             it('should update a single article', (done) => {
-                const articleStub = sinon.stub(ArticleService, 'updateArticle').resolves({
+                const articleStub = sandbox.stub(ArticleService, 'updateArticle').resolves({
                     title: 'Title 1',
                     text: '<p>An updated article</p>',
                     author: 'testuser',
@@ -198,7 +198,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should not update an article since it was not found', (done) => {
-                sinon.stub(ArticleService, 'updateArticle').rejects();
+                sandbox.stub(ArticleService, 'updateArticle').rejects();
                 request(app)
                     .put('/api/blog/10')
                     .set({ Authorization: `Bearer ${token}` })
@@ -211,7 +211,7 @@ describe('Test the /blog route', () => {
         describe('POST', () => {
             let canUpdate;
             beforeEach(() => {
-                canUpdate = sinon.stub(AuthService, 'canUpdate').resolves();
+                canUpdate = sandbox.stub(AuthService, 'canUpdate').resolves();
             });
             afterEach((done) => {
                 canUpdate.restore();
@@ -262,7 +262,7 @@ describe('Test the /blog route', () => {
         describe('DELETE', () => {
             let canUpdate;
             beforeEach(() => {
-                canUpdate = sinon.stub(AuthService, 'canUpdate').resolves();
+                canUpdate = sandbox.stub(AuthService, 'canUpdate').resolves();
             });
             afterEach(() => {
                 canUpdate.restore();
@@ -297,7 +297,7 @@ describe('Test the /blog route', () => {
     describe('/tag/:tag', () => {
         describe('GET', () => {
             it('should get all articles that are published and have a specific tag', (done) => {
-                const tagStub = sinon.stub(ArticleService, 'getByTag').resolves([
+                const tagStub = sandbox.stub(ArticleService, 'getByTag').resolves([
                     {
                         title: 'Title 1',
                         text: '<p>New Article</p>',
@@ -323,7 +323,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should not find any article with the given tag', (done) => {
-                sinon.stub(ArticleService, 'getByTag').rejects();
+                sandbox.stub(ArticleService, 'getByTag').rejects();
                 request(app)
                     .get('/api/blog/tag/dne')
                     .expect(404, done);
@@ -333,7 +333,7 @@ describe('Test the /blog route', () => {
     describe('/title/:title', () => {
         describe('GET', () => {
             it('should get all articles that are published that have part of the given title', (done) => {
-                const titleStub = sinon.stub(ArticleService, 'getByTitle').resolves([
+                const titleStub = sandbox.stub(ArticleService, 'getByTitle').resolves([
                     {
                         title: 'My Title 1',
                         text: '<p>New Article</p>',
@@ -360,7 +360,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should fail to get any articles that are published since that title does not exist', (done) => {
-                sinon.stub(ArticleService, 'getByTitle').rejects();
+                sandbox.stub(ArticleService, 'getByTitle').rejects();
                 request(app)
                     .get('/api/blog/title/Testing')
                     .expect(404, done);

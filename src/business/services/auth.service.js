@@ -1,3 +1,6 @@
+import jwt from 'jsonwebtoken';
+
+import { SECRET } from '../../config/jwt.config';
 import UserRepository from '../../dal/repositories/user.repository';
 import log from '../../log';
 import ArticleRepository from '../../dal/repositories/article.repository';
@@ -61,9 +64,7 @@ const AuthService = {
             reject(new Error(`An error has occcured: ${err}`));
         });
     }),
-    canAccess: (payload, username) => {
-        return payload.username === username;
-    },
+    canAccess: (payload, username) => payload.username === username,
     canUpdate: (payload, id) => new Promise((resolve, reject) => {
         ArticleRepository.get({
             _id: id
@@ -75,6 +76,15 @@ const AuthService = {
             }
         }).catch(() => {
             reject(new Error('Article not found'));
+        });
+    }),
+    validateJwt: token => new Promise((resolve, reject) => {
+        jwt.verify(token, SECRET, (err) => {
+            if (err) {
+                reject(new Error('JWT is expired'));
+            } else {
+                resolve('JWT is not expired');
+            }
         });
     })
 };

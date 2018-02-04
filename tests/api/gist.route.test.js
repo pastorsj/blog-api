@@ -24,7 +24,7 @@ describe('Test the /gist route', () => {
     describe('/', () => {
         describe('POST', () => {
             it('should return successfully', (done) => {
-                const gistStub = sinon.stub(GistService, 'convert').resolves({
+                const gistStub = sandbox.stub(GistService, 'convert').resolves({
                     file: '',
                     styles: '',
                     html: ''
@@ -50,7 +50,7 @@ describe('Test the /gist route', () => {
                     });
             });
             it('should error out when conversion fails', (done) => {
-                sinon.stub(GistService, 'convert').rejects();
+                sandbox.stub(GistService, 'convert').rejects();
                 request(app)
                     .post('/api/gist')
                     .set({ Authorization: `Bearer ${token}` })

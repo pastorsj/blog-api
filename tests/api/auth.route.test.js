@@ -22,7 +22,7 @@ describe('Test the /auth route', () => {
     });
     describe('/auth/login', () => {
         it('should return an token object after successfully logging in', (done) => {
-            const loginStub = sinon.stub(AuthService, 'login').resolves({
+            const loginStub = sandbox.stub(AuthService, 'login').resolves({
                 access_token: 'an access token',
                 refresh_token: 'a refresh token',
                 expires_in: 1000,
@@ -49,7 +49,7 @@ describe('Test the /auth route', () => {
                 });
         });
         it('should fail to login', (done) => {
-            sinon.stub(AuthService, 'login').rejects();
+            sandbox.stub(AuthService, 'login').rejects();
             request(app)
                 .post('/api/auth/login')
                 .set({ Authorization: 'fakeUser:test' })
@@ -63,7 +63,7 @@ describe('Test the /auth route', () => {
     });
     describe('/auth/register', () => {
         it('should successfully register a new user', (done) => {
-            const registerStub = sinon.stub(AuthService, 'register').resolves({
+            const registerStub = sandbox.stub(AuthService, 'register').resolves({
                 access_token: 'an access token',
                 refresh_token: 'a refresh token',
                 expires_in: 1000,
@@ -80,22 +80,23 @@ describe('Test the /auth route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        return done(err);
+                        done(err);
+                    } else {
+                        const { access_token, refresh_token, expires_in, token_type } = res.body;
+
+                        expect(access_token).to.be.eq('an access token');
+                        expect(refresh_token).to.be.eq('a refresh token');
+                        expect(expires_in).to.be.eq(1000);
+                        expect(token_type).to.be.eq('Bearer');
+
+                        sinon.assert.calledWith(registerStub, 'anewuser', 'A New Name', 'anemail@anemail.com', 'password');
+                        registerStub.restore();
+                        done();
                     }
-                    const { access_token, refresh_token, expires_in, token_type } = res.body;
-
-                    expect(access_token).to.be.eq('an access token');
-                    expect(refresh_token).to.be.eq('a refresh token');
-                    expect(expires_in).to.be.eq(1000);
-                    expect(token_type).to.be.eq('Bearer');
-
-                    sinon.assert.calledWith(registerStub, 'anewuser', 'A New Name', 'anemail@anemail.com', 'password');
-                    registerStub.restore();
-                    return done();
                 });
         });
         it('should not successfully register', (done) => {
-            sinon.stub(AuthService, 'register').rejects();
+            sandbox.stub(AuthService, 'register').rejects();
             request(app)
                 .post('/api/auth/register')
                 .send({
@@ -127,7 +128,7 @@ describe('Test the /auth route', () => {
     });
     describe('/auth/token', () => {
         it('should successfully return a new access token when credentials are valid', (done) => {
-            const refreshStub = sinon.stub(AuthService, 'refreshAccessToken').resolves({
+            const refreshStub = sandbox.stub(AuthService, 'refreshAccessToken').resolves({
                 access_token: 'an access token',
                 refresh_token: 'a refresh token',
                 expires_in: 1000,
@@ -139,22 +140,23 @@ describe('Test the /auth route', () => {
                 .expect(200)
                 .end((err, res) => {
                     if (err) {
-                        return done(err);
+                        done(err);
+                    } else {
+                        const { access_token, refresh_token, expires_in, token_type } = res.body;
+
+                        expect(access_token).to.be.eq('an access token');
+                        expect(refresh_token).to.be.eq('a refresh token');
+                        expect(expires_in).to.be.eq(1000);
+                        expect(token_type).to.be.eq('Bearer');
+
+                        sinon.assert.calledWith(refreshStub, token);
+                        refreshStub.restore();
+                        done();
                     }
-                    const { access_token, refresh_token, expires_in, token_type } = res.body;
-
-                    expect(access_token).to.be.eq('an access token');
-                    expect(refresh_token).to.be.eq('a refresh token');
-                    expect(expires_in).to.be.eq(1000);
-                    expect(token_type).to.be.eq('Bearer');
-
-                    sinon.assert.calledWith(refreshStub, token);
-                    refreshStub.restore();
-                    return done();
                 });
         });
         it('should not return a new access token when credentials are invalid', (done) => {
-            sinon.stub(AuthService, 'refreshAccessToken').rejects();
+            sandbox.stub(AuthService, 'refreshAccessToken').rejects();
             request(app)
                 .post('/api/auth/token')
                 .set({ Authorization: `Bearer ${token}` })
@@ -166,4 +168,33 @@ describe('Test the /auth route', () => {
                 .expect(401, done);
         });
     });
+    describe.only('/auth/jwt/expired', () => {
+        describe('POST', () => {
+            it('should return that the jwt is valid', (done) => {
+                sandbox.stub(AuthService, 'validateJwt').resolves('Valid Jwt');
+                request(app)
+                    .post('/api/auth/jwt/expired')
+                    .set({ Authorization: `Bearer ${token}` })
+                    .expect(204, done);
+            });
+            it('should return that the jwt is invalid', (done) => {
+                sandbox.stub(AuthService, 'validateJwt').rejects('Invalid Jwt');
+                request(app)
+                    .post('/api/auth/jwt/expired')
+                    .set({ Authorization: `Bearer ${token}1` })
+                    .expect(401, done);
+            });
+            it('should return that the jwt is invalid since the authorization header was not included', (done) => {
+                request(app)
+                    .post('/api/auth/jwt/expired')
+                    .expect(401, done);
+            });
+            it('should return that the jwt is malformed since it did not start with Bearer', (done) => {
+                request(app)
+                    .post('/api/auth/jwt/expired')
+                    .set({ Authorization: `${token}1` })
+                    .expect(400, done);
+            });
+        });
+    })
 });

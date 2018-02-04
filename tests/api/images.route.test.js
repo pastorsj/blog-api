@@ -2,9 +2,10 @@ import request from 'supertest';
 import chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
+import jwt from 'jsonwebtoken';
 
 import app from '../../src/app';
-import acquireJwt from '../common/jwt.common';
+import { SECRET } from '../../src/config/jwt.config';
 import ImageService from '../../src/business/services/image.service';
 
 const { expect } = chai;
@@ -12,17 +13,11 @@ const { expect } = chai;
 chai.use(sinonChai);
 
 describe('Test the /images route', () => {
-    let jwt = '';
+    const token = jwt.sign({ id: 1 }, SECRET, { expiresIn: 3600 });
     let sandbox;
 
-    beforeEach((done) => {
+    beforeEach(() => {
         sandbox = sinon.sandbox.create();
-        acquireJwt(app).then((res) => {
-            jwt = res.body.access_token;
-            done();
-        }).catch((err) => {
-            done(err);
-        });
     });
     afterEach(() => {
         sandbox.restore();
@@ -30,16 +25,19 @@ describe('Test the /images route', () => {
     describe('/gethash', () => {
         describe('GET', () => {
             it('should return the mocked hash', (done) => {
-                sandbox.stub(ImageService, 'getImage').returns('1234567890');
+                const imageStub = sandbox.stub(ImageService, 'getImage').returns('1234567890');
                 request(app)
                     .get('/api/images/gethash')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .expect(200)
                     .end((err, res) => {
                         if (err) {
                             done(err);
                         } else {
                             expect(res.text).to.be.eq('1234567890');
+
+                            sinon.assert.calledOnce(imageStub);
+                            imageStub.restore();
                             done();
                         }
                     });
@@ -53,7 +51,7 @@ describe('Test the /images route', () => {
                     .resolves({ status: 200, data: 'Data' });
                 request(app)
                     .delete('/api/images/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .send({
                         src: 'http://imgur.com'
                     })
@@ -62,8 +60,8 @@ describe('Test the /images route', () => {
                         if (err) {
                             done(err);
                         } else {
-                            deleteImageStub.restore();
                             sinon.assert.calledWith(deleteImageStub, 'http://imgur.com');
+                            deleteImageStub.restore();
 
                             const { data } = res.body;
                             expect(data).to.be.eq('Data');
@@ -76,7 +74,7 @@ describe('Test the /images route', () => {
                     .rejects();
                 request(app)
                     .delete('/api/images/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .send({
                         src: 'http://imgur.com'
                     })

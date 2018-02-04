@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-import { SECRET } from '../../config/jwt.config';
 import Response from './response';
 import AuthService from '../../business/services/auth.service';
 
@@ -15,15 +13,13 @@ const AuthController = {
             const authorizationHeader = req.headers.authorization;
             if (authorizationHeader.startsWith('Bearer ')) {
                 const token = authorizationHeader.slice(7);
-                jwt.verify(token, SECRET, (err) => {
-                    if (err) {
-                        Response.error(res, 401, 'JWT is expired');
-                    } else {
-                        Response.message(res, 204, 'JWT is not expired');
-                    }
+                AuthService.validateJwt(token).then((message) => {
+                    Response.message(res, 204, message);
+                }).catch((err) => {
+                    Response.error(res, 401, err);
                 });
             } else {
-                Response.message(res, 400, 'Authorization header is malformed. It needs to start with Bearer');
+                Response.message(res, 400, 'Authorization header is malformed. It needs to start with Bearer {token}');
             }
         }
     },
