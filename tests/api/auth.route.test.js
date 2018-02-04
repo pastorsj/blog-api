@@ -168,7 +168,7 @@ describe('Test the /auth route', () => {
                 .expect(401, done);
         });
     });
-    describe.only('/auth/jwt/expired', () => {
+    describe('/auth/jwt/expired', () => {
         describe('POST', () => {
             it('should return that the jwt is valid', (done) => {
                 sandbox.stub(AuthService, 'validateJwt').resolves('Valid Jwt');

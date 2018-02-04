@@ -27,7 +27,7 @@ const ImagesService = {
     },
     postImage: (picture, serverPath) => new Promise((resolve, reject) => {
         try {
-            const filepath = path.join(__dirname, '../../', picture.path);
+            const filepath = path.join(__dirname, '../../../', picture.path);
             const file = fs.readFileSync(filepath);
             const extension = mime.getExtension(picture.mimetype);
             const mimeType = picture.mimetype;

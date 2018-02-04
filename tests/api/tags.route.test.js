@@ -2,29 +2,23 @@ import request from 'supertest';
 import chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
+import jwt from 'jsonwebtoken';
 
 import app from '../../src/app';
-import acquireJwt from '../common/jwt.common';
-import { setupArticlesCollection, destroyArticlesCollection, createCounter } from '../mocks/article.mock';
-import { setupUserCollection } from '../mocks/user.mock';
 import RedisService from '../../src/business/services/redis.service';
+import { SECRET } from '../../src/config/jwt.config';
+import TagService from '../../src/business/services/tags.service';
 
 const { expect } = chai;
 
 chai.use(sinonChai);
 
 describe('Test the /tags route', () => {
-    let jwt = '';
+    const token = jwt.sign({ id: 1 }, SECRET, { expiresIn: 3600 });
     let sandbox;
 
-    beforeEach((done) => {
+    beforeEach(() => {
         sandbox = sinon.sandbox.create();
-        acquireJwt(app).then((res) => {
-            jwt = res.body.access_token;
-            done();
-        }).catch((err) => {
-            done(err);
-        });
     });
     afterEach(() => {
         sandbox.restore();
@@ -32,21 +26,20 @@ describe('Test the /tags route', () => {
     describe('/', () => {
         describe('POST', () => {
             it('should call the addNew function and return successfully', (done) => {
-                const addNewStub = sandbox.stub(RedisService, 'addNew')
-                    .resolves('');
+                const addNewStub = sandbox.stub(RedisService, 'addNew').resolves('');
                 request(app)
                     .post('/api/tags/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .send({
                         tag: 'tag'
                     })
                     .expect(204)
-                    .end((err, res) => {
+                    .end((err) => {
                         if (err) {
                             done(err);
                         } else {
-                            addNewStub.restore();
                             sinon.assert.calledWith(addNewStub, 'tag', 'tags');
+                            addNewStub.restore();
                             done();
                         }
                     });
@@ -55,7 +48,7 @@ describe('Test the /tags route', () => {
                 sandbox.stub(RedisService, 'addNew').rejects();
                 request(app)
                     .post('/api/tags/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .expect(400)
                     .end((err) => {
                         if (err) {
@@ -68,11 +61,10 @@ describe('Test the /tags route', () => {
         });
         describe('PUT', () => {
             it('should call the getPrefixes function and return successfully', (done) => {
-                const getPrefixesStub = sandbox.stub(RedisService, 'getPrefixes')
-                    .resolves('Data');
+                const getPrefixesStub = sandbox.stub(RedisService, 'getPrefixes').resolves('Data');
                 request(app)
                     .put('/api/tags/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .send({
                         prefix: 'tag',
                         count: 50
@@ -82,8 +74,8 @@ describe('Test the /tags route', () => {
                         if (err) {
                             done(err);
                         } else {
-                            getPrefixesStub.restore();
                             sinon.assert.calledWith(getPrefixesStub, 'tag', 50, 'tags');
+                            getPrefixesStub.restore();
     
                             const { data } = res.body;
                             expect(data).to.be.eq('Data');
@@ -95,7 +87,7 @@ describe('Test the /tags route', () => {
                 sandbox.stub(RedisService, 'getPrefixes').rejects();
                 request(app)
                     .put('/api/tags/')
-                    .set({ Authorization: `Bearer ${jwt}` })
+                    .set({ Authorization: `Bearer ${token}` })
                     .expect(400)
                     .end((err) => {
                         if (err) {
@@ -107,21 +99,12 @@ describe('Test the /tags route', () => {
             });
         });
         describe('GET', () => {
-            beforeEach((done) => {
-                createCounter().then(() => setupArticlesCollection()).then(() => {
-                    done();
-                }).catch((err) => {
-                    done(err);
-                });
-            });
-            afterEach((done) => {
-                destroyArticlesCollection().then(() => {
-                    done();
-                }).catch((err) => {
-                    done(err);
-                });
-            });
             it('should call the getTagsByPopularity function and return successfully', (done) => {
+                const getTagsByPopularityStub = sandbox.stub(TagService, 'getTagsByPopularity').resolves({
+                    redis: 1,
+                    databases: 1,
+                    express: 1
+                });
                 request(app)
                     .get('/api/tags/')
                     .expect(200)
@@ -135,32 +118,35 @@ describe('Test the /tags route', () => {
                                 databases: 1,
                                 express: 1
                             });
+
+                            sinon.assert.calledOnce(getTagsByPopularityStub);
+                            getTagsByPopularityStub.restore();
                             done();
                         }
                     });
+            });
+            it('should call the getTagsByPopularity function but error out', (done) => {
+                sandbox.stub(TagService, 'getTagsByPopularity').rejects();
+                request(app)
+                    .get('/api/tags/')
+                    .expect(404, done);
             });
         });
     });
     describe('/:tag', () => {
         describe('GET', () => {
-            beforeEach((done) => {
-                createCounter()
-                    .then(() => setupUserCollection()
-                        .then(() => setupArticlesCollection()
-                            .then(() => {
-                                done();
-                            }))).catch((err) => {
-                        done(err);
-                    });
-            });
-            afterEach((done) => {
-                destroyArticlesCollection().then(() => {
-                    done();
-                }).catch((err) => {
-                    done(err);
-                });
-            });
             it('should call the getArticlesByTag function and return successfully', (done) => {
+                const getArticlesByTagStub = sandbox.stub(TagService, 'getArticlesByTag').resolves([
+                    {
+                        title: 'Title 1',
+                        text: '<p>New Article</p>',
+                        author: {
+                            username: 'testuser',
+                            name: 'Test User'
+                        },
+                        tags: ['redis', 'express', 'databases']
+                    }
+                ]);
                 request(app)
                     .get('/api/tags/redis')
                     .expect(200)
@@ -172,9 +158,19 @@ describe('Test the /tags route', () => {
                             expect(data.length).to.be.eq(1);
                             expect(data[0].author.username).to.be.eq('testuser');
                             expect(data[0].author.name).to.be.eq('Test User');
+                            expect(data[0].title).to.be.eq('Title 1');
+
+                            sinon.assert.calledWith(getArticlesByTagStub, 'redis');
+                            getArticlesByTagStub.restore();
                             done();
                         }
                     });
+            });
+            it('should call the getArticlesByTag function and return successfully', (done) => {
+                sandbox.stub(TagService, 'getArticlesByTag').rejects();
+                request(app)
+                    .get('/api/tags/redis')
+                    .expect(404, done);
             });
         });
     });

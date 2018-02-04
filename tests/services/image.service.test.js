@@ -72,7 +72,7 @@ describe('Test the image service', () => {
                 expect(err.message).to.be.eq('Error when posting image: Error: Error');
                 postImageStub.restore();
                 sinon.assert.calledWith(postImageStub, 'path.png', file, 'image/png');
-                return done();
+                done();
             });
         });
         it('should call the AWSService.postImage function and catch the error thrown', (done) => {
@@ -81,7 +81,7 @@ describe('Test the image service', () => {
                 done(res);
             }).catch((err) => {
                 expect(err.message).to.be.a('string');
-                return done();
+                done();
             });
         });
     });
