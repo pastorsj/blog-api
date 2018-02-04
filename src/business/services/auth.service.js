@@ -6,11 +6,7 @@ import log from '../../log';
 import ArticleRepository from '../../dal/repositories/article.repository';
 
 const AuthService = {
-    login: authorizationHeader => new Promise((resolve, reject) => {
-        const usernamePassword = authorizationHeader.split(':');
-        const username = usernamePassword[0];
-        const password = usernamePassword[1];
-
+    login: (username, password) => new Promise((resolve, reject) => {
         UserRepository.get({ username }).then((user) => {
             if (!user.validPassword(password)) {
                 reject(new Error('Authentication failed. Wrong password.'));

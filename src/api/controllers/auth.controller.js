@@ -27,7 +27,10 @@ const AuthController = {
         if (!req.headers.authorization || req.headers.authorization.split(':').length !== 2) {
             Response.error(res, 401, 'Authentication failed. Makes sure that you insert your username and password in the Authorization header split by a colon');
         } else {
-            AuthService.login(req.headers.authorization).then((tokens) => {
+            const usernamePasswordCombo = req.headers.authorization.split(':');
+            const username = usernamePasswordCombo[0];
+            const password = usernamePasswordCombo[1];
+            AuthService.login(username, password).then((tokens) => {
                 Response.custom(res, 200, tokens);
             }).catch((err) => {
                 Response.error(res, 401, err);

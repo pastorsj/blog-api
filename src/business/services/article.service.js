@@ -40,9 +40,7 @@ const ArticleService = {
         }, projection);
     },
     createArticle: article => ArticleRepository.create(article),
-    postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({
-        _id: id
-    }).then((article) => {
+    postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((article) => {
         if (file) {
             const path = `cover_photo/cover_${article._id}`;
             ImageService.postImage(file, path)
@@ -51,7 +49,7 @@ const ArticleService = {
                     article.save((error) => {
                         if (error) {
                             log.critical('Error while trying to save the blog with the new cover photo', error);
-                            resolve(error);
+                            reject(error);
                         } else {
                             resolve(article);
                         }
@@ -68,9 +66,7 @@ const ArticleService = {
         log.critical('Article not found');
         reject(err);
     })),
-    updateArticle: (id, article) => new Promise((resolve, reject) => ArticleRepository.get({
-        _id: id
-    }).then((blog) => {
+    updateArticle: (id, article) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((blog) => {
         _.assign(blog, article);
         if (article.isPublished) {
             blog.datePosted = Date.now(); //eslint-disable-line

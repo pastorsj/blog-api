@@ -43,7 +43,7 @@ describe('Test the /auth route', () => {
                     expect(expires_in).to.be.eq(1000);
                     expect(token_type).to.be.eq('Bearer');
 
-                    sinon.assert.calledWith(loginStub, 'testuser:test');
+                    sinon.assert.calledWith(loginStub, 'testuser', 'test');
                     loginStub.restore();
                     return done();
                 });

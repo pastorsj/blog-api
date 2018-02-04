@@ -1,12 +1,11 @@
 import chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
-import { S3 } from '../../src/config/aws.config';
 
+import { S3 } from '../../src/config/aws.config';
 import AWSService from '../../src/business/services/aws.service';
 
 const { expect } = chai;
-
 chai.use(sinonChai);
 
 describe('Test the AWS service', () => {
