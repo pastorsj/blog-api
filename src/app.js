@@ -1,5 +1,3 @@
-
-
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
@@ -13,18 +11,18 @@ import winston from 'winston';
 import limiter from 'express-limiter';
 import mongoose from 'mongoose';
 
-import './models/db';
-import './models/blog';
-import './models/user';
+import './dal/models/db';
+import './dal/models/blog';
+import './dal/models/user';
 
-import blogRoute from './routes/blog';
-import userRoute from './routes/user';
-import articlesRoute from './routes/articles';
-import imagesRoute from './routes/images';
-import jwtRoute from './routes/jwt';
-import gistRoute from './routes/gist';
-import tagsRoute from './routes/tags';
-import { register, login, refreshAccessToken } from './routes/auth';
+import blogRoute from './api/routes/blog';
+import userRoute from './api/routes/user';
+import articlesRoute from './api/routes/articles';
+import imagesRoute from './api/routes/images';
+import gistRoute from './api/routes/gist';
+import tagsRoute from './api/routes/tags';
+import graphqlRoute from './api/routes/graphql';
+import authRoute from './api/routes/auth';
 
 import client from './config/redis.config';
 import log from './log';
@@ -86,17 +84,15 @@ if (process.env.NODE_ENV !== 'TEST') {
 
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-app.use('/api/register', register);
-app.use('/api/login', login);
-app.use('/api/auth/token', refreshAccessToken);
-
 app.use('/api/blog', blogRoute);
 app.use('/api/user', userRoute);
 app.use('/api/articles', articlesRoute);
 app.use('/api/images', imagesRoute);
-app.use('/api/jwt', jwtRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
+app.use('/api/auth', authRoute);
+
+app.use('/graphql', graphqlRoute);
 
 if (process.env.NODE_ENV !== 'TEST') {
     app.use(expressWinston.errorLogger({
