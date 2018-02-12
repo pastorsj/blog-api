@@ -9,7 +9,11 @@ import { upload } from '../../config/multer.config';
 const BlogController = {
     post: (req, res) => {
         ArticleService.createArticle(req.body).then((blog) => {
-            Response.json(res, 200, blog);
+            if (blog.length > 0) {
+                Response.json(res, 200, blog[0]);
+            } else {
+                Response.json(res, 204, '');
+            }
         }).catch((err) => {
             Response.error(res, 404, err);
         });
