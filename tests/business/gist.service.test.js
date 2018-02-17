@@ -1,6 +1,7 @@
 import chai from 'chai';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
+import converter from 'node-gist-html';
 
 import GistService from '../../src/business/services/gist.service';
 
@@ -18,7 +19,8 @@ describe('Test the Gist Service', () => {
     });
     describe('gistify', () => {
         it('should make a call to the gistify library', (done) => {
-            GistService.convert('https://github.com/pastorsj/blog-api/blob/master/src/server.js').then((result) => {
+            sandbox.stub(converter, 'gistify').resolves({ html: '', file: '', styles: '' });
+            GistService.convert('https://github.com').then((result) => {
                 expect(result).to.have.keys('html', 'file', 'styles');
                 done();
             }).catch((err) => {
