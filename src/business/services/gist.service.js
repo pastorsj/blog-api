@@ -1,7 +1,7 @@
 import converter from 'node-gist-html';
 
 const GistService = {
-    convert: link => converter.gistify(link, { removeFooter: true })
+    convert: link => converter.gistify(link)
 };
 
 export default GistService;
