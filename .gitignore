@@ -12,3 +12,5 @@ uploads/
 *.log
 
 coverage/
+data/
+*.debug.yml

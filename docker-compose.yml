@@ -1,0 +1,35 @@
+version: '2.1'
+
+services:
+  blog-api:
+    image: blog-api
+    restart: always
+    build: .
+    environment:
+      NODE_ENV: production
+      REDIS: redis
+      MONGO: mongo
+    ports:
+      - 3000:3000
+    links:
+      - mongo
+      - redis
+    depends_on:
+      - mongo
+      - redis
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - /data/db
+    ports:
+      - 27017
+    restart: always
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - /data
+    ports:
+      - 6379
+    restart: always
