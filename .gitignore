@@ -14,3 +14,4 @@ uploads/
 coverage/
 data/
 *.debug.yml
+*.env

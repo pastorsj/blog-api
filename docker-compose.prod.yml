@@ -22,15 +22,8 @@ services:
     image: blog-api
     restart: always
     build: .
-    environment:
-      NODE_ENV: production
-      REDIS: redis
-      MONGO: mongo
-      VIRTUAL_HOST: blog.sampastoriza.com
-      VIRTUAL_NETWORK: nginx-proxy
-      VIRTUAL_PORT: 3000
-      LETSENCRYPT_HOST: blog.sampastoriza.com
-      LETSENCRYPT_EMAIL: sampastoriza@yahoo.com
+    env_file:
+      - production.env
     ports:
       - "3000:3000"
     links:
