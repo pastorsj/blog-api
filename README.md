@@ -19,5 +19,10 @@ docker run --rm -p 443:443 -p 80:80 --name letsencrypt -v "/etc/letsencrypt:/etc
 docker run --rm --name letsencrypt -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -v "/usr/share/nginx/html:/usr/share/nginx/html" certbot/certbot:latest renew --quiet
 ```
 
+### Running the docker compose file
+```
+docker-compose -f docker-compose.yml up --build --force-recreate
+```
+
 
 
