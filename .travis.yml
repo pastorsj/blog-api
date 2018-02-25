@@ -3,10 +3,10 @@ node_js:
 - 8.5.0
 sudo: false
 addons:
-  ssh_known_hosts: $HOST
+  ssh_known_hosts: "$HOST"
 services:
-  - mongodb
-  - redis-server
+- mongodb
+- redis-server
 before_install:
 - openssl aes-256-cbc -K $encrypted_32662055e808_key -iv $encrypted_32662055e808_iv
   -in deploy_key.pem.enc -out deploy_key.pem -d
@@ -23,10 +23,11 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: scp -o "StrictHostKeyChecking no" -r $TRAVIS_BUILD_DIR/server-dist $TRAVIS_BUILD_DIR/package.json $USER@$HOST:/home/ubuntu
+  script: scp -o "StrictHostKeyChecking no" -r $TRAVIS_BUILD_DIR/server-dist $TRAVIS_BUILD_DIR/package.json
+    $TRAVIS_BUILD_DIR/docker-compose.prod.yml $TRAVIS_BUILD_DIR/Dockerfile $TRAVIS_BUILD_DIR/nginx.conf
+    $TRAVIS_BUILD_DIR/site.nginx.conf $USER@$HOST:/home/ubuntu
   on:
     branch: master
-    tags: true
 after_script:
 - test -e ./coverage/lcov.info && cat ./coverage/lcov.info | coveralls
 - ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
@@ -38,4 +39,3 @@ after_failure:
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
-
