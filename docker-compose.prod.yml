@@ -32,6 +32,11 @@ services:
     depends_on:
       - mongo
       - redis
+    build:
+      context: .
+      args:
+          WORKING_DIR: /usr
+    command: node server-dist/blog.min.js
   mongo:
     container_name: mongo
     image: mongo

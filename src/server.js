@@ -112,10 +112,10 @@ function createHttpsServer(httpsPort = 3001) {
 }
 
 if (type === 'https') {
+    createHttpServer();
     createHttpsServer(portArg);
 } else if (type === 'http') {
     createHttpServer(portArg);
 } else {
     createHttpServer();
-    createHttpsServer();
 }

@@ -23,6 +23,18 @@ docker run --rm --name letsencrypt -v "/etc/letsencrypt:/etc/letsencrypt" -v "/v
 ```
 docker-compose -f docker-compose.yml up --build --force-recreate
 ```
+Running in the background
+```
+docker-compose -f docker-compose.prod.yml up --build --force-recreate -d
+```
+Restarting all containers
+```
+docker restart $(docker ps -q)
+```
+Stopping all containers
+```
+docker stop $(docker ps -q)
+```
 
 
 
