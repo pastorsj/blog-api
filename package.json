@@ -73,7 +73,7 @@
     "sinon": "^4.3.0",
     "sinon-chai": "^2.14.0",
     "supertest": "^3.0.0",
-    "webpack": "^3.11.0",
+    "webpack": "^4.0.0",
     "webpack-node-externals": "^1.6.0"
   }
 }
