@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import mime from 'mime';
 import log from '../log';
 
-const MAX_SIZE = 1000000;
+const MAX_SIZE = 5000000;
 const NUMBER_OF_FILES = 1;
 
 const storage = multer.diskStorage({
