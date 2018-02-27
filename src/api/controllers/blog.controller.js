@@ -21,7 +21,7 @@ const BlogController = {
     postCoverPhoto: (req, res) => {
         upload.single('coverPhoto')(req, res, (fileError) => {
             if (fileError) {
-                Response.error(res, 400, 'The file uploaded was larger than 1mb');
+                Response.error(res, 400, 'The file uploaded was larger than 5mb');
             } else {
                 ArticleService.postCoverPhoto(req.params.id, req.file).then((blog) => {
                     Response.json(res, 200, blog);

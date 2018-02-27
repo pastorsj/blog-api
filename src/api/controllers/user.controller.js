@@ -18,7 +18,7 @@ const UserController = {
     updateProfilePicture: (req, res) => {
         upload.single('profilePicture')(req, res, (fileError) => {
             if (fileError) {
-                Response.error(res, 400, 'The file uploaded was larger than 1mb');
+                Response.error(res, 400, 'The file uploaded was larger than 5mb');
             } else {
                 const { username } = req.params;
                 UserService.updateProfilePicture(username, req.file).then((user) => {
