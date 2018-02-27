@@ -112,14 +112,6 @@ describe('Test the /user route', () => {
                     .set({ Authorization: `Bearer ${token}` })
                     .expect(400, done);
             });
-            it('should not upload the image since it is greater that 1mb', (done) => {
-                sandbox.stub(AuthService, 'canAccess').returns(true);
-                request(app)
-                    .post('/api/user/testuser')
-                    .attach('profilePicture', 'tests/common/large.jpg')
-                    .set({ Authorization: `Bearer ${token}` })
-                    .expect(400, done);
-            });
         });
         describe('PUT', () => {
             it('should update a single user', (done) => {

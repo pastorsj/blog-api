@@ -259,13 +259,6 @@ describe('Test the /blog route', () => {
                     .set({ Authorization: `Bearer ${token}` })
                     .expect(404, done);
             });
-            it('should not upload the image since it is greater that 1mb', (done) => {
-                request(app)
-                    .post('/api/blog/1')
-                    .attach('coverPhoto', 'tests/common/large.jpg')
-                    .set({ Authorization: `Bearer ${token}` })
-                    .expect(400, done);
-            });
         });
         describe('DELETE', () => {
             let canUpdate;
