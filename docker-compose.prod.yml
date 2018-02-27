@@ -41,7 +41,7 @@ services:
     container_name: mongo
     image: mongo
     volumes:
-      - ./mongo/data/db
+      - /mongo/data/db
     ports:
       - 27017
     restart: always
@@ -49,7 +49,7 @@ services:
     container_name: redis
     image: redis
     volumes:
-      - ./redis/data
+      - /redis/data
     ports:
       - 6379
     restart: always
