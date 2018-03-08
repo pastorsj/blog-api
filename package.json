@@ -19,6 +19,7 @@
     "dev": "webpack --progress --colors --env dev --display-error-details --mode development",
     "lint": "eslint src/* test/*",
     "autofix": "eslint --fix src/* test/*",
+    "docker": "docker-compose -f docker-compose.yml up --build --force-recreate",
     "test": "NODE_ENV=TEST mocha --require babel-register --colors --timeout 5000 --exit ./tests/**/*.test.js",
     "test:watch": "NODE_ENV=TEST mocha --require babel-register --colors --timeout 5000 --exit -w ./tests/**/*.test.js",
     "coverage": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha -- --require babel-register --colors --timeout 5000 --exit --reporter dot ./tests/**/*.test.js",
