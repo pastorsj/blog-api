@@ -14,7 +14,7 @@
     "start": "babel-node ./src/server.js",
     "https": "babel-node ./src/server.js --type=https",
     "http": "babel-node ./src/server.js --type=http",
-    "watch": "nodemon --exec babel-node -- ./src/server.js --type=http",
+    "watch": "nodemon --exec babel-node -- ./src/server.js",
     "build": "webpack --env build --display-error-details --optimize-minimize --mode production",
     "dev": "webpack --progress --colors --env dev --display-error-details --mode development",
     "lint": "eslint src/* test/*",
