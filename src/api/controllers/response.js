@@ -6,9 +6,13 @@ const Response = {
         });
     },
     error: (res, status, content) => {
+        let errorMessage = content;
+        if (content instanceof Error) {
+            errorMessage = content.message;
+        }
         res.status(status);
         res.json({
-            error: content
+            error: errorMessage
         });
     },
     message: (res, status, content) => {

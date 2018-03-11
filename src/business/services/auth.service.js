@@ -21,8 +21,8 @@ const AuthService = {
                     });
                 });
             }
-        }).catch((err) => {
-            reject(err);
+        }).catch(() => {
+            reject(new Error('Authentication failed. User not found'));
         });
     }),
     refreshAccessToken: token => new Promise((resolve, reject) => {
