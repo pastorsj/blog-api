@@ -35,7 +35,6 @@ after_script:
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
 after_failure:
-- ssh -p 22 -o "StrictHostKeyChecking no" $USER@$HOST "bash -s" < deploy.sh
 - eval "$(ssh-agent -k)"
 - echo "Killed SSH Agent"
 - rm -rf deploy_key.pem
