@@ -40,64 +40,70 @@ const ArticleService = {
         }, projection);
     },
     createArticle: article => ArticleRepository.create(article),
-    postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((article) => {
-        if (file) {
-            const path = `cover_photo/cover_${article._id}`;
-            ImageService.postImage(file, path)
-                .then((result) => {
-                    article.coverPhoto = result.url; //eslint-disable-line
-                    article.save((error) => {
-                        if (error) {
-                            log.critical('Error while trying to save the blog with the new cover photo', error);
-                            reject(error);
-                        } else {
-                            resolve(article);
-                        }
+    postCoverPhoto: (id, file) => new Promise((resolve, reject) => {
+        ArticleRepository.get({ _id: id }).then((article) => {
+            if (file && article) {
+                const path = `cover_photo/cover_${article._id}`;
+                ImageService.updateImage(file, path, article.coverPhoto)
+                    .then((result) => {
+                        article.coverPhoto = result.url; //eslint-disable-line
+                        article.save((error) => {
+                            if (error) {
+                                log.critical('Error while trying to save the blog with the new cover photo', error);
+                                reject(error);
+                            } else {
+                                resolve(article);
+                            }
+                        });
+                    })
+                    .catch((error) => {
+                        log.critical('Error while trying to post image', error);
+                        reject(error);
                     });
-                })
-                .catch((error) => {
-                    log.critical('Error while trying to post image', error);
+            } else {
+                resolve('');
+            }
+        }).catch((err) => {
+            log.critical('Article not found');
+            reject(err);
+        });
+    }),
+    updateArticle: (id, article) => new Promise((resolve, reject) => {
+        ArticleRepository.get({ _id: id }).then((blog) => {
+            _.assign(blog, article);
+            if (article.isPublished) {
+                blog.datePosted = Date.now(); //eslint-disable-line
+            }
+            blog.save((error) => {
+                if (error) {
+                    log.critical('Failed to save article', error);
                     reject(error);
-                });
-        } else {
-            resolve('');
-        }
-    }).catch((err) => {
-        log.critical('Article not found');
-        reject(err);
-    })),
-    updateArticle: (id, article) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((blog) => {
-        _.assign(blog, article);
-        if (article.isPublished) {
-            blog.datePosted = Date.now(); //eslint-disable-line
-        }
-        blog.save((error) => {
-            if (error) {
-                log.critical('Failed to save article', error);
-                reject(error);
-            } else {
-                resolve(blog);
-            }
+                } else {
+                    resolve(blog);
+                }
+            });
+        }).catch((err) => {
+            log.critical('Article to update not found');
+            reject(err);
         });
-    }).catch((err) => {
-        log.critical('Article to update not found');
-        reject(err);
-    })),
-    deleteArticle: id => new Promise((resolve, reject) => ArticleRepository.get({
-        _id: id
-    }).then((article) => {
-        article.remove((error) => {
-            if (error) {
-                log.critical('Failed to remove blog post');
-                reject(error);
-            } else {
-                resolve(`The blog with the id ${article._id} was removed`);
-            }
+    }),
+    deleteArticle: id => new Promise((resolve, reject) => {
+        ArticleRepository.get({
+            _id: id
+        }).then((article) => {
+            article.remove((error) => {
+                if (error) {
+                    log.critical('Failed to remove blog post');
+                    reject(error);
+                } else {
+                    resolve(`The blog with the id ${article._id} was removed`);
+                }
+            });
+        }).catch((err) => {
+            log.critical('Error occured while deleting an article: ', err);
+            reject(err);
         });
-    }).catch((err) => {
-        log.critical('Error occured while deleting an article: ', err);
-        reject(err);
-    }))
+    })
 };
 
 export default ArticleService;

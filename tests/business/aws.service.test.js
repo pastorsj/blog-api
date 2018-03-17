@@ -19,11 +19,21 @@ describe('Test the AWS service', () => {
     });
     describe('deleteImage', () => {
         it('should call S3.deleteObjects successfully', (done) => {
-            sandbox.stub(S3, 'deleteObjects').callsFake((params, cb) => {
+            const deleteObjectsStub = sandbox.stub(S3, 'deleteObjects').callsFake((params, cb) => {
                 cb(null, 'Data');
             });
-            AWSService.deleteImage('https://flickr.com').then((res) => {
+            AWSService.deleteImage('https://flickr.com/pictures/testpicture.jpg').then((res) => {
+                sinon.assert.calledWith(deleteObjectsStub, {
+                    Bucket: sinon.match.string,
+                    Delete: {
+                        Objects: [{
+                            Key: 'pictures/testpicture.jpg'
+                        }]
+                    }
+                }, sinon.match.func);
                 expect(res).to.be.eq('Data');
+
+                deleteObjectsStub.restore();
                 done();
             }).catch((err) => {
                 done(err);

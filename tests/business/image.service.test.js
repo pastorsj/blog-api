@@ -11,7 +11,7 @@ const { expect } = chai;
 
 chai.use(sinonChai);
 
-describe('Test the image service', () => {
+describe('Test the Image service', () => {
     let sandbox;
 
     beforeEach(() => {
@@ -81,6 +81,52 @@ describe('Test the image service', () => {
                 done(res);
             }).catch((err) => {
                 expect(err.message).to.be.a('string');
+                done();
+            });
+        });
+    });
+    describe('updateImage', () => {
+        let file;
+        const filePath = 'tests/common/';
+        const originalFile = `${filePath}testing.png`;
+        const copiedFile = `${filePath}testing-copy.png`;
+
+        beforeEach(() => {
+            fs.copyFileSync(originalFile, copiedFile);
+            file = fs.readFileSync(copiedFile);
+        });
+        afterEach(() => {
+            if (fs.existsSync(copiedFile)) {
+                fs.unlinkSync(copiedFile);
+            }
+        });
+        it('should call the AWSService.deleteImage function and return successfully, then post the new image that was passed in', (done) => {
+            const postImageStub = sandbox.stub(AWSService, 'postImage').resolves('Data');
+            const deleteImageStub = sandbox.stub(AWSService, 'deleteImage').resolves();
+            ImageService.updateImage({ path: copiedFile, mimetype: 'image/png' }, 'path', 'http://flickr.com/otherphoto').then((res) => {
+                expect(res).to.be.eq('Data');
+
+                sinon.assert.calledWith(postImageStub, 'path.png', file, 'image/png');
+                sinon.assert.calledWith(deleteImageStub, 'http://flickr.com/otherphoto');
+
+                postImageStub.restore();
+                deleteImageStub.restore();
+                done();
+            }).catch((err) => {
+                done(err);
+            });
+        });
+        it('should call the AWSService.deleteImage function and fail', (done) => {
+            const postImageStub = sandbox.stub(AWSService, 'postImage').resolves('Data');
+            const deleteImageStub = sandbox.stub(AWSService, 'deleteImage').rejects();
+            ImageService.updateImage({ path: copiedFile, mimetype: 'image/png' }, 'path', 'http://flickr.com/otherphoto').then((res) => {
+                done(res);
+            }).catch(() => {
+                sinon.assert.notCalled(postImageStub);
+                sinon.assert.calledWith(deleteImageStub, 'http://flickr.com/otherphoto');
+
+                postImageStub.restore();
+                deleteImageStub.restore();
                 done();
             });
         });

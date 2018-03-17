@@ -28,7 +28,7 @@ const UserService = {
         UserRepository.get({ username }, projection).then((user) => {
             if (file) {
                 const path = `profile_pictures/profile_${user.username}`;
-                ImageService.postImage(file, path)
+                ImageService.updateImage(file, path, user.profilePicture)
                     .then((result) => {
                         user.profilePicture = result.url; //eslint-disable-line
                         user.save((error) => {
