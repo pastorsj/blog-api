@@ -7,7 +7,7 @@ import log from '../../log';
 
 const ArticleService = {
     getAllArticlesForAuthor: username => ArticleRepository.getAll({ author: username }),
-    getAllArticles: () => new Promise((resolve, reject) => {
+    getAllPublishedArticles: () => new Promise((resolve, reject) => {
         ArticleRepository.getAll({ isPublished: true }, { __v: 0 }).then((posts) => {
             const postPromises = [];
             posts.forEach((post) => {

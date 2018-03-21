@@ -31,11 +31,11 @@ describe('Test the Article Service', () => {
             articleRepoStub.restore();
         });
     });
-    describe('getAllArticles', () => {
+    describe('getAllPublishedArticles', () => {
         it('should retrieve all articles with author information attached', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').resolves(['article1', 'article2']);
             const retrieveAuthorStub = sandbox.stub(UserService, 'retrieveAuthor').resolves({ text: 'article', author: { username: 'test' } });
-            ArticleService.getAllArticles().then((articles) => {
+            ArticleService.getAllPublishedArticles().then((articles) => {
                 expect(articles.length).to.be.eq(2);
 
                 sinon.assert.calledWith(articleRepoStub, { isPublished: true }, { __v: 0 });
@@ -50,7 +50,7 @@ describe('Test the Article Service', () => {
         });
         it('should fail to get all articles', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').rejects();
-            ArticleService.getAllArticles().then((output) => {
+            ArticleService.getAllPublishedArticles().then((output) => {
                 done(output);
             }).catch(() => {
                 sinon.assert.calledWith(articleRepoStub, { isPublished: true }, { __v: 0 });

@@ -97,7 +97,7 @@ describe('Test the /blog route', () => {
         });
         describe('GET', () => {
             it('should retrieve all blog posts that are published', (done) => {
-                const articleStub = sandbox.stub(ArticleService, 'getAllArticles').resolves([
+                const articleStub = sandbox.stub(ArticleService, 'getAllPublishedArticles').resolves([
                     {
                         title: 'Title 1',
                         text: '<p>New Article</p>',
@@ -129,7 +129,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should fail to retrieve all blog posts', (done) => {
-                sandbox.stub(ArticleService, 'getAllArticles').rejects();
+                sandbox.stub(ArticleService, 'getAllPublishedArticles').rejects();
                 request(app)
                     .get('/api/blog/')
                     .expect(404, done);
