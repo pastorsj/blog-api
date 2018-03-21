@@ -1,7 +1,6 @@
-import _ from 'lodash';
-
 import ImageService from './image.service';
 import UserRepository from '../../dal/repositories/user.repository';
+import log from '../../log';
 
 const projection = {
     _id: 1,
@@ -14,14 +13,16 @@ const projection = {
 
 const UserService = {
     retrieveAuthor: post => new Promise((resolve, reject) => {
-        UserRepository.getAll({ username: post.author }, { name: 1, username: 1 }).limit(1).exec((err, author) => {
-            if (err || author.length < 1) {
-                reject(err || 'No authors found');
-            }
-            const postObject = post.toObject();
-            postObject.author = author.pop();
-            resolve(postObject);
-        });
+        UserRepository.getAll({ username: post.author }, { name: 1, username: 1 })
+            .limit(1)
+            .exec((err, author) => {
+                if (err || author.length < 1) {
+                    reject(err || 'No authors found');
+                }
+                const postObject = post.toObject();
+                postObject.author = author.pop();
+                resolve(postObject);
+            });
     }),
     getUser: username => UserRepository.get({ username }, projection),
     updateProfilePicture: (username, file) => new Promise((resolve, reject) =>
@@ -58,18 +59,18 @@ const UserService = {
         }).catch((err) => {
             reject(err);
         })),
-    deleteUser: username => new Promise((resolve, reject) =>
-        UserRepository.get({ username }).then((user) => {
-            user.remove((error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(`The user with the username ${user.username} was removed`);
-                }
-            });
-        }).catch((err) => {
-            reject(err);
-        }))
+    deleteUser: username => new Promise((resolve, reject) => {
+        UserRepository.remove(username).then((deletedUser) => {
+            if (deletedUser) {
+                resolve(`The user with the username ${username} was removed`);
+            } else {
+                reject(new Error(`The user with the username ${username} does not exist`));
+            }
+        }).catch((error) => {
+            log.critical('Error occured while deleting an user: ', error);
+            reject(error);
+        });
+    })
 };
 
 export default UserService;

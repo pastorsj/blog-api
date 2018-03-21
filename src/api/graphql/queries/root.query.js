@@ -10,7 +10,7 @@ const RootQuery = new GraphQLObjectType({
         user: {
             type: UserType,
             args: { username: { type: new GraphQLNonNull(GraphQLString) } },
-            resolve: async (parentValue, args) => UserService.getUser(args.username)
+            resolve: async (parentValue, { username }) => UserService.getUser(username)
         },
         articles: {
             type: new GraphQLList(ArticleType),
@@ -19,13 +19,13 @@ const RootQuery = new GraphQLObjectType({
                 tag: { type: GraphQLString },
                 title: { type: GraphQLString }
             },
-            resolve: async (parentValue, args) => {
-                if (args.username) {
-                    return ArticleService.getAllArticlesForAuthor(args.username);
-                } else if (args.tag) {
-                    return ArticleService.getByTag(args.tag);
-                } else if (args.title) {
-                    return ArticleService.getByTitle(args.title);
+            resolve: async (parentValue, { username, tag, title }) => {
+                if (username) {
+                    return ArticleService.getAllArticlesForAuthor(username);
+                } else if (tag) {
+                    return ArticleService.getByTag(tag);
+                } else if (title) {
+                    return ArticleService.getByTitle(title);
                 }
                 return ArticleService.getAllPublishedArticles();
             }
@@ -33,7 +33,7 @@ const RootQuery = new GraphQLObjectType({
         article: {
             type: ArticleType,
             args: { id: { type: new GraphQLNonNull(GraphQLID) } },
-            resolve: async (parentValue, args) => ArticleService.getArticleById(args.id)
+            resolve: async (parentValue, { id }) => ArticleService.getArticleById(id)
         }
     })
 });

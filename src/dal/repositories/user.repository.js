@@ -15,7 +15,13 @@ const UserRepository = {
             .then(() => user.generateJwt())
             .then(tokenObj => resolve(tokenObj))
             .catch(err => reject(err));
-    })
+    }),
+    update: (username, user) => mongoose.model('User').findOneAndUpdate(
+        { username },
+        { $set: { ...user } },
+        { new: true }
+    ),
+    remove: id => mongoose.model('User').findByIdAndRemove(id)
 };
 
 export default UserRepository;

@@ -15,14 +15,28 @@ export const ArticleType = new GraphQLObjectType({
     }
 });
 
-export const ArticleInputType = new GraphQLInputObjectType({
-    name: 'ArticleInput',
-    description: 'The article input type',
+export const ArticleCreateType = new GraphQLInputObjectType({
+    name: 'CreateArticleInput',
+    description: 'Create an article using this type',
     fields: ({
         title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: new GraphQLNonNull(GraphQLString) },
         text: { type: new GraphQLNonNull(GraphQLString) },
         author: { type: new GraphQLNonNull(GraphQLString) },
+        tags: { type: GraphQLList(GraphQLString) },
+        coverPhoto: { type: GraphQLString },
+        isPublished: { type: GraphQLBoolean }
+    })
+});
+
+export const ArticleUpdateType = new GraphQLInputObjectType({
+    name: 'UpdateArticleInput',
+    description: 'Update an article using this type',
+    fields: ({
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+        text: { type: GraphQLString },
         tags: { type: GraphQLList(GraphQLString) },
         coverPhoto: { type: GraphQLString },
         isPublished: { type: GraphQLBoolean }

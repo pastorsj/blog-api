@@ -8,7 +8,8 @@ const ArticleRepository = {
         id,
         { $set: { ...article } },
         { new: true }
-    )
+    ),
+    remove: username => mongoose.model('BlogPost').findOneAndRemove({ username })
 };
 
 export default ArticleRepository;
