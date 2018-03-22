@@ -45,7 +45,6 @@
     "graphql": "^0.13.2",
     "helmet": "^3.12.0",
     "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.5",
     "method-override": "^2.3.10",
     "mime": "^2.2.0",
     "mongoose": "^5.0.11",
