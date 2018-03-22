@@ -48,16 +48,12 @@ const ArticleService = {
                             ...article,
                             coverPhoto: result.url
                         };
-                        ArticleRepository.update(id, articleToUpdate).then((updatedArticle) => {
-                            if (updatedArticle) {
-                                resolve(updatedArticle);
-                            } else {
-                                reject(new Error('Article does not exist'));
-                            }
-                        }).catch((error) => {
-                            log.critical('Error while trying to save the blog with the new cover photo', error);
-                            reject(error);
-                        });
+                        ArticleService.updateArticle(id, articleToUpdate)
+                            .then(resolve)
+                            .catch((error) => {
+                                log.critical('Error while trying to save the blog with the new cover photo', error);
+                                reject(error);
+                            });
                     })
                     .catch((error) => {
                         log.critical('Error while trying to post image', error);
@@ -72,9 +68,11 @@ const ArticleService = {
         })),
     updateArticle: (id, article) => new Promise((resolve, reject) => {
         const articleToUpdate = {
-            ...article,
-            datePosted: article.isPublished ? Date.now : article.datePosted
+            ...article
         };
+        if (article.isPublished) {
+            articleToUpdate.datePosted = new Date(Date.now());
+        }
         ArticleRepository.update(id, articleToUpdate).then((updatedArticle) => {
             if (updatedArticle) {
                 resolve(updatedArticle);

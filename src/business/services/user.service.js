@@ -31,14 +31,13 @@ const UserService = {
                 const path = `profile_pictures/profile_${user.username}`;
                 ImageService.postImage(file, path)
                     .then((result) => {
-                        user.profilePicture = result.url; //eslint-disable-line
-                        user.save((error) => {
-                            if (error) {
-                                reject(error);
-                            } else {
-                                resolve(user);
-                            }
-                        });
+                        const updatedUser = {
+                            ...user,
+                            profilePicture: result.url
+                        };
+                        UserService.updateUser(username, updatedUser)
+                            .then(resolve)
+                            .catch(reject);
                     });
             } else {
                 resolve('');
@@ -46,19 +45,18 @@ const UserService = {
         }).catch((err) => {
             reject(err);
         })),
-    updateUser: (username, updatedUser) => new Promise((resolve, reject) =>
-        UserRepository.get({ username }, projection).then((user) => {
-            _.assign(user, updatedUser);
-            user.save((error) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(user);
-                }
-            });
-        }).catch((err) => {
-            reject(err);
-        })),
+    updateUser: (username, updatedUser) => new Promise((resolve, reject) => {
+        UserRepository.update(username, updatedUser).then((user) => {
+            if (user) {
+                resolve(user);
+            } else {
+                reject(new Error(`The user with the username ${username} does not exist`));
+            }
+        }).catch((error) => {
+            log.critical('Error occured while updating an user: ', error);
+            reject(error);
+        });
+    }),
     deleteUser: username => new Promise((resolve, reject) => {
         UserRepository.remove(username).then((deletedUser) => {
             if (deletedUser) {
