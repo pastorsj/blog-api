@@ -100,10 +100,11 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: '',
-                save: ((cb) => {
-                    cb();
-                })
+                profilePicture: ''
+            });
+            const userRepoSaveStub = sandbox.stub(UserRepository, 'update').resolves({
+                _id: 1,
+                profilePicture: 'http://flickr.com/somephoto'
             });
             const postImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
                 url: 'http://flickr.com/somephoto'
@@ -120,10 +121,17 @@ describe('Test the User Service', () => {
                     profilePicture: 1
                 });
                 sinon.assert.calledOnce(userRepoStub);
+                sinon.assert.calledWith(userRepoSaveStub, 'username', {
+                    _id: 1,
+                    username: 'username',
+                    profilePicture: 'http://flickr.com/somephoto'
+                });
+                sinon.assert.calledOnce(userRepoSaveStub);
                 sinon.assert.calledWith(postImageStub, 'file', 'profile_pictures/profile_username');
                 sinon.assert.calledOnce(postImageStub);
 
                 userRepoStub.restore();
+                userRepoSaveStub.restore();
                 postImageStub.restore();
                 done();
             }).catch((err) => {
@@ -134,10 +142,7 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: '',
-                save: ((cb) => {
-                    cb();
-                })
+                profilePicture: ''
             });
             UserService.updateProfilePicture('username').then(() => {
                 sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
@@ -179,10 +184,7 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: '',
-                save: ((cb) => {
-                    cb('Error');
-                })
+                profilePicture: ''
             });
             const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
                 url: 'http://flickr.com/somephoto'
@@ -210,26 +212,16 @@ describe('Test the User Service', () => {
     });
     describe('updateUser', () => {
         it('should update the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
+            const userRepoStub = sandbox.stub(UserRepository, 'update').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: '',
-                save: ((cb) => {
-                    cb();
-                })
+                profilePicture: 'photo url'
             });
             UserService.updateUser('username', { profilePicture: 'photo url' }).then((article) => {
                 expect(article.profilePicture).to.be.eq('photo url');
                 expect(article.username).to.be.eq('username');
 
-                sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
-                    _id: 1,
-                    username: 1,
-                    name: 1,
-                    email: 1,
-                    joinedDate: 1,
-                    profilePicture: 1
-                });
+                sinon.assert.calledWith(userRepoStub, 'username', { profilePicture: 'photo url' });
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();
@@ -239,18 +231,11 @@ describe('Test the User Service', () => {
             });
         });
         it('should fail to find the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').rejects();
+            const userRepoStub = sandbox.stub(UserRepository, 'update').resolves();
             UserService.updateUser('username', { profilePicture: 'photo url' }).then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
-                    _id: 1,
-                    username: 1,
-                    name: 1,
-                    email: 1,
-                    joinedDate: 1,
-                    profilePicture: 1
-                });
+                sinon.assert.calledWith(userRepoStub, 'username', { profilePicture: 'photo url' });
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();
@@ -258,25 +243,11 @@ describe('Test the User Service', () => {
             });
         });
         it('should fail to save the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
-                _id: 1,
-                username: 'username',
-                profilePicture: '',
-                save: ((cb) => {
-                    cb('Error');
-                })
-            });
+            const userRepoStub = sandbox.stub(UserRepository, 'update').rejects();
             UserService.updateUser('username', { profilePicture: 'photo url' }).then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
-                    _id: 1,
-                    username: 1,
-                    name: 1,
-                    email: 1,
-                    joinedDate: 1,
-                    profilePicture: 1
-                });
+                sinon.assert.calledWith(userRepoStub, 'username', { profilePicture: 'photo url' });
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();
@@ -286,18 +257,15 @@ describe('Test the User Service', () => {
     });
     describe('deleteUser', () => {
         it('should remove the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
+            const userRepoStub = sandbox.stub(UserRepository, 'remove').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: '',
-                remove: ((cb) => {
-                    cb();
-                })
+                profilePicture: ''
             });
             UserService.deleteUser('username').then((message) => {
                 expect(message).to.be.eq('The user with the username username was removed');
 
-                sinon.assert.calledWith(userRepoStub, { username: 'username' });
+                sinon.assert.calledWith(userRepoStub, 'username');
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();
@@ -306,31 +274,24 @@ describe('Test the User Service', () => {
                 done(err);
             });
         });
-        it('should fail to find the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').rejects();
+        it('should fail to save the user', (done) => {
+            const userRepoStub = sandbox.stub(UserRepository, 'remove').rejects();
             UserService.deleteUser('username').then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(userRepoStub, { username: 'username' });
+                sinon.assert.calledWith(userRepoStub, 'username');
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();
                 done();
             });
         });
-        it('should fail to save the user', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
-                _id: 1,
-                username: 'username',
-                profilePicture: '',
-                remove: ((cb) => {
-                    cb('Error');
-                })
-            });
+        it('should fail to find the user', (done) => {
+            const userRepoStub = sandbox.stub(UserRepository, 'remove').resolves();
             UserService.deleteUser('username').then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(userRepoStub, { username: 'username' });
+                sinon.assert.calledWith(userRepoStub, 'username');
                 sinon.assert.calledOnce(userRepoStub);
 
                 userRepoStub.restore();

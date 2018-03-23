@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import ArticleRepository from '../../dal/repositories/article.repository';
 import ImageService from './image.service';
 import UserService from './user.service';
@@ -7,7 +5,7 @@ import log from '../../log';
 
 const ArticleService = {
     getAllArticlesForAuthor: username => ArticleRepository.getAll({ author: username }),
-    getAllArticles: () => new Promise((resolve, reject) => {
+    getAllPublishedArticles: () => new Promise((resolve, reject) => {
         ArticleRepository.getAll({ isPublished: true }, { __v: 0 }).then((posts) => {
             const postPromises = [];
             posts.forEach((post) => {
@@ -40,21 +38,22 @@ const ArticleService = {
         }, projection);
     },
     createArticle: article => ArticleRepository.create(article),
-    postCoverPhoto: (id, file) => new Promise((resolve, reject) => {
+    postCoverPhoto: (id, file) => new Promise((resolve, reject) =>
         ArticleRepository.get({ _id: id }).then((article) => {
             if (file && article) {
                 const path = `cover_photo/cover_${article._id}`;
                 ImageService.updateImage(file, path, article.coverPhoto)
                     .then((result) => {
-                        article.coverPhoto = result.url; //eslint-disable-line
-                        article.save((error) => {
-                            if (error) {
+                        const articleToUpdate = {
+                            ...article,
+                            coverPhoto: result.url
+                        };
+                        ArticleService.updateArticle(id, articleToUpdate)
+                            .then(resolve)
+                            .catch((error) => {
                                 log.critical('Error while trying to save the blog with the new cover photo', error);
                                 reject(error);
-                            } else {
-                                resolve(article);
-                            }
-                        });
+                            });
                     })
                     .catch((error) => {
                         log.critical('Error while trying to post image', error);
@@ -66,42 +65,35 @@ const ArticleService = {
         }).catch((err) => {
             log.critical('Article not found');
             reject(err);
-        });
-    }),
+        })),
     updateArticle: (id, article) => new Promise((resolve, reject) => {
-        ArticleRepository.get({ _id: id }).then((blog) => {
-            _.assign(blog, article);
-            if (article.isPublished) {
-                blog.datePosted = Date.now(); //eslint-disable-line
+        const articleToUpdate = {
+            ...article
+        };
+        if (article.isPublished) {
+            articleToUpdate.datePosted = new Date(Date.now());
+        }
+        ArticleRepository.update(id, articleToUpdate).then((updatedArticle) => {
+            if (updatedArticle) {
+                resolve(updatedArticle);
+            } else {
+                reject(new Error('Unable to find the article to update'));
             }
-            blog.save((error) => {
-                if (error) {
-                    log.critical('Failed to save article', error);
-                    reject(error);
-                } else {
-                    resolve(blog);
-                }
-            });
-        }).catch((err) => {
-            log.critical('Article to update not found');
-            reject(err);
+        }).catch((error) => {
+            log.critical('Unable to update article', error);
+            reject(new Error('Unable to update article', error));
         });
     }),
     deleteArticle: id => new Promise((resolve, reject) => {
-        ArticleRepository.get({
-            _id: id
-        }).then((article) => {
-            article.remove((error) => {
-                if (error) {
-                    log.critical('Failed to remove blog post');
-                    reject(error);
-                } else {
-                    resolve(`The blog with the id ${article._id} was removed`);
-                }
-            });
-        }).catch((err) => {
-            log.critical('Error occured while deleting an article: ', err);
-            reject(err);
+        ArticleRepository.remove(id).then((deletedArticle) => {
+            if (deletedArticle) {
+                resolve(`The blog with the id ${id} was removed`);
+            } else {
+                reject(new Error(`Blog post with id ${id} does not exist`));
+            }
+        }).catch((error) => {
+            log.critical('Error occured while deleting an article: ', error);
+            reject(error);
         });
     })
 };

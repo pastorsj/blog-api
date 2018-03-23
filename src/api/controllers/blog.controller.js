@@ -32,7 +32,7 @@ const BlogController = {
         });
     },
     getAll: (req, res) => {
-        ArticleService.getAllArticles().then((articles) => {
+        ArticleService.getAllPublishedArticles().then((articles) => {
             Response.json(res, 200, articles);
         }).catch((err) => {
             Response.error(res, 404, err);
