@@ -106,7 +106,7 @@ describe('Test the User Service', () => {
                 _id: 1,
                 profilePicture: 'http://flickr.com/somephoto'
             });
-            const postImageStub = sandbox.stub(ImagesService, 'postImage').resolves({
+            const postImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
                 url: 'http://flickr.com/somephoto'
             });
             UserService.updateProfilePicture('username', 'file').then((article) => {
@@ -186,7 +186,7 @@ describe('Test the User Service', () => {
                 username: 'username',
                 profilePicture: ''
             });
-            const postImageStub = sandbox.stub(ImagesService, 'postImage').resolves({
+            const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
                 url: 'http://flickr.com/somephoto'
             });
             UserService.updateProfilePicture('username', 'file').then((output) => {
@@ -201,11 +201,11 @@ describe('Test the User Service', () => {
                     profilePicture: 1
                 });
                 sinon.assert.calledOnce(userRepoStub);
-                sinon.assert.calledWith(postImageStub, 'file', 'profile_pictures/profile_username');
-                sinon.assert.calledOnce(postImageStub);
+                sinon.assert.calledWith(updateImageStub, 'file', 'profile_pictures/profile_username');
+                sinon.assert.calledOnce(updateImageStub);
 
                 userRepoStub.restore();
-                postImageStub.restore();
+                updateImageStub.restore();
                 done();
             });
         });

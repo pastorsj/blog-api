@@ -40,9 +40,9 @@ const ArticleService = {
     createArticle: article => ArticleRepository.create(article),
     postCoverPhoto: (id, file) => new Promise((resolve, reject) =>
         ArticleRepository.get({ _id: id }).then((article) => {
-            if (file) {
-                const path = `cover_photo/cover_${id}`;
-                ImageService.postImage(file, path)
+            if (file && article) {
+                const path = `cover_photo/cover_${article._id}`;
+                ImageService.updateImage(file, path, article.coverPhoto)
                     .then((result) => {
                         const articleToUpdate = {
                             ...article,

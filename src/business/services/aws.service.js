@@ -1,10 +1,11 @@
 import log from '../../log';
-import { KEY_START, BUCKET, S3 } from '../../config/aws.config';
+import { BUCKET, S3 } from '../../config/aws.config';
 
 const AWSService = {
     deleteImage: src => new Promise((resolve, reject) => {
         try {
-            const key = KEY_START + src.split('%2F')[1];
+            const parts = src.split('/');
+            const key = parts.slice(Math.max(parts.length - 2, 1)).join('/');
 
             const params = {
                 Bucket: BUCKET,
