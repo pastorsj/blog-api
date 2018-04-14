@@ -82,7 +82,7 @@ if (process.env.NODE_ENV !== 'TEST') {
     }));
 }
 
-app.use(express.static(path.join(__dirname, '..', 'dist')));
+app.all('*', express.static(path.join(__dirname, '..', 'dist')));
 
 app.use('/api/blog', blogRoute);
 app.use('/api/user', userRoute);
@@ -93,6 +93,7 @@ app.use('/api/tags', tagsRoute);
 app.use('/api/auth', authRoute);
 
 app.use('/graphql', graphqlRoute);
+
 
 if (process.env.NODE_ENV !== 'TEST') {
     app.use(expressWinston.errorLogger({
