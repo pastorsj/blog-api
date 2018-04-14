@@ -5,7 +5,10 @@ import { DATABASE } from '../../config/mongo.config';
 import log from '../../log';
 
 const dbUri = DATABASE;
-mongoose.connect(dbUri);
+mongoose.connect(dbUri, {
+    user: process.env.MONGO_INITDB_ROOT_USERNAME,
+    pass: process.env.MONGO_INITDB_ROOT_PASSWORD
+});
 
 /*  Emulateing disconnection events on Windows */
 

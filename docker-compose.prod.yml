@@ -42,6 +42,8 @@ services:
     image: mongo
     volumes:
       - /mongo/data/db
+    env_file:
+      - production.env
     ports:
       - 27017
     restart: always
@@ -50,6 +52,8 @@ services:
     image: redis
     volumes:
       - /redis/data
+    env_file:
+      - production.env
     ports:
       - 6379
     restart: always

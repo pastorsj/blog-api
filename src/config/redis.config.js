@@ -1,7 +1,12 @@
 import redis from 'redis';
 import log from '../log';
 
-const client = process.env.REDIS ? redis.createClient({ host: process.env.REDIS }) : redis.createClient();
+const redisConf = {
+    host: process.env.REDIS,
+    password: process.env.REDIS_PASSWORD
+};
+
+const client = process.env.REDIS ? redis.createClient(redisConf) : redis.createClient();
 
 client.on('error', (err) => {
     log.critical(`Error ${err}`);
