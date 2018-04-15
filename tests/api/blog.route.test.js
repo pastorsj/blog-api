@@ -31,14 +31,14 @@ describe('Test the /blog route', () => {
     describe('/', () => {
         describe('POST', () => {
             it('should create an blog post and return it', (done) => {
-                const articleStub = sandbox.stub(ArticleService, 'createArticle').resolves([{
+                const articleStub = sandbox.stub(ArticleService, 'createArticle').resolves({
                     text: '<p>A great article on testing</p>',
                     title: 'A new article on testing',
                     description: 'This is a testing article',
                     author: 'testuser',
                     coverPhoto: '',
                     tags: ['redis']
-                }]);
+                });
                 request(app)
                     .post('/api/blog/')
                     .set({ Authorization: `Bearer ${token}` })
@@ -72,7 +72,7 @@ describe('Test the /blog route', () => {
                     });
             });
             it('should attempt to create a blog post but return nothing', (done) => {
-                sandbox.stub(ArticleService, 'createArticle').resolves([]);
+                sandbox.stub(ArticleService, 'createArticle').resolves();
                 request(app)
                     .post('/api/blog/')
                     .set({ Authorization: `Bearer ${token}` })
