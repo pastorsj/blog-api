@@ -14,21 +14,23 @@ describe('Test the Article Service', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();
     });
-    describe('getAllArticlesForAuthor', () => {
+    describe('getAllArticlesForAuthor', (done) => {
         it('should get all articles from the article repository', () => {
-            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').returns(['article1', 'article2']);
-            const articles = ArticleService.getAllArticlesForAuthor('testuser');
-            expect(articles.length).to.be.eq(2);
+            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').resolves(['article1', 'article2']);
+            ArticleService.getAllArticlesForAuthor('testuser').then((articles) => {
+                expect(articles.length).to.be.eq(2);
 
-            sinon.assert.calledWith(articleRepoStub, {
-                author: 'testuser'
-            });
-            articleRepoStub.restore();
+                sinon.assert.calledWith(articleRepoStub, {
+                    author: 'testuser'
+                });
+                articleRepoStub.restore();
+                done();
+            }).catch(error => done(error));
         });
     });
     describe('getAllPublishedArticles', () => {
@@ -61,60 +63,74 @@ describe('Test the Article Service', () => {
         });
     });
     describe('getArticleById', () => {
-        it('should get an article by its id', () => {
-            const articleRepoStub = sandbox.stub(ArticleRepository, 'get').returns({ text: '<p>Test article</p>' });
-            const article = ArticleService.getArticleById(1);
-            expect(article.text).to.be.eq('<p>Test article</p>');
+        it('should get an article by its id', (done) => {
+            const articleRepoStub = sandbox.stub(ArticleRepository, 'get').resolves({ text: '<p>Test article</p>' });
+            ArticleService.getArticleById(1).then((article) => {
+                expect(article.text).to.be.eq('<p>Test article</p>');
 
-            sinon.assert.calledWith(articleRepoStub, { _id: 1 });
-            sinon.assert.calledOnce(articleRepoStub);
-            articleRepoStub.restore();
+                sinon.assert.calledWith(articleRepoStub, { _id: 1 });
+                sinon.assert.calledOnce(articleRepoStub);
+                articleRepoStub.restore();
+                done();
+            }).catch(error => done(error));
         });
     });
     describe('getByTag', () => {
-        it('should all articles with a tag', () => {
-            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').returns(['article1', 'article2']);
-            const articles = ArticleService.getByTag('redis');
-            expect(articles.length).to.be.eq(2);
+        it('should all articles with a tag', (done) => {
+            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').resolves(['article1', 'article2']);
+            ArticleService.getByTag('redis').then((articles) => {
+                expect(articles.length).to.be.eq(2);
 
-            sinon.assert.calledWith(articleRepoStub, {
-                tags: 'redis',
-                isPublished: true
-            });
-            sinon.assert.calledOnce(articleRepoStub);
-            articleRepoStub.restore();
+                sinon.assert.calledWith(articleRepoStub, {
+                    tags: 'redis',
+                    isPublished: true
+                });
+                sinon.assert.calledOnce(articleRepoStub);
+                articleRepoStub.restore();
+                done();
+            }).catch(error => done(error));
         });
     });
     describe('getByTitle', () => {
-        it('should all articles by title', () => {
-            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').returns(['article1', 'article2']);
-            const articles = ArticleService.getByTitle('title');
-            expect(articles.length).to.be.eq(2);
+        it('should all articles by title', (done) => {
+            const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').resolves(['article1', 'article2']);
+            ArticleService.getByTitle('title').then((articles) => {
+                expect(articles.length).to.be.eq(2);
 
-            sinon.assert.calledWith(articleRepoStub, {
-                title: {
-                    $regex: '^title',
-                    $options: 'i'
-                },
-                isPublished: true
-            }, {
-                _id: 1,
-                title: 1,
-                tags: 1
-            });
-            sinon.assert.calledOnce(articleRepoStub);
-            articleRepoStub.restore();
+                sinon.assert.calledWith(articleRepoStub, {
+                    title: {
+                        $regex: '^title',
+                        $options: 'i'
+                    },
+                    isPublished: true
+                }, {
+                    _id: 1,
+                    title: 1,
+                    tags: 1
+                });
+                sinon.assert.calledOnce(articleRepoStub);
+                articleRepoStub.restore();
+                done();
+            }).catch(error => done(error));
+        });
+        it('should return nothing with no title is passed in', (done) => {
+            ArticleService.getByTitle('').then((articles) => {
+                expect(articles.length).to.be.eq(0);
+                done();
+            }).catch(error => done(error));
         });
     });
     describe('createArticle', () => {
-        it('should create an article', () => {
-            const articleRepoStub = sandbox.stub(ArticleRepository, 'create').returns({ text: '<p>Test article</p>' });
-            const article = ArticleService.createArticle({ text: '<p>Test article</p>' });
-            expect(article.text).to.be.eq('<p>Test article</p>');
+        it('should create an article', (done) => {
+            const articleRepoStub = sandbox.stub(ArticleRepository, 'create').resolves({ text: '<p>Test article</p>' });
+            ArticleService.createArticle({ text: '<p>Test article</p>' }).then((article) => {
+                expect(article.text).to.be.eq('<p>Test article</p>');
 
-            sinon.assert.calledWith(articleRepoStub, { text: '<p>Test article</p>' });
-            sinon.assert.calledOnce(articleRepoStub);
-            articleRepoStub.restore();
+                sinon.assert.calledWith(articleRepoStub, { text: '<p>Test article</p>' });
+                sinon.assert.calledOnce(articleRepoStub);
+                articleRepoStub.restore();
+                done();
+            }).catch(error => done(error));
         });
     });
     describe('postCoverPhoto', () => {

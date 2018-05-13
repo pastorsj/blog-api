@@ -18,7 +18,7 @@ describe('Test the /tags route', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();
@@ -76,7 +76,7 @@ describe('Test the /tags route', () => {
                         } else {
                             sinon.assert.calledWith(getPrefixesStub, 'tag', 50, 'tags');
                             getPrefixesStub.restore();
-    
+
                             const { data } = res.body;
                             expect(data).to.be.eq('Data');
                             done();

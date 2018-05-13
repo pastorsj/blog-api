@@ -15,7 +15,7 @@ describe('Test the /auth route', () => {
     const token = jwt.sign({ id: 1 }, SECRET, { expiresIn: 3600 });
     let sandbox;
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();
