@@ -13,7 +13,7 @@ describe('Test the Tags Service', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();

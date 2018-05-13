@@ -24,6 +24,9 @@ const ArticleService = {
         isPublished: true
     }),
     getByTitle: (titlePrefix) => {
+        if (!titlePrefix) {
+            return Promise.resolve([]);
+        }
         const projection = {
             _id: 1,
             title: 1,

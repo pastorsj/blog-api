@@ -13,7 +13,7 @@ describe('Test the Redis service', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();

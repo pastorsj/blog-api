@@ -3,7 +3,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const env = require('yargs').argv.env; // use --env with webpack 2
+const env = require('yargs').argv.env;
 const fs = require('fs');
 const nodeExternals = require('webpack-node-externals');
 

@@ -17,7 +17,7 @@ describe('Test the /images route', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();

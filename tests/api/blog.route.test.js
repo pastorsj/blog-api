@@ -21,7 +21,7 @@ describe('Test the /blog route', () => {
     let canAccessStub;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
         canAccessStub = sandbox.stub(AuthService, 'canAccess').returns(true);
     });
     afterEach(() => {

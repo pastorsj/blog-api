@@ -14,7 +14,7 @@ describe('Test the Auth Service', () => {
     let sandbox;
 
     beforeEach(() => {
-        sandbox = sinon.sandbox.create();
+        sandbox = sinon.createSandbox();
     });
     afterEach(() => {
         sandbox.restore();
