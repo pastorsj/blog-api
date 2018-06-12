@@ -57,7 +57,7 @@
     "serve-favicon": "~2.5.0",
     "spdy": "^3.4.7",
     "transform-runtime": "0.0.0",
-    "winston": "^2.4.2",
+    "winston": "^3.0.0",
     "wysiwyg-editor-node-sdk": "git+https://github.com/froala/wysiwyg-editor-node-sdk.git",
     "yargs": "^11.0.0"
   },
