@@ -15,11 +15,11 @@ const RedisService = {
                     resolve('');
                 })
                 .catch((err) => {
-                    log.critical('An error occured while trying to add a prefix to the database', err);
+                    log.error('An error occured while trying to add a prefix to the database', err);
                     reject(new Error('An error occured while trying to add a prefix to the database'));
                 });
         } catch (e) {
-            log.critical('Failed to add new prefix/word', e);
+            log.error('Failed to add new prefix/word', e);
             reject(new Error(e));
         }
     }),
@@ -28,7 +28,7 @@ const RedisService = {
             const results = [];
             const rangeLen = 50;
             if (!prefix || !count) {
-                log.critical(`Prefix or count was not included in the body of the request. Prefix: ${prefix}; Count: ${count}`);
+                log.error(`Prefix or count was not included in the body of the request. Prefix: ${prefix}; Count: ${count}`);
                 reject(new Error('Prefix or count was not included in the body of the request'));
             } else {
                 let start = await TagRepository.zrank(setName, prefix);
@@ -61,7 +61,7 @@ const RedisService = {
                 resolve(results);
             }
         } catch (e) {
-            log.critical('Error while getting prefixes', e);
+            log.error('Error while getting prefixes', e);
             reject(new Error(`An error has occured: ${e}`));
         }
     })

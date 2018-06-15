@@ -33,7 +33,7 @@ const ImagesService = {
                     log.debug('Result', result);
                     resolve(result);
                 }).catch((error) => {
-                    log.critical('Error updating the given image', error);
+                    log.error('Error updating the given image', error);
                     reject(error);
                 });
         } else {
@@ -55,11 +55,11 @@ const ImagesService = {
                     resolve(result);
                 })
                 .catch((err) => {
-                    log.critical('Error when posting image', err);
+                    log.error('Error when posting image', err);
                     reject(new Error(`Error when posting image: ${err}`));
                 });
         } catch (e) {
-            log.critical('Error while getting image off of server (catch)', e);
+            log.error('Error while getting image off of server (catch)', e);
             reject(new Error(`Error while getting image off of server (catch) ${e})`));
         }
     })

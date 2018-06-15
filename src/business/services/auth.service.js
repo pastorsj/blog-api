@@ -37,7 +37,7 @@ const AuthService = {
                 });
             });
         }).catch((err) => {
-            log.critical('Unable to refresh token:', err);
+            log.error('Unable to refresh token:', err);
             reject(new Error('Authentication failed.'));
         });
     }),

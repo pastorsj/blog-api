@@ -53,7 +53,7 @@ const UserService = {
                 reject(new Error(`The user with the username ${username} does not exist`));
             }
         }).catch((error) => {
-            log.critical('Error occured while updating an user: ', error);
+            log.error('Error occured while updating an user: ', error);
             reject(error);
         });
     }),
@@ -65,7 +65,7 @@ const UserService = {
                 reject(new Error(`The user with the username ${username} does not exist`));
             }
         }).catch((error) => {
-            log.critical('Error occured while deleting an user: ', error);
+            log.error('Error occured while deleting an user: ', error);
             reject(error);
         });
     })

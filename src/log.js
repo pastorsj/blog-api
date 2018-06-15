@@ -1,67 +1,64 @@
 import winston from 'winston';
 
-// set default log level.
-const logLevel = 'debug';
-
-// Set up logger
-const customColors = {
-    trace: 'white',
-    debug: 'green',
-    info: 'blue',
-    warning: 'yellow',
-    critical: 'red',
-    fatal: 'red'
+const config = {
+    levels: {
+        error: 0,
+        debug: 1,
+        warn: 2,
+        data: 3,
+        info: 4,
+        verbose: 5,
+        silly: 6,
+        custom: 7
+    },
+    colors: {
+        error: 'red',
+        debug: 'blue',
+        warn: 'yellow',
+        data: 'grey',
+        info: 'green',
+        verbose: 'cyan',
+        silly: 'magenta',
+        custom: 'yellow'
+    }
 };
 
-const { Logger, transports: { Console, File } } = winston;
+winston.addColors(config.colors);
 
-const logger = new (Logger)({
-    name: 'console',
-    colors: customColors,
-    level: logLevel,
-    levels: {
-        fatal: 0,
-        critical: 1,
-        warning: 2,
-        info: 3,
-        debug: 4,
-        trace: 5
-    },
+const alignedWithColorsAndTime = winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp(),
+    winston.format.align(),
+    winston.format.printf((info) => {
+        const {
+            timestamp, level, message, ...args
+        } = info;
+
+        const ts = timestamp.slice(0, 19).replace('T', ' ');
+        return `${ts} [${level}]: ${message} ${Object.keys(args).length ? JSON.stringify(args, null, 2) : ''}`;
+    }),
+);
+
+const logger = winston.createLogger({
+    levels: config.levels,
+    format: alignedWithColorsAndTime,
     transports: [
-        new (Console)({
-            colorize: true,
-            timestamp: true
-        }),
-        new (File)({ filename: 'production.log' })
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: 'production.log' })
     ]
 });
 
-winston.addColors(customColors);
-
-// Extend logger object to properly log 'Error' types
-const origLog = logger.log;
-
-logger.log = function log(level, msg) {
-    if (msg instanceof Error) {
-        const args = Array.prototype.slice.call(arguments);
-        args[1] = msg.stack;
-        origLog.apply(logger, args);
-    } else {
-        origLog.apply(logger, arguments);
-    }
-};
 /* LOGGER EXAMPLES
     var log = require('./log.js')
-    log.trace('testing')
+    log.data('testing')
     log.debug('testing')
     log.info('testing')
-    log.warning('testing')
-    log.critical('testing')
-    log.fatal('testing')
+    log.warn('testing')
+    log.error('testing')
  */
 
 if (process.env.NODE_ENV === 'TEST') {
-    logger.transports.console.silent = true;
+    logger.silent = true;
 }
 
 export default logger;

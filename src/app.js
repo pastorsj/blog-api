@@ -6,10 +6,10 @@ import cors from 'cors';
 import session from 'express-session';
 import helmet from 'helmet';
 import compression from 'compression';
-import expressWinston from 'express-winston';
-import winston from 'winston';
+import morgan from 'morgan';
 import limiter from 'express-limiter';
 import mongoose from 'mongoose';
+import fs from 'fs';
 
 import './dal/models/db';
 import './dal/models/blog';
@@ -60,26 +60,8 @@ app.use(session({
 }));
 
 if (process.env.NODE_ENV !== 'TEST') {
-    app.use(expressWinston.logger({
-        transports: [
-            new winston.transports.Console({
-                colorize: true
-            })
-        ],
-        requestFilter: (req, propName) => {
-            if (propName === 'headers') {
-                return Object.keys(req.headers).reduce((filteredHeaders, key) => {
-                    const headers = filteredHeaders;
-                    if (key !== 'authorization') {
-                        headers[key] = req.headers[key];
-                    }
-                    return headers;
-                }, {});
-            }
-            return req[propName];
-        },
-        expressFormat: true
-    }));
+    const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+    app.use(morgan('combined', { stream: accessLogStream }));
 }
 
 app.all('*', express.static(path.join(__dirname, '..', 'dist')));
@@ -93,17 +75,6 @@ app.use('/api/tags', tagsRoute);
 app.use('/api/auth', authRoute);
 
 app.use('/graphql', graphqlRoute);
-
-
-if (process.env.NODE_ENV !== 'TEST') {
-    app.use(expressWinston.errorLogger({
-        transports: [
-            new winston.transports.Console({
-                colorize: true
-            })
-        ]
-    }));
-}
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -121,7 +92,7 @@ if (app.get('env') === 'development') {
         } else {
             res.status(err.status || 500);
         }
-        log.critical(err);
+        log.error(err);
     });
 }
 
@@ -133,7 +104,7 @@ app.use((err, req, res) => {
     } else {
         res.status(err.status || 500);
     }
-    log.critical(err);
+    log.error(err);
 });
 
 export default app;

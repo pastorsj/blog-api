@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         crypto.pseudoRandomBytes(16, (err, raw) => {
             if (err) {
-                log.critical('Error encrypting filename', err);
+                log.error('Error encrypting filename', err);
             } else {
                 cb(null, `${raw.toString('hex') + Date.now()}.${mime.getExtension(file.mimetype)}`);
             }

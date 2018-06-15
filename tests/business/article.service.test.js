@@ -19,8 +19,8 @@ describe('Test the Article Service', () => {
     afterEach(() => {
         sandbox.restore();
     });
-    describe('getAllArticlesForAuthor', (done) => {
-        it('should get all articles from the article repository', () => {
+    describe('getAllArticlesForAuthor', () => {
+        it('should get all articles from the article repository', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'getAll').resolves(['article1', 'article2']);
             ArticleService.getAllArticlesForAuthor('testuser').then((articles) => {
                 expect(articles.length).to.be.eq(2);

@@ -17,14 +17,14 @@ const AWSService = {
             };
             S3.deleteObjects(params, (err, data) => {
                 if (err) {
-                    log.critical('Error when delete image', err);
+                    log.error('Error when delete image', err);
                     reject(new Error(`Error when deleting image: ${err}`));
                 } else {
                     resolve(data);
                 }
             });
         } catch (e) {
-            log.critical('Error when deleting image (catch)', e);
+            log.error('Error when deleting image (catch)', e);
             reject(new Error(`Error when deleting image (catch): ${e}`));
         }
     }),
@@ -40,7 +40,7 @@ const AWSService = {
             log.info('aws', BUCKET);
             S3.putObject(params, (err, data) => {
                 if (err) {
-                    log.critical('Error when posting image', err);
+                    log.error('Error when posting image', err);
                     reject(new Error(`Error when posting image: ${err}`));
                 } else {
                     resolve({
@@ -50,7 +50,7 @@ const AWSService = {
                 }
             });
         } catch (e) {
-            log.critical('Error when posting image (catch)', e);
+            log.error('Error when posting image (catch)', e);
             reject(new Error(`Error when posting image (catch): ${e}`));
         }
     })

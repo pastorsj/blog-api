@@ -45,11 +45,11 @@ function onError(error, port) {
     // handle specific listen errors with friendly messages
     switch (error.code) {
     case 'EACCES':
-        log.fatal(`${bind} requires elevated privileges`);
+        log.error(`${bind} requires elevated privileges`);
         process.exit(1);
         break;
     case 'EADDRINUSE':
-        log.fatal(`${bind} is already in use`);
+        log.error(`${bind} is already in use`);
         process.exit(1);
         break;
     default:

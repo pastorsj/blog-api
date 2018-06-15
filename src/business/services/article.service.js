@@ -54,19 +54,19 @@ const ArticleService = {
                         ArticleService.updateArticle(id, articleToUpdate)
                             .then(resolve)
                             .catch((error) => {
-                                log.critical('Error while trying to save the blog with the new cover photo', error);
+                                log.error('Error while trying to save the blog with the new cover photo', error);
                                 reject(error);
                             });
                     })
                     .catch((error) => {
-                        log.critical('Error while trying to post image', error);
+                        log.error('Error while trying to post image', error);
                         reject(error);
                     });
             } else {
                 resolve('');
             }
         }).catch((err) => {
-            log.critical('Article not found');
+            log.error('Article not found');
             reject(err);
         })),
     updateArticle: (id, article) => new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ const ArticleService = {
                 reject(new Error('Unable to find the article to update'));
             }
         }).catch((error) => {
-            log.critical('Unable to update article', error);
+            log.error('Unable to update article', error);
             reject(new Error('Unable to update article', error));
         });
     }),
@@ -95,7 +95,7 @@ const ArticleService = {
                 reject(new Error(`Blog post with id ${id} does not exist`));
             }
         }).catch((error) => {
-            log.critical('Error occured while deleting an article: ', error);
+            log.error('Error occured while deleting an article: ', error);
             reject(error);
         });
     })
