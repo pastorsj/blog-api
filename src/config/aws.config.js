@@ -3,6 +3,7 @@ import AWS from 'aws-sdk';
 export const BUCKET = 'lighthouseblogimg';
 export const REGION = 'us-east-1';
 export const KEY_START = 'uploads/';
+export const IMAGE_SIZES = [100, 200, 800];
 
 const config = new AWS.Config({
     credentials: {

@@ -29,9 +29,21 @@ const blogPostSchema = new mongoose.Schema({
         default: []
     },
     coverPhoto: {
-        type: String,
-        required: false,
-        default: ''
+        small: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        medium: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        large: {
+            type: String,
+            required: false,
+            default: ''
+        }
     },
     isPublished: {
         type: Boolean,

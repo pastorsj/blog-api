@@ -7,7 +7,9 @@ ARG WORKING_DIR
 WORKDIR $WORKING_DIR
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
+    apk add --no-cache bash git openssh \
+    graphicsmagick \
+    graphicsmagick-imagemagick-compat
 RUN npm install --silent && mv node_modules ./
 RUN mkdir -p ./uploads
 COPY . .

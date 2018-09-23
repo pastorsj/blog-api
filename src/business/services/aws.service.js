@@ -1,9 +1,13 @@
+import gm from 'gm';
 import log from '../../log';
-import { BUCKET, S3 } from '../../config/aws.config';
+import { BUCKET, S3, IMAGE_SIZES } from '../../config/aws.config';
 
 const AWSService = {
     deleteImage: src => new Promise((resolve, reject) => {
         try {
+            if (!src) {
+                resolve();
+            }
             const parts = src.split('/');
             const key = parts.slice(Math.max(parts.length - 2, 1)).join('/');
 
@@ -30,28 +34,43 @@ const AWSService = {
     }),
     postImage: (key, file, mimeType) => new Promise((resolve, reject) => {
         try {
-            const params = {
-                Bucket: BUCKET,
-                Key: key,
-                Body: file,
-                ACL: 'public-read',
-                ContentType: mimeType
-            };
-            S3.putObject(params, (err, data) => {
-                if (err) {
-                    log.error('Error when posting image', err);
-                    reject(new Error(`Error when posting image: ${err}`));
-                } else {
-                    resolve({
-                        url: `https://s3.amazonaws.com/${BUCKET}/${key}`,
-                        data
-                    });
-                }
-            });
+            Promise.all(IMAGE_SIZES.map(size => AWSService.resizeAndUploadImage(size, key, file, mimeType)))
+                .then(resolve)
+                .catch(reject);
         } catch (e) {
             log.error('Error when posting image (catch)', e);
             reject(new Error(`Error when posting image (catch): ${e}`));
         }
+    }),
+    resizeAndUploadImage: (size, key, file, mimeType) => new Promise((resolve, reject) => {
+        const width = size;
+        const height = size;
+        gm(file)
+            .resize(width, height)
+            .toBuffer((error, stdout) => {
+                const keyParts = key.split('.');
+                keyParts.splice(keyParts.length - 1, 0, `-${size}`);
+                const updatedFileName = `${keyParts.slice(0, keyParts.length - 1).join('')}.${keyParts[keyParts.length - 1]}`;
+
+                const params = {
+                    Bucket: BUCKET,
+                    Key: updatedFileName,
+                    Body: stdout,
+                    ACL: 'public-read',
+                    ContentType: mimeType
+                };
+                S3.upload(params, (err, data) => {
+                    if (err) {
+                        log.error('Error when posting image', err);
+                        reject(new Error(`Error when posting image: ${err}`));
+                    } else {
+                        resolve({
+                            url: `https://s3.amazonaws.com/${BUCKET}/${updatedFileName}`,
+                            data
+                        });
+                    }
+                });
+            })
     })
 };
 

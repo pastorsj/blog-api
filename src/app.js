@@ -28,6 +28,7 @@ import client from './config/redis.config';
 import log from './log';
 
 mongoose.Promise = global.Promise;
+// mongoose.set('debug', true);
 
 const app = express();
 

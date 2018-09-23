@@ -41,11 +41,16 @@ const ArticleService = {
     postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((article) => {
         if (file && article) {
             const path = `cover_photo/cover_${article._id}`;
-            ImageService.updateImage(file, path, article.coverPhoto)
+            ImageService.updateImage(file, path, article.coverPhoto.toObject())
                 .then((result) => {
+                    const picture = {
+                        small: result[0].url,
+                        medium: result[1].url,
+                        large: result[2].url
+                    };
                     const articleToUpdate = {
                         ...article.toObject(),
-                        coverPhoto: result.url
+                        coverPhoto: picture
                     };
                     ArticleService.updateArticle(id, articleToUpdate)
                         .then(resolve)

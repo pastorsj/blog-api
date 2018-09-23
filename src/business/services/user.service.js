@@ -30,9 +30,14 @@ const UserService = {
             const path = `profile_pictures/profile_${user.username}`;
             ImageService.updateImage(file, path, user.profilePicture)
                 .then((result) => {
+                    const picture = {
+                        small: result[0].url,
+                        medium: result[1].url,
+                        large: result[2].url
+                    };
                     const updatedUser = {
                         ...user.toObject(),
-                        profilePicture: result.url
+                        profilePicture: picture
                     };
                     UserService.updateUser(username, updatedUser)
                         .then(resolve)

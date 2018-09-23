@@ -44,6 +44,7 @@
     "express-limiter": "^1.6.1",
     "express-session": "^1.15.6",
     "express-winston": "^2.5.1",
+    "gm": "^1.23.1",
     "graphql": "^14.0.2",
     "helmet": "^3.13.0",
     "jsonwebtoken": "^8.3.0",

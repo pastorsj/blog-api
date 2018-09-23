@@ -25,9 +25,14 @@ const ImagesService = {
 
         return FroalaEditor.S3.getHash(configs);
     },
-    updateImage: (picture, serverPath, previousPhotoUrl) => new Promise((resolve, reject) => {
-        if (previousPhotoUrl) {
-            ImagesService.deleteImage(previousPhotoUrl)
+    updateImage: (picture, serverPath, previousPhotos) => new Promise((resolve, reject) => {
+        if (previousPhotos && (typeof previousPhotos) === 'object') {
+            const deleteImagePromises = [
+                ImagesService.deleteImage(previousPhotos.small),
+                ImagesService.deleteImage(previousPhotos.medium),
+                ImagesService.deleteImage(previousPhotos.large)
+            ];
+            Promise.all(deleteImagePromises)
                 .then(() => ImagesService.postImage(picture, serverPath))
                 .then((result) => {
                     log.debug('Result', result);
