@@ -36,7 +36,9 @@ describe('Test the /auth route', () => {
                     if (err) {
                         return done(err);
                     }
-                    const { access_token, refresh_token, expires_in, token_type } = res.body;
+                    const {
+                        access_token, refresh_token, expires_in, token_type
+                    } = res.body;
 
                     expect(access_token).to.be.eq('an access token');
                     expect(refresh_token).to.be.eq('a refresh token');
@@ -82,7 +84,9 @@ describe('Test the /auth route', () => {
                     if (err) {
                         done(err);
                     } else {
-                        const { access_token, refresh_token, expires_in, token_type } = res.body;
+                        const {
+                            access_token, refresh_token, expires_in, token_type
+                        } = res.body;
 
                         expect(access_token).to.be.eq('an access token');
                         expect(refresh_token).to.be.eq('a refresh token');
@@ -142,7 +146,9 @@ describe('Test the /auth route', () => {
                     if (err) {
                         done(err);
                     } else {
-                        const { access_token, refresh_token, expires_in, token_type } = res.body;
+                        const {
+                            access_token, refresh_token, expires_in, token_type
+                        } = res.body;
 
                         expect(access_token).to.be.eq('an access token');
                         expect(refresh_token).to.be.eq('a refresh token');
@@ -196,5 +202,5 @@ describe('Test the /auth route', () => {
                     .expect(400, done);
             });
         });
-    })
+    });
 });

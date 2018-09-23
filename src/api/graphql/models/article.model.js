@@ -1,4 +1,6 @@
-import { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLInputObjectType, GraphQLNonNull } from 'graphql';
+import {
+    GraphQLObjectType, GraphQLString, GraphQLList, GraphQLBoolean, GraphQLInt, GraphQLInputObjectType, GraphQLNonNull
+} from 'graphql';
 
 export const ArticleType = new GraphQLObjectType({
     name: 'Article',

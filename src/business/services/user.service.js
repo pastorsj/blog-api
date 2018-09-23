@@ -25,26 +25,25 @@ const UserService = {
             });
     }),
     getUser: username => UserRepository.get({ username }, projection),
-    updateProfilePicture: (username, file) => new Promise((resolve, reject) =>
-        UserRepository.get({ username }, projection).then((user) => {
-            if (file) {
-                const path = `profile_pictures/profile_${user.username}`;
-                ImageService.updateImage(file, path, user.profilePicture)
-                    .then((result) => {
-                        const updatedUser = {
-                            ...user,
-                            profilePicture: result.url
-                        };
-                        UserService.updateUser(username, updatedUser)
-                            .then(resolve)
-                            .catch(reject);
-                    });
-            } else {
-                resolve('');
-            }
-        }).catch((err) => {
-            reject(err);
-        })),
+    updateProfilePicture: (username, file) => new Promise((resolve, reject) => UserRepository.get({ username }, projection).then((user) => {
+        if (file) {
+            const path = `profile_pictures/profile_${user.username}`;
+            ImageService.updateImage(file, path, user.profilePicture)
+                .then((result) => {
+                    const updatedUser = {
+                        ...user,
+                        profilePicture: result.url
+                    };
+                    UserService.updateUser(username, updatedUser)
+                        .then(resolve)
+                        .catch(reject);
+                });
+        } else {
+            resolve('');
+        }
+    }).catch((err) => {
+        reject(err);
+    })),
     updateUser: (username, updatedUser) => new Promise((resolve, reject) => {
         UserRepository.update(username, updatedUser).then((user) => {
             if (user) {

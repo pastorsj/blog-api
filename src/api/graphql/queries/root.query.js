@@ -1,4 +1,6 @@
-import { GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
+import {
+    GraphQLObjectType, GraphQLList, GraphQLNonNull, GraphQLString, GraphQLID
+} from 'graphql';
 import ArticleService from '../../../business/services/article.service';
 import UserType from '../models/user.model';
 import UserService from '../../../business/services/user.service';
@@ -22,9 +24,9 @@ const RootQuery = new GraphQLObjectType({
             resolve: async (parentValue, { username, tag, title }) => {
                 if (username) {
                     return ArticleService.getAllArticlesForAuthor(username);
-                } else if (tag) {
+                } if (tag) {
                     return ArticleService.getByTag(tag);
-                } else if (title) {
+                } if (title) {
                     return ArticleService.getByTitle(title);
                 }
                 return ArticleService.getAllPublishedArticles();

@@ -41,34 +41,33 @@ const ArticleService = {
         }, projection);
     },
     createArticle: article => ArticleRepository.create(article),
-    postCoverPhoto: (id, file) => new Promise((resolve, reject) =>
-        ArticleRepository.get({ _id: id }).then((article) => {
-            if (file && article) {
-                const path = `cover_photo/cover_${article._id}`;
-                ImageService.updateImage(file, path, article.coverPhoto)
-                    .then((result) => {
-                        const articleToUpdate = {
-                            ...article,
-                            coverPhoto: result.url
-                        };
-                        ArticleService.updateArticle(id, articleToUpdate)
-                            .then(resolve)
-                            .catch((error) => {
-                                log.error('Error while trying to save the blog with the new cover photo', error);
-                                reject(error);
-                            });
-                    })
-                    .catch((error) => {
-                        log.error('Error while trying to post image', error);
-                        reject(error);
-                    });
-            } else {
-                resolve('');
-            }
-        }).catch((err) => {
-            log.error('Article not found');
-            reject(err);
-        })),
+    postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((article) => {
+        if (file && article) {
+            const path = `cover_photo/cover_${article._id}`;
+            ImageService.updateImage(file, path, article.coverPhoto)
+                .then((result) => {
+                    const articleToUpdate = {
+                        ...article,
+                        coverPhoto: result.url
+                    };
+                    ArticleService.updateArticle(id, articleToUpdate)
+                        .then(resolve)
+                        .catch((error) => {
+                            log.error('Error while trying to save the blog with the new cover photo', error);
+                            reject(error);
+                        });
+                })
+                .catch((error) => {
+                    log.error('Error while trying to post image', error);
+                    reject(error);
+                });
+        } else {
+            resolve('');
+        }
+    }).catch((err) => {
+        log.error('Article not found');
+        reject(err);
+    })),
     updateArticle: (id, article) => new Promise((resolve, reject) => {
         const articleToUpdate = {
             ...article

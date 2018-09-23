@@ -19,24 +19,18 @@ describe('Test the User Service', () => {
     });
     describe('retrieveAuthor', () => {
         it('should retrieve the author for a post', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'getAll').callsFake(() => {
-                return {
-                    limit: () => {
-                        return {
-                            exec: ((cb) => {
-                                cb(null, [{ username: 'username' }]);
-                            })
-                        };
-                    }
-                };
-            });
+            const userRepoStub = sandbox.stub(UserRepository, 'getAll').callsFake(() => ({
+                limit: () => ({
+                    exec: ((cb) => {
+                        cb(null, [{ username: 'username' }]);
+                    })
+                })
+            }));
             UserService.retrieveAuthor({
                 author: 'username',
-                toObject: () => {
-                    return {
-                        author: {}
-                    };
-                }
+                toObject: () => ({
+                    author: {}
+                })
             }).then((post) => {
                 expect(post.author.username).to.be.eq('username');
 
@@ -49,24 +43,18 @@ describe('Test the User Service', () => {
             });
         });
         it('should fail to retrieve the author for a post', (done) => {
-            const userRepoStub = sandbox.stub(UserRepository, 'getAll').callsFake(() => {
-                return {
-                    limit: () => {
-                        return {
-                            exec: ((cb) => {
-                                cb('Error');
-                            })
-                        };
-                    }
-                };
-            });
+            const userRepoStub = sandbox.stub(UserRepository, 'getAll').callsFake(() => ({
+                limit: () => ({
+                    exec: ((cb) => {
+                        cb('Error');
+                    })
+                })
+            }));
             UserService.retrieveAuthor({
                 author: 'username',
-                toObject: () => {
-                    return {
-                        author: {}
-                    };
-                }
+                toObject: () => ({
+                    author: {}
+                })
             }).then((output) => {
                 done(output);
             }).catch(() => {

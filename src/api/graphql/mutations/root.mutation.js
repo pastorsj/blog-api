@@ -1,7 +1,9 @@
-import { GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString } from 'graphql';
+import {
+    GraphQLObjectType, GraphQLID, GraphQLNonNull, GraphQLString
+} from 'graphql';
 import { ArticleCreateType, ArticleType, ArticleUpdateType } from '../models/article.model';
 import ArticleService from '../../../business/services/article.service';
-import UserType, { UserUpdateType } from '../models/user.model';
+import UserType from '../models/user.model';
 import UserService from '../../../business/services/user.service';
 
 const RootMutation = new GraphQLObjectType({
@@ -35,7 +37,7 @@ const RootMutation = new GraphQLObjectType({
             type: UserType,
             description: 'Update a user',
             args: {
-                user: { type: UserUpdateType }
+                user: { type: UserType }
             },
             resolve: async (value, { user }) => UserService.updateUser(user.username, user)
         },

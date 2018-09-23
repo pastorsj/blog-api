@@ -151,7 +151,7 @@ describe('Test the Article Service', () => {
 
                 sinon.assert.calledWith(articleRepoStub, { _id: 1 });
                 sinon.assert.calledOnce(articleRepoStub);
-                sinon.assert.calledWith(articleRepoSaveStub, 1, { _id: 1, coverPhoto: 'http://flickr.com/somephoto'});
+                sinon.assert.calledWith(articleRepoSaveStub, 1, { _id: 1, coverPhoto: 'http://flickr.com/somephoto' });
                 sinon.assert.calledOnce(articleRepoSaveStub);
                 sinon.assert.calledWith(postImageStub, 'file', 'cover_photo/cover_1');
                 sinon.assert.calledOnce(postImageStub);

@@ -19,4 +19,4 @@ router.route('/:username')
     .put(auth, AuthController.isAccessible, UserController.put.bind(UserController))
     .delete(auth, AuthController.isAccessible, UserController.delete.bind(UserController));
 
-module.exports = router;
+export default router;
