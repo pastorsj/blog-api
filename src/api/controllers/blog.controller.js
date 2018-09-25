@@ -32,7 +32,7 @@ const BlogController = {
         });
     },
     getAll: (req, res) => {
-        ArticleService.getAllPublishedArticles().then((articles) => {
+        ArticleService.getAllPublishedArticles(req.query).then((articles) => {
             Response.json(res, 200, articles);
         }).catch((err) => {
             Response.error(res, 404, err);
@@ -64,7 +64,7 @@ const BlogController = {
     },
     getByTag: (req, res) => {
         const { tag } = req.params;
-        ArticleService.getByTag(tag).then((posts) => {
+        ArticleService.getByTag(tag, req.query).then((posts) => {
             Response.json(res, 200, posts);
         }).catch((err) => {
             Response.error(res, 404, err);
@@ -72,7 +72,7 @@ const BlogController = {
     },
     getByTitle: (req, res) => {
         const { title } = req.params;
-        ArticleService.getByTitle(title).then((titles) => {
+        ArticleService.getByTitle(title, req.query).then((titles) => {
             Response.json(res, 200, titles);
         }).catch((err) => {
             Response.error(res, 404, err);

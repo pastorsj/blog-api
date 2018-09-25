@@ -8,7 +8,7 @@ import Response from './response';
 const ArticlesController = {
     get: (req, res) => {
         const { username } = req.params;
-        ArticleService.getAllArticlesForAuthor(username).then((articles) => {
+        ArticleService.getAllArticlesForAuthor(username, req.query).then((articles) => {
             Response.json(res, 200, articles);
         }).catch((err) => {
             Response.json(res, 404, `No articles found, error was ${err}`);

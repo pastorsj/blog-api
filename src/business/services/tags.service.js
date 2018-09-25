@@ -3,7 +3,7 @@ import UserService from './user.service';
 
 const TagService = {
     getTagsByPopularity: () => new Promise((resolve, reject) => {
-        ArticleRepository.getAll({ isPublished: true }, { tags: 1, _id: 0 }).then((tagSet) => {
+        ArticleRepository.getAll({ isPublished: true }, {}, { tags: 1, _id: 0 }).then((tagSet) => {
             const allTags = {};
             tagSet.forEach((set) => {
                 const { tags } = set;
@@ -20,12 +20,8 @@ const TagService = {
         ArticleRepository.getAll({
             tags: tag,
             isPublished: true
-        }).then((posts) => {
-            const postPromises = [];
-            posts.forEach((post) => {
-                postPromises.push(UserService.retrieveAuthor(post));
-            });
-            resolve(Promise.all(postPromises));
+        }, {}).then((posts) => {
+            resolve(Promise.all(posts.map(post => UserService.retrieveAuthor(post))));
         }).catch((err) => {
             reject(err);
         });
