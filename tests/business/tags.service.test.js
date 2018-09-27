@@ -30,7 +30,7 @@ describe('Test the Tags Service', () => {
                 expect(allTags.express).to.be.eq(1);
                 expect(allTags.mongo).to.be.eq(2);
 
-                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, { tags: 1, _id: 0 });
+                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, {}, { tags: 1, _id: 0 });
                 sinon.assert.calledOnce(articleRepoStub);
                 articleRepoStub.restore();
                 done();
@@ -43,7 +43,7 @@ describe('Test the Tags Service', () => {
             TagService.getTagsByPopularity().then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, { tags: 1, _id: 0 });
+                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, {}, { tags: 1, _id: 0 });
                 sinon.assert.calledOnce(articleRepoStub);
                 articleRepoStub.restore();
                 done();
@@ -58,7 +58,7 @@ describe('Test the Tags Service', () => {
             TagService.getTagsByPopularity().then((output) => {
                 done(output);
             }).catch(() => {
-                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, { tags: 1, _id: 0 });
+                sinon.assert.calledWith(articleRepoStub, { isPublished: true }, {}, { tags: 1, _id: 0 });
                 sinon.assert.calledOnce(articleRepoStub);
                 articleRepoStub.restore();
                 done();
