@@ -4,14 +4,10 @@ import UserService from './user.service';
 import log from '../../log';
 
 const ArticleService = {
-    getAllArticlesForAuthor: username => ArticleRepository.getAll({ author: username }),
-    getAllPublishedArticles: () => new Promise((resolve, reject) => {
-        ArticleRepository.getAll({ isPublished: true }, { __v: 0 }).then((posts) => {
-            const postPromises = [];
-            posts.forEach((post) => {
-                postPromises.push(UserService.retrieveAuthor(post));
-            });
-            Promise.all(postPromises).then((result) => {
+    getAllArticlesForAuthor: (username, query) => ArticleRepository.getAll({ author: username }, query),
+    getAllPublishedArticles: query => new Promise((resolve, reject) => {
+        ArticleRepository.getAll({ isPublished: true }, query, { __v: 0 }).then((posts) => {
+            Promise.all(posts.map(post => UserService.retrieveAuthor(post))).then((result) => {
                 resolve(result);
             });
         }).catch((err) => {
@@ -19,11 +15,11 @@ const ArticleService = {
         });
     }),
     getArticleById: id => ArticleRepository.get({ _id: id }),
-    getByTag: tag => ArticleRepository.getAll({
+    getByTag: (tag, query) => ArticleRepository.getAll({
         tags: tag,
         isPublished: true
-    }),
-    getByTitle: (titlePrefix) => {
+    }, query),
+    getByTitle: (titlePrefix, query) => {
         if (!titlePrefix) {
             return Promise.resolve([]);
         }
@@ -38,7 +34,7 @@ const ArticleService = {
                 $options: 'i'
             },
             isPublished: true
-        }, projection);
+        }, query, projection);
     },
     createArticle: article => ArticleRepository.create(article),
     postCoverPhoto: (id, file) => new Promise((resolve, reject) => ArticleRepository.get({ _id: id }).then((article) => {
