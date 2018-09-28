@@ -2,6 +2,7 @@ import ArticleRepository from '../../dal/repositories/article.repository';
 import ImageService from './image.service';
 import UserService from './user.service';
 import log from '../../log';
+import SubscriptionService from './subscription.service';
 
 const ArticleService = {
     getAllArticlesForAuthor: (username, query) => ArticleRepository.getAll({ author: username }, query),
@@ -68,12 +69,20 @@ const ArticleService = {
         const articleToUpdate = {
             ...article
         };
+        let wasArticlePublished = false;
         if (article.isPublished) {
             articleToUpdate.datePosted = new Date(Date.now());
+            wasArticlePublished = true;
         }
         ArticleRepository.update(id, articleToUpdate).then((updatedArticle) => {
             if (updatedArticle) {
-                resolve(updatedArticle);
+                if (wasArticlePublished) {
+                    SubscriptionService.publishedArticleNotification(updatedArticle)
+                        .then(resolve(updatedArticle))
+                        .catch(new Error('Unable to send article notification'));
+                } else {
+                    resolve(updatedArticle);
+                }
             } else {
                 reject(new Error('Unable to find the article to update'));
             }

@@ -6,6 +6,7 @@ import ArticleRepository from '../../src/dal/repositories/article.repository';
 import ArticleService from '../../src/business/services/article.service';
 import UserService from '../../src/business/services/user.service';
 import ImagesService from '../../src/business/services/image.service';
+import SubscriptionService from '../../src/business/services/subscription.service';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -249,6 +250,7 @@ describe('Test the Article Service', () => {
                 datePosted: currentDate,
                 isPublished: true
             });
+            const subscriptionServiceStub = sandbox.stub(SubscriptionService, 'publishedArticleNotification').resolves();
             ArticleService.updateArticle(1, { isPublished: true }).then((article) => {
                 expect(article.coverPhoto).to.be.eq('http://flickr.com/somephoto');
                 expect(article.text).to.be.eq('<p>Test article</p>');
@@ -257,8 +259,17 @@ describe('Test the Article Service', () => {
 
                 sinon.assert.calledWith(articleRepoStub, 1, { isPublished: true, datePosted: sinon.match.date });
                 sinon.assert.calledOnce(articleRepoStub);
+                sinon.assert.calledWith(subscriptionServiceStub, {
+                    _id: 1,
+                    text: '<p>Test article</p>',
+                    coverPhoto: 'http://flickr.com/somephoto',
+                    datePosted: currentDate,
+                    isPublished: true
+                });
+                sinon.assert.calledOnce(subscriptionServiceStub);
 
                 articleRepoStub.restore();
+                subscriptionServiceStub.restore();
                 done();
             }).catch((err) => {
                 done(err);
