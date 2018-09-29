@@ -13,9 +13,9 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/images route
 router.route('/gethash')
-    .get(auth, ImagesController.get.bind(ImagesController));
+    .get(auth, ImagesController.get);
 
 router.route('/')
-    .delete(auth, ImagesController.delete.bind(ImagesController));
+    .delete(auth, ImagesController.delete);
 
 export default router;

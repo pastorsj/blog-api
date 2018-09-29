@@ -13,6 +13,6 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/articles route
 router.route('/:username')
-    .get(auth, AuthController.isAccessible, ArticlesController.get.bind(ArticlesController));
+    .get(auth, AuthController.isAccessible, ArticlesController.get);
 
 export default router;

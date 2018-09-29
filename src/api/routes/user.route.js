@@ -14,9 +14,9 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/user route
 router.route('/:username')
-    .get(UserController.get.bind(UserController))
-    .post(auth, AuthController.isAccessible, UserController.updateProfilePicture.bind(UserController))
-    .put(auth, AuthController.isAccessible, UserController.put.bind(UserController))
-    .delete(auth, AuthController.isAccessible, UserController.delete.bind(UserController));
+    .get(UserController.get)
+    .post(auth, AuthController.isAccessible, UserController.updateProfilePicture)
+    .put(auth, AuthController.isAccessible, UserController.put)
+    .delete(auth, AuthController.isAccessible, UserController.delete);
 
 export default router;
