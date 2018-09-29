@@ -14,6 +14,7 @@ import fs from 'fs';
 import './dal/models/db';
 import './dal/models/blog';
 import './dal/models/user';
+import './dal/models/subscription';
 
 import blogRoute from './api/routes/blog';
 import userRoute from './api/routes/user';

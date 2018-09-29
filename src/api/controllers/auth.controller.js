@@ -1,5 +1,6 @@
 import Response from './response';
 import AuthService from '../../business/services/auth.service';
+import SubscriptionService from '../../business/services/subscription.service';
 
 /**
  * ROUTE: /auth/*
@@ -63,6 +64,13 @@ const AuthController = {
         } else {
             Response.error(res, 401, 'Authentication failed. Token was malformed');
         }
+    },
+    addSubscription: (req, res) => {
+        SubscriptionService.storeSubscription(req.body).then((result) => {
+            Response.json(res, 200, result);
+        }).catch((err) => {
+            Response.error(res, 400, err);
+        });
     },
     isAccessible: (req, res, next) => {
         const { payload, params: { username } } = req;

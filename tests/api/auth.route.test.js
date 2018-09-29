@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import app from '../../src/app';
 import { SECRET } from '../../src/config/jwt.config';
 import AuthService from '../../src/business/services/auth.service';
+import SubscriptionService from '../../src/business/services/subscription.service';
 
 const { expect } = chai;
 chai.use(sinonChai);
@@ -37,7 +38,7 @@ describe('Test the /auth route', () => {
                         return done(err);
                     }
                     const {
-                        access_token, refresh_token, expires_in, token_type
+                        access_token, refresh_token, expires_in, token_type // eslint-disable-line
                     } = res.body;
 
                     expect(access_token).to.be.eq('an access token');
@@ -85,7 +86,7 @@ describe('Test the /auth route', () => {
                         done(err);
                     } else {
                         const {
-                            access_token, refresh_token, expires_in, token_type
+                            access_token, refresh_token, expires_in, token_type // eslint-disable-line
                         } = res.body;
 
                         expect(access_token).to.be.eq('an access token');
@@ -147,7 +148,7 @@ describe('Test the /auth route', () => {
                         done(err);
                     } else {
                         const {
-                            access_token, refresh_token, expires_in, token_type
+                            access_token, refresh_token, expires_in, token_type // eslint-disable-line
                         } = res.body;
 
                         expect(access_token).to.be.eq('an access token');
@@ -201,6 +202,39 @@ describe('Test the /auth route', () => {
                     .set({ Authorization: `${token}1` })
                     .expect(400, done);
             });
+        });
+    });
+    describe('/auth/subscription', () => {
+        it('should store the subscription', (done) => {
+            const subscriptionServiceStub = sandbox.stub(SubscriptionService, 'storeSubscription').resolves();
+
+            request(app)
+                .post('/api/auth/subscription')
+                .set({ Authorization: `Bearer ${token}` })
+                .send({
+                    subscription: 'new subscription'
+                })
+                .expect(200)
+                .end((err) => {
+                    if (err) {
+                        done(err);
+                    } else {
+                        sinon.assert.calledOnce(subscriptionServiceStub);
+                        subscriptionServiceStub.restore();
+                        done();
+                    }
+                });
+        });
+        it('should not be able to access any of the articles written by fake user for security reasons', (done) => {
+            sandbox.stub(SubscriptionService, 'storeSubscription').rejects();
+
+            request(app)
+                .post('/api/auth/subscription')
+                .set({ Authorization: `Bearer ${token}` })
+                .send({
+                    subscription: 'new subscription'
+                })
+                .expect(400, done);
         });
     });
 });
