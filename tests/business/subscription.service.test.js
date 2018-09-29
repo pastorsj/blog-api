@@ -44,21 +44,6 @@ describe('Test the Subscription Service', () => {
         it('should publish a new article notification', (done) => {
             const subscriptionServiceStub = sandbox.stub(SubscriptionService, 'sendNotification').resolves();
             SubscriptionService.publishedArticleNotification({title: 'New Article'}).then(() => {
-                sinon.assert.calledWith(subscriptionServiceStub, {
-                    notification: {
-                        title: 'A new article was published',
-                        body: 'Title: New Article',
-                        vibrate: [100, 50, 100],
-                        data: {
-                            dateOfArrival: Date.now(),
-                            primaryKey: 1
-                        },
-                        actions: [{
-                            action: 'explore',
-                            title: 'Go to the site'
-                        }]
-                    }
-                });
                 sinon.assert.calledOnce(subscriptionServiceStub);
                 subscriptionServiceStub.restore();
                 done();
