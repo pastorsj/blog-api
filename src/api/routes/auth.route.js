@@ -12,19 +12,19 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/auth route
 router.route('/jwt/expired')
-    .post(AuthController.validateJWT.bind(AuthController));
+    .post(AuthController.validateJWT);
 
 router.route('/login')
-    .post(AuthController.login.bind(AuthController));
+    .post(AuthController.login);
 
 router.route('/register')
-    .post(AuthController.register.bind(AuthController));
+    .post(AuthController.register);
 
 router.route('/token')
-    .post(AuthController.refreshAccessToken.bind(AuthController));
+    .post(AuthController.refreshAccessToken);
 
 router.route('/subscription')
-    .post(auth, AuthController.addSubscription.bind(AuthController));
+    .post(auth, AuthController.addSubscription);
 
 
 export default router;

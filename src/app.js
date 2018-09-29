@@ -11,19 +11,19 @@ import limiter from 'express-limiter';
 import mongoose from 'mongoose';
 import fs from 'fs';
 
-import './dal/models/db';
-import './dal/models/blog';
-import './dal/models/user';
-import './dal/models/subscription';
+import './dal/db.setup';
+import './dal/models/blog.model';
+import './dal/models/user.model';
+import './dal/models/subscription.model';
 
-import blogRoute from './api/routes/blog';
-import userRoute from './api/routes/user';
-import articlesRoute from './api/routes/articles';
-import imagesRoute from './api/routes/images';
-import gistRoute from './api/routes/gist';
-import tagsRoute from './api/routes/tags';
-import graphqlRoute from './api/routes/graphql';
-import authRoute from './api/routes/auth';
+import blogRoute from './api/routes/blog.route';
+import userRoute from './api/routes/user.route';
+import articlesRoute from './api/routes/articles.route';
+import imagesRoute from './api/routes/images.route';
+import gistRoute from './api/routes/gist.route';
+import tagsRoute from './api/routes/tags.route';
+import graphqlRoute from './api/routes/graphql.route';
+import authRoute from './api/routes/auth.route';
 
 import client from './config/redis.config';
 import log from './log';

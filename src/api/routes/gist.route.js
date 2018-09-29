@@ -13,6 +13,6 @@ router.use(bodyParser.urlencoded({
 
 // Availible via the base_url/gist route
 router.route('/')
-    .post(auth, GistController.post.bind(GistController));
+    .post(auth, GistController.post);
 
 export default router;
