@@ -139,8 +139,11 @@ describe('Test the Article Service', () => {
     describe('postCoverPhoto', () => {
         it('should save the cover photo successfully', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'get').resolves({
-                coverPhoto: '',
-                _id: 1
+                _id: 1,
+                toObject: () => ({
+                    coverPhoto: '',
+                    _id: 1
+                })
             });
             const articleRepoSaveStub = sandbox.stub(ArticleRepository, 'update').resolves({
                 coverPhoto: 'http://flickr.com/somephoto',
@@ -179,8 +182,11 @@ describe('Test the Article Service', () => {
         });
         it('should get the article to update, but fail to post the image', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'get').resolves({
-                coverPhoto: '',
-                _id: 1
+                _id: 1,
+                toObject: () => ({
+                    coverPhoto: '',
+                    _id: 1
+                })
             });
             const postImageStub = sandbox.stub(ImagesService, 'postImage').rejects();
             ArticleService.postCoverPhoto(1, 'file').then((output) => {

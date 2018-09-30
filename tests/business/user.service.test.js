@@ -88,7 +88,11 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: ''
+                toObject: () => ({
+                    _id: 1,
+                    username: 'username',
+                    profilePicture: ''
+                })
             });
             const userRepoSaveStub = sandbox.stub(UserRepository, 'update').resolves({
                 _id: 1,
@@ -129,8 +133,11 @@ describe('Test the User Service', () => {
         it('should resolve when no file is passed in', (done) => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
-                username: 'username',
-                profilePicture: ''
+                toObject: () => ({
+                    _id: 1,
+                    username: 'username',
+                    profilePicture: ''
+                })
             });
             UserService.updateProfilePicture('username').then(() => {
                 sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
@@ -172,7 +179,11 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
-                profilePicture: ''
+                toObject: () => ({
+                    _id: 1,
+                    username: 'username',
+                    profilePicture: ''
+                })
             });
             const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
                 url: 'http://flickr.com/somephoto'
