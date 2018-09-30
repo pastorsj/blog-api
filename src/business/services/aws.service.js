@@ -37,7 +37,6 @@ const AWSService = {
                 ACL: 'public-read',
                 ContentType: mimeType
             };
-            log.info('aws', BUCKET);
             S3.putObject(params, (err, data) => {
                 if (err) {
                     log.error('Error when posting image', err);

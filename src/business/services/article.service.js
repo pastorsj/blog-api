@@ -44,7 +44,7 @@ const ArticleService = {
             ImageService.updateImage(file, path, article.coverPhoto)
                 .then((result) => {
                     const articleToUpdate = {
-                        ...article,
+                        ...article.toObject(),
                         coverPhoto: result.url
                     };
                     ArticleService.updateArticle(id, articleToUpdate)
