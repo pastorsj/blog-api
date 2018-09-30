@@ -20,10 +20,10 @@
     "lint": "eslint src/* tests/api/* tests/business/*",
     "autofix": "eslint --fix src/* tests/api/* tests/business/*",
     "docker": "docker-compose -f docker-compose.yml up --build --force-recreate",
-    "test": "NODE_ENV=TEST mocha --compilers js:@babel/register --colors --timeout 5000 --exit ./tests/**/*.test.js",
-    "test:watch": "NODE_ENV=TEST mocha --compilers js:@babel/register --colors --timeout 5000 --exit -w ./tests/**/*.test.js",
-    "coverage": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha -- --compilers js:@babel/register --colors --timeout 5000 --exit --reporter dot ./tests/**/*.test.js",
-    "coverage:coveralls": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --compilers js:@babel/register --colors --timeout 5000 --exit --reporter spec ./tests/**/*.test.js"
+    "test": "NODE_ENV=TEST mocha --require @babel/register --colors --timeout 5000 --exit ./tests/**/*.test.js",
+    "test:watch": "NODE_ENV=TEST mocha --require @babel/register --colors --timeout 5000 --exit -w ./tests/**/*.test.js",
+    "coverage": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha -- --require @babel/register --colors --timeout 5000 --exit --reporter dot ./tests/**/*.test.js",
+    "coverage:coveralls": "NODE_ENV=TEST istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --require @babel/register --colors --timeout 5000 --exit --reporter spec ./tests/**/*.test.js"
   },
   "dependencies": {
     "@babel/cli": "^7.0.0",

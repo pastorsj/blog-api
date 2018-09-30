@@ -16,9 +16,8 @@ import './dal/models/blog.model';
 import './dal/models/user.model';
 import './dal/models/subscription.model';
 
-import blogRoute from './api/routes/blog.route';
+import articleRoute from './api/routes/article.route';
 import userRoute from './api/routes/user.route';
-import articlesRoute from './api/routes/articles.route';
 import imagesRoute from './api/routes/images.route';
 import gistRoute from './api/routes/gist.route';
 import tagsRoute from './api/routes/tags.route';
@@ -67,9 +66,8 @@ if (process.env.NODE_ENV !== 'TEST') {
 
 app.all('*', express.static(path.join(__dirname, '..', 'dist')));
 
-app.use('/api/blog', blogRoute);
+app.use('/api/article', articleRoute);
 app.use('/api/user', userRoute);
-app.use('/api/articles', articlesRoute);
 app.use('/api/images', imagesRoute);
 app.use('/api/gist', gistRoute);
 app.use('/api/tags', tagsRoute);
