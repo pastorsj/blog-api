@@ -88,6 +88,9 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
+                profilePicture: {
+                    toObject: () => {}
+                },
                 toObject: () => ({
                     _id: 1,
                     username: 'username',
@@ -96,13 +99,28 @@ describe('Test the User Service', () => {
             });
             const userRepoSaveStub = sandbox.stub(UserRepository, 'update').resolves({
                 _id: 1,
-                profilePicture: 'http://flickr.com/somephoto'
+                username: 'username',
+                profilePicture: {
+                    small: 'http://flickr.com/somephoto-100',
+                    medium: 'http://flickr.com/somephoto-200',
+                    large: 'http://flickr.com/somephoto-800'
+                }
             });
-            const postImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
-                url: 'http://flickr.com/somephoto'
-            });
+            const postImageStub = sandbox.stub(ImagesService, 'updateImage').resolves([
+                {
+                    url: 'http://flickr.com/somephoto-100'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-200'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-800'
+                }
+            ]);
             UserService.updateProfilePicture('username', 'file').then((article) => {
-                expect(article.profilePicture).to.be.eq('http://flickr.com/somephoto');
+                expect(article.profilePicture.small).to.be.eq('http://flickr.com/somephoto-100');
+                expect(article.profilePicture.medium).to.be.eq('http://flickr.com/somephoto-200');
+                expect(article.profilePicture.large).to.be.eq('http://flickr.com/somephoto-800');
 
                 sinon.assert.calledWith(userRepoStub, { username: 'username' }, {
                     _id: 1,
@@ -116,7 +134,11 @@ describe('Test the User Service', () => {
                 sinon.assert.calledWith(userRepoSaveStub, 'username', {
                     _id: 1,
                     username: 'username',
-                    profilePicture: 'http://flickr.com/somephoto'
+                    profilePicture: {
+                        large: 'http://flickr.com/somephoto-800',
+                        medium: 'http://flickr.com/somephoto-200',
+                        small: 'http://flickr.com/somephoto-100'
+                    }
                 });
                 sinon.assert.calledOnce(userRepoSaveStub);
                 sinon.assert.calledWith(postImageStub, 'file', 'profile_pictures/profile_username');
@@ -179,15 +201,26 @@ describe('Test the User Service', () => {
             const userRepoStub = sandbox.stub(UserRepository, 'get').resolves({
                 _id: 1,
                 username: 'username',
+                profilePicture: {
+                    toObject: () => {}
+                },
                 toObject: () => ({
                     _id: 1,
                     username: 'username',
                     profilePicture: ''
                 })
             });
-            const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves({
-                url: 'http://flickr.com/somephoto'
-            });
+            const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves([
+                {
+                    url: 'http://flickr.com/somephoto-100'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-200'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-800'
+                }
+            ]);
             UserService.updateProfilePicture('username', 'file').then((output) => {
                 done(output);
             }).catch(() => {

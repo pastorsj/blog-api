@@ -7,7 +7,7 @@ import { BUCKET, REGION, KEY_START } from '../../config/aws.config';
 import log from '../../log';
 import AWSService from './aws.service';
 
-const ImagesService = {
+const ImageService = {
     deleteImage: src => AWSService.deleteImage(src),
     getImage: () => {
         const configs = {
@@ -28,12 +28,12 @@ const ImagesService = {
     updateImage: (picture, serverPath, previousPhotos) => new Promise((resolve, reject) => {
         if (previousPhotos && (typeof previousPhotos) === 'object') {
             const deleteImagePromises = [
-                ImagesService.deleteImage(previousPhotos.small),
-                ImagesService.deleteImage(previousPhotos.medium),
-                ImagesService.deleteImage(previousPhotos.large)
+                ImageService.deleteImage(previousPhotos.small),
+                ImageService.deleteImage(previousPhotos.medium),
+                ImageService.deleteImage(previousPhotos.large)
             ];
             Promise.all(deleteImagePromises)
-                .then(() => ImagesService.postImage(picture, serverPath))
+                .then(() => ImageService.postImage(picture, serverPath))
                 .then((result) => {
                     log.debug('Result', result);
                     resolve(result);
@@ -42,7 +42,7 @@ const ImagesService = {
                     reject(error);
                 });
         } else {
-            ImagesService.postImage(picture, serverPath)
+            ImageService.postImage(picture, serverPath)
                 .then(resolve)
                 .catch(reject);
         }
@@ -70,4 +70,4 @@ const ImagesService = {
     })
 };
 
-export default ImagesService;
+export default ImageService;

@@ -140,31 +140,55 @@ describe('Test the Article Service', () => {
         it('should save the cover photo successfully', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'get').resolves({
                 _id: 1,
+                coverPhoto: {
+                    toObject: () => {}
+                },
                 toObject: () => ({
                     coverPhoto: '',
                     _id: 1
                 })
             });
             const articleRepoSaveStub = sandbox.stub(ArticleRepository, 'update').resolves({
-                coverPhoto: 'http://flickr.com/somephoto',
+                coverPhoto: {
+                    small: 'http://flickr.com/somephoto-100',
+                    medium: 'http://flickr.com/somephoto-200',
+                    large: 'http://flickr.com/somephoto-800'
+                },
                 _id: 1
             });
-            const postImageStub = sandbox.stub(ImagesService, 'postImage').resolves({
-                url: 'http://flickr.com/somephoto'
-            });
+            const updateImageStub = sandbox.stub(ImagesService, 'updateImage').resolves([
+                {
+                    url: 'http://flickr.com/somephoto-100'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-200'
+                },
+                {
+                    url: 'http://flickr.com/somephoto-800'
+                }
+            ]);
             ArticleService.postCoverPhoto(1, 'file').then((article) => {
-                expect(article.coverPhoto).to.be.eq('http://flickr.com/somephoto');
+                expect(article.coverPhoto.small).to.be.eq('http://flickr.com/somephoto-100');
+                expect(article.coverPhoto.medium).to.be.eq('http://flickr.com/somephoto-200');
+                expect(article.coverPhoto.large).to.be.eq('http://flickr.com/somephoto-800');
 
                 sinon.assert.calledWith(articleRepoStub, { _id: 1 });
                 sinon.assert.calledOnce(articleRepoStub);
-                sinon.assert.calledWith(articleRepoSaveStub, 1, { _id: 1, coverPhoto: 'http://flickr.com/somephoto' });
+                sinon.assert.calledWith(articleRepoSaveStub, 1, {
+                    _id: 1,
+                    coverPhoto: {
+                        small: 'http://flickr.com/somephoto-100',
+                        medium: 'http://flickr.com/somephoto-200',
+                        large: 'http://flickr.com/somephoto-800'
+                    }
+                });
                 sinon.assert.calledOnce(articleRepoSaveStub);
-                sinon.assert.calledWith(postImageStub, 'file', 'cover_photo/cover_1');
-                sinon.assert.calledOnce(postImageStub);
+                sinon.assert.calledWith(updateImageStub, 'file', 'cover_photo/cover_1');
+                sinon.assert.calledOnce(updateImageStub);
 
                 articleRepoStub.restore();
                 articleRepoSaveStub.restore();
-                postImageStub.restore();
+                updateImageStub.restore();
                 done();
             }).catch((err) => {
                 done(err);
@@ -183,12 +207,15 @@ describe('Test the Article Service', () => {
         it('should get the article to update, but fail to post the image', (done) => {
             const articleRepoStub = sandbox.stub(ArticleRepository, 'get').resolves({
                 _id: 1,
+                coverPhoto: {
+                    toObject: () => {}
+                },
                 toObject: () => ({
                     coverPhoto: '',
                     _id: 1
                 })
             });
-            const postImageStub = sandbox.stub(ImagesService, 'postImage').rejects();
+            const postImageStub = sandbox.stub(ImagesService, 'updateImage').rejects();
             ArticleService.postCoverPhoto(1, 'file').then((output) => {
                 done(output);
             }).catch(() => {
