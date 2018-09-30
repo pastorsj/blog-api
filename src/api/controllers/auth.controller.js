@@ -71,32 +71,6 @@ const AuthController = {
         }).catch((err) => {
             Response.error(res, 400, err);
         });
-    },
-    isAccessible: (req, res, next) => {
-        const { payload, params: { username } } = req;
-        const isAccessible = AuthService.canAccess(payload, username);
-        if (isAccessible) {
-            next();
-        } else {
-            Response.error(res, 401, `Unable to access ${username}'s articles`);
-        }
-    },
-    canUpdate: (req, res, next) => {
-        const { payload, params: { id } } = req;
-        AuthService.canUpdate(payload, id)
-            .then(() => next())
-            .catch((error) => {
-                Response.error(res, 401, error);
-            });
-    },
-    canPost: (req, res, next) => {
-        const { payload, body: { author } } = req;
-        const isAccessible = AuthService.canAccess(payload, author);
-        if (isAccessible) {
-            next();
-        } else {
-            Response.error(res, 401, `Unable to create this article under this username: ${author})`);
-        }
     }
 };
 

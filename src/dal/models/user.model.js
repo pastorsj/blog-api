@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
 function getAccessToken() {
     const expiresIn = Math.floor(Date.now() + (60 * 60 * 1000)); // 1 hour
     const accessToken = jwt.sign({
-        _id: this._id,
+        _id: this._id, // eslint-disable-line
         username: this.username,
         name: this.name,
         exp: expiresIn
@@ -61,7 +61,7 @@ async function getRefreshToken() {
         return this.refreshToken;
     }
     const refreshToken = jwt.sign({
-        _id: this._id
+        _id: this._id // eslint-disable-line
     }, SECRET);
 
     this.refreshToken = refreshToken;

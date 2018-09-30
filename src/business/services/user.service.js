@@ -31,7 +31,7 @@ const UserService = {
             ImageService.updateImage(file, path, user.profilePicture)
                 .then((result) => {
                     const updatedUser = {
-                        ...user,
+                        ...user.toObject(),
                         profilePicture: result.url
                     };
                     UserService.updateUser(username, updatedUser)

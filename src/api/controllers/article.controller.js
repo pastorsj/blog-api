@@ -6,8 +6,8 @@ import { upload } from '../../config/multer.config';
  * ROUTE: blog/:id
  */
 
-const BlogController = {
-    post: (req, res) => {
+const ArticleController = {
+    createArticle: (req, res) => {
         ArticleService.createArticle(req.body).then((blog) => {
             if (blog) {
                 Response.json(res, 200, blog);
@@ -31,14 +31,14 @@ const BlogController = {
             }
         });
     },
-    getAll: (req, res) => {
+    getAllPublishedArticles: (req, res) => {
         ArticleService.getAllPublishedArticles(req.query).then((articles) => {
             Response.json(res, 200, articles);
         }).catch((err) => {
             Response.error(res, 404, err);
         });
     },
-    get: (req, res) => {
+    getArticleById: (req, res) => {
         const { id } = req.params;
         ArticleService.getArticleById(id).then((article) => {
             Response.json(res, 200, article);
@@ -46,7 +46,7 @@ const BlogController = {
             Response.error(res, 404, err);
         });
     },
-    put: (req, res) => {
+    updateArticle: (req, res) => {
         const { id } = req.params;
         ArticleService.updateArticle(id, req.body).then((blog) => {
             Response.json(res, 200, blog);
@@ -54,7 +54,7 @@ const BlogController = {
             Response.error(res, 404, err);
         });
     },
-    delete: (req, res) => {
+    deleteArticle: (req, res) => {
         const { id } = req.params;
         ArticleService.deleteArticle(id).then((message) => {
             Response.message(res, 200, message);
@@ -77,7 +77,15 @@ const BlogController = {
         }).catch((err) => {
             Response.error(res, 404, err);
         });
+    },
+    getAllArticlesByAuthor: (req, res) => {
+        const { username } = req.params;
+        ArticleService.getAllArticlesForAuthor(username, req.query).then((articles) => {
+            Response.json(res, 200, articles);
+        }).catch((err) => {
+            Response.json(res, 404, `No articles found, error was ${err}`);
+        });
     }
 };
 
-export default BlogController;
+export default ArticleController;
