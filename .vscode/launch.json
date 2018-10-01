@@ -10,9 +10,6 @@
             "request": "launch",
             "program": "${workspaceRoot}/src/server.js",
             "stopOnEntry": false,
-            "args": [
-                "--type=http"
-            ],
             "cwd": "${workspaceRoot}",
             "preLaunchTask": null,
             "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/babel-node",
@@ -23,7 +20,7 @@
                 "NODE_ENV": "development"
             },
             "console": "internalConsole",
-            "sourceMaps": false,
+            "sourceMaps": true,
             "outFiles": []
         }
     ]

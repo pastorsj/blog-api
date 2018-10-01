@@ -28,16 +28,21 @@ const UserService = {
     updateProfilePicture: (username, file) => new Promise((resolve, reject) => UserRepository.get({ username }, projection).then((user) => {
         if (file) {
             const path = `profile_pictures/profile_${user.username}`;
-            ImageService.updateImage(file, path, user.profilePicture)
+            ImageService.updateImage(file, path, user.profilePicture.toObject())
                 .then((result) => {
+                    const picture = {
+                        small: result[0].url,
+                        medium: result[1].url,
+                        large: result[2].url
+                    };
                     const updatedUser = {
                         ...user.toObject(),
-                        profilePicture: result.url
+                        profilePicture: picture
                     };
-                    UserService.updateUser(username, updatedUser)
-                        .then(resolve)
-                        .catch(reject);
-                });
+                    return UserService.updateUser(username, updatedUser);
+                })
+                .then(resolve)
+                .catch(reject);
         } else {
             resolve('');
         }

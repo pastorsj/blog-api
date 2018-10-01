@@ -34,7 +34,21 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     profilePicture: {
-        type: String
+        small: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        medium: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        large: {
+            type: String,
+            required: false,
+            default: ''
+        }
     },
     refreshToken: {
         type: String
