@@ -1,4 +1,4 @@
-FROM node:8.9-alpine
+FROM node:10-alpine
 
 LABEL Sam Pastoriza <samjpastoriza@gmail.com>
 

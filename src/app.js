@@ -61,7 +61,7 @@ app.use(session({
 }));
 
 if (process.env.NODE_ENV !== 'TEST') {
-    const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+    const accessLogStream = fs.createWriteStream(path.join('access.log'), { flags: 'a' });
     app.use(morgan('combined', { stream: accessLogStream }));
 }
 
