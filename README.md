@@ -36,5 +36,11 @@ Stopping all containers
 docker stop $(docker ps -q)
 ```
 
+### Renewing the cert manually
+I have had problems trying to create a cron job, so I run this manually to regenerate the certificate. Docker will then use the folder that has the generated certificates as volumes when creating the nginx docker container.
+```
+sudo certbot certonly -d blog.sampastoriza.com
+```
+
 
 
