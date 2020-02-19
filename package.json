@@ -76,7 +76,7 @@
         "eslint-plugin-import": "^2.16.0",
         "istanbul": "^1.1.0-alpha.1",
         "mocha": "^6.0.2",
-        "sinon": "^7.2.6",
+        "sinon": "^9.0.0",
         "sinon-chai": "^3.3.0",
         "supertest": "^3.4.2",
         "webpack": "^4.19.6",
