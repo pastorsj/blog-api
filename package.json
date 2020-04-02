@@ -45,7 +45,7 @@
         "express-session": "^1.15.6",
         "express-winston": "^2.5.1",
         "gm": "^1.23.1",
-        "graphql": "^14.1.1",
+        "graphql": "^15.0.0",
         "helmet": "^3.15.1",
         "jsonwebtoken": "^8.5.0",
         "method-override": "^3.0.0",
